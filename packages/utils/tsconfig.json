@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@app/db/*": ["../../packages/db/src/*"],
+      "@app/types/*": ["../../packages/types/src/*"],
+      "@app/schemas/*": ["../../packages/schemas/src/*"],
+      "@app/utils/*": ["../../packages/utils/src/*"]
+    }
+  },
+  "include": ["src"]
+}

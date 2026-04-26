@@ -1,39 +1,18 @@
+/* *
+ * This is the root ts configuration for this monorepo.
+ */
 {
   "compilerOptions": {
-    // Environment setup & latest features
-    "lib": ["ESNext"],
     "target": "ESNext",
-    "module": "Preserve",
-    "moduleDetection": "force",
-    "jsx": "react-jsx",
-    "allowJs": true,
-
-    // Bundler mode
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
+    "module": "ESNext",
     "noEmit": true,
+    "moduleResolution": "bundler",
 
-    // Best practices
+    // Best practices relevant to this projects requirements.
     "strict": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-
-    // Paths
-    "paths": {
-      "@app/ui": ["./apps/ui/src/*"],
-      "@app/api": ["./services/api/src/*"],
-      "@app/db": ["./packages/db/src/*"],
-      "@app/schemas": ["./packages/schemas/src/*"],
-      "@app/types": ["./packages/types/src/*"],
-      "@app/utils": ["./packages/utils/src/*"]
-    }
+    "noImplicitOverride": true
   }
 }

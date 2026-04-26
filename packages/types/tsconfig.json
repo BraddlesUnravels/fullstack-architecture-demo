@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@app/schemas/*": ["../../packages/schemas/src/*"]
+    }
+  },
+  "include": ["src"]
+}
