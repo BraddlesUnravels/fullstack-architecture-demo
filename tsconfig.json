@@ -1,5 +1,6 @@
 /* *
  * This is the root ts configuration for this monorepo.
+ * It is used by all packages in the monorepo, and can be extended by each package as needed.
  */
 {
   "compilerOptions": {
@@ -7,6 +8,10 @@
     "module": "ESNext",
     "noEmit": true,
     "moduleResolution": "bundler",
+    "types": ["bun-types"],
+
+    // Suppress deprecation warnings for features that are still in use.
+    "ignoreDeprecations": "6.0",
 
     // Best practices relevant to this projects requirements.
     "strict": true,
