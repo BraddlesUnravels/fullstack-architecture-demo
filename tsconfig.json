@@ -1,0 +1,18 @@
+/* *
+ * This is the root ts configuration for this monorepo.
+ */
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "noEmit": true,
+    "moduleResolution": "bundler",
+
+    // Best practices relevant to this projects requirements.
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@app/db/*": ["../../packages/db/src/*"],
+      "@app/types/*": ["../../packages/types/src/*"],
+      "@app/schemas/*": ["../../packages/schemas/src/*"],
+      "@app/utils/*": ["../../packages/utils/src/*"]
+    }
+  },
+  "include": ["src"]
+}
