@@ -8,27 +8,27 @@
     "./*": "./src/*.ts"
   },
   "scripts": {
+    "infra:up": "docker-compose -f ../../docker/docker-compose-db.dev.yml up -d",
+    "infra:down": "docker-compose -f ../../docker/docker-compose-db.dev.yml down",
+    "infra:reset": "docker-compose -f ../../docker/docker-compose-db.dev.yml down -v",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "bun src/seed/index.ts",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "better-sqlite3": "^12.9.0",
-    "drizzle-orm": "^0.45.2",
+    "@app/constants": "workspace:*",
     "@app/schemas": "workspace:*",
+    "@app/types": "workspace:*",
     "@app/utils": "workspace:*",
-    "@app/types": "workspace:*"
+    "drizzle-orm": "^0.45.2",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
+    "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10"
-  },
-  "paths": {
-    "@app/schemas/*": "../schemas/src/*",
-    "@app/utils/*": "../utils/src/*",
-    "@app/types/*": "../types/src/*"
   }
 }
