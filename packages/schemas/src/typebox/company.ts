@@ -1,5 +1,5 @@
 import { Null, Object, Optional, String, Union } from '@sinclair/typebox';
-import { recordBase } from './base-record';
+import { auditColumns } from './audit';
 
 export const companySelectSchema = Object(
   {
@@ -8,7 +8,7 @@ export const companySelectSchema = Object(
     abn: Union([String(), Null()]),
     website: Union([String(), Null()]),
     jobDescription: Union([String(), Null()]),
-    ...recordBase.properties,
+    ...auditColumns.properties,
   },
   { additionalProperties: false },
 );

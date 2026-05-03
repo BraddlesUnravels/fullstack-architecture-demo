@@ -1,9 +1,9 @@
-import { Boolean, Null, Object, String, Union } from '@sinclair/typebox';
+import { Boolean, Null, Object, String, Union, Integer, Optional } from '@sinclair/typebox';
 
-export const recordBase = Object(
+export const auditColumns = Object(
   {
     createdAt: String({ format: 'date-time' }),
-    createdBy: String({ format: 'uuid' }),
+    createdBy: Union([String({ format: 'uuid' }), Null()]),
 
     updatedAt: String({ format: 'date-time' }),
     updatedBy: Union([String({ format: 'uuid' }), Null()]),
@@ -11,7 +11,9 @@ export const recordBase = Object(
     deletedAt: Union([String({ format: 'date-time' }), Null()]),
     deletedBy: Union([String({ format: 'uuid' }), Null()]),
 
-    isDeleted: Boolean({ default: false }),
+    isDeleted: Boolean(),
+
+    version: Integer(),
   },
   { additionalProperties: false },
 );

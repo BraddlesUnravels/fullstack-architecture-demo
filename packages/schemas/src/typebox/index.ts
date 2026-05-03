@@ -1,10 +1,11 @@
 import { Object, Static, TSchema, String, Boolean, Union, Null } from '@sinclair/typebox';
 import { TypeCompiler } from '@sinclair/typebox/compiler';
 
-export * from './base-record';
+export * from './audit';
 export * from './user';
 export * from './application';
 export * from './company';
+export * from './credential';
 
 // Best-practice summary:
 // Schema first
