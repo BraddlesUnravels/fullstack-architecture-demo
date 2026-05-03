@@ -1,4 +1,5 @@
 import { JobStatus } from '@app/constants';
+const SEED_CREATED_BY_USER_ID = '00000000-0000-0000-0000-000000000001';
 
 export const users = [
   {
@@ -7,6 +8,7 @@ export const users = [
     lastName: 'Smith',
     passwordHash: 'hash_placeholder',
     isAdmin: false,
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
   {
     email: 'bob@example.com',
@@ -14,6 +16,7 @@ export const users = [
     lastName: 'Jones',
     passwordHash: 'hash_placeholder',
     isAdmin: false,
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
   {
     email: 'carol@example.com',
@@ -21,6 +24,7 @@ export const users = [
     lastName: 'White',
     passwordHash: 'hash_placeholder',
     isAdmin: false,
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
 ];
 
@@ -30,19 +34,28 @@ export const companies = [
     website: 'https://atlassian.com',
     abn: '53102443916',
     jobDescription: 'Building collaboration tools',
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
-  { name: 'Canva', website: 'https://canva.com', abn: null, jobDescription: null },
+  {
+    name: 'Canva',
+    website: 'https://canva.com',
+    abn: null,
+    jobDescription: null,
+    createdBy: SEED_CREATED_BY_USER_ID,
+  },
   {
     name: 'Afterpay',
     website: 'https://afterpay.com',
     abn: null,
     jobDescription: 'Buy now, pay later',
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
   {
     name: 'REA Group',
     website: 'https://realestate.com.au',
     abn: '54008559269',
     jobDescription: 'Real estate listings',
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
 ];
 
@@ -55,6 +68,7 @@ export const applications = [
     status: JobStatus.INTERVIEW,
     url: 'https://atlassian.com/jobs/1',
     notes: 'Referred by a friend',
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
   {
     userIndex: 0,
@@ -63,6 +77,7 @@ export const applications = [
     status: JobStatus.APPLIED,
     url: null,
     notes: null,
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
   {
     userIndex: 1,
@@ -71,6 +86,7 @@ export const applications = [
     status: JobStatus.OFFER,
     url: 'https://afterpay.com/jobs/2',
     notes: 'Good culture fit',
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
   {
     userIndex: 1,
@@ -79,6 +95,7 @@ export const applications = [
     status: JobStatus.REJECTED,
     url: null,
     notes: 'Rejected after round 2',
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
   {
     userIndex: 2,
@@ -87,6 +104,7 @@ export const applications = [
     status: JobStatus.APPLIED,
     url: null,
     notes: null,
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
   {
     userIndex: 2,
@@ -95,5 +113,6 @@ export const applications = [
     status: JobStatus.ACCEPTED,
     url: 'https://rea.com/jobs/5',
     notes: 'Accepted offer!',
+    createdBy: SEED_CREATED_BY_USER_ID,
   },
 ];

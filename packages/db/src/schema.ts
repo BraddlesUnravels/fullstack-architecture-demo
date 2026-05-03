@@ -1,13 +1,18 @@
 import { relations } from 'drizzle-orm';
-import { JobStatus } from '@app/constants/index';
-import { pgTable, text, integer, timestamp, uuid, index } from 'drizzle-orm/pg-core';
+import { boolean, index, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { JobStatus } from '@app/constants';
 
 const timestamps = {
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  createdBy: uuid('created_by').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
   updatedBy: uuid('updated_by'),
-  deletedAt: timestamp('deleted_at'),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
   deletedBy: uuid('deleted_by'),
+  isDeleted: boolean('is_deleted').default(false).notNull(),
 };
 
 export const users = pgTable(
