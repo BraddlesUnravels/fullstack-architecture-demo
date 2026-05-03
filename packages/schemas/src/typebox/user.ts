@@ -1,5 +1,5 @@
-import { Boolean, Object, Optional, String } from '@sinclair/typebox';
-import { recordBase } from './base-record';
+import { Boolean, Null, Object, Optional, String, Union } from '@sinclair/typebox';
+import { auditColumns } from './audit';
 
 export const userSelectSchema = Object(
   {
@@ -7,8 +7,10 @@ export const userSelectSchema = Object(
     email: String({ format: 'email' }),
     firstName: String(),
     lastName: String(),
-    isAdmin: Boolean(),
-    ...recordBase.properties,
+    isLocked: Optional(Boolean({ default: false })),
+    isAdmin: Optional(Boolean({ default: false })),
+    lastLoginAt: Union([String({ format: 'date-time' }), Null()]),
+    ...auditColumns.properties,
   },
   { additionalProperties: false },
 );
@@ -18,8 +20,9 @@ export const userInsertSchema = Object(
     email: String({ format: 'email' }),
     firstName: String(),
     lastName: String(),
-    password: String(),
+    isLocked: Optional(Boolean({ default: false })),
     isAdmin: Optional(Boolean({ default: false })),
+    lastLoginAt: Optional(Union([String({ format: 'date-time' }), Null()])),
   },
   { additionalProperties: false },
 );
@@ -29,8 +32,9 @@ export const userUpdateSchema = Object(
     email: Optional(String({ format: 'email' })),
     firstName: Optional(String()),
     lastName: Optional(String()),
-    password: Optional(String()),
-    isAdmin: Optional(Boolean()),
+    isLocked: Optional(Boolean({ default: false })),
+    isAdmin: Optional(Boolean({ default: false })),
+    lastLoginAt: Optional(Union([String({ format: 'date-time' }), Null()])),
   },
   { additionalProperties: false },
 );

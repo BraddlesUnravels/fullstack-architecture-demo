@@ -11,14 +11,14 @@ const db = drizzle(pool, { schema });
 async function seed() {
   console.log('🌱 Seeding...');
 
-  await db.delete(schema.applications);
-  await db.delete(schema.users);
-  await db.delete(schema.companies);
+  await db.delete(schema.application);
+  await db.delete(schema.user);
+  await db.delete(schema.company);
 
-  const insertedUsers = await db.insert(schema.users).values(users).returning();
-  const insertedCompanies = await db.insert(schema.companies).values(companies).returning();
+  const insertedUsers = await db.insert(schema.user).values(users).returning();
+  const insertedCompanies = await db.insert(schema.company).values(companies).returning();
 
-  await db.insert(schema.applications).values(
+  await db.insert(schema.application).values(
     applications.map(({ userIndex, companyIndex, ...rest }) => {
       const user = insertedUsers[userIndex];
       const company = insertedCompanies[companyIndex];

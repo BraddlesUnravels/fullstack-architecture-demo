@@ -1,6 +1,6 @@
 import { Null, Object, Optional, String, Union } from '@sinclair/typebox';
 import { JobStatus } from '@app/constants';
-import { recordBase } from './base-record';
+import { auditColumns } from './audit';
 
 const applicationStatusSchema = Union([
   String({ enum: [JobStatus.APPLIED] }),
@@ -19,7 +19,7 @@ export const applicationSelectSchema = Object(
     status: applicationStatusSchema,
     url: Union([String(), Null()]),
     notes: Union([String(), Null()]),
-    ...recordBase.properties,
+    ...auditColumns.properties,
   },
   { additionalProperties: false },
 );
