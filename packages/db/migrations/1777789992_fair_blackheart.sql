@@ -6,11 +6,13 @@ CREATE TABLE "applications" (
 	"status" text DEFAULT 'applied' NOT NULL,
 	"url" text,
 	"notes" text,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"created_by" uuid NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_by" uuid,
-	"deleted_at" timestamp,
-	"deleted_by" uuid
+	"deleted_at" timestamp with time zone,
+	"deleted_by" uuid,
+	"is_deleted" boolean DEFAULT false NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "companies" (
@@ -19,11 +21,13 @@ CREATE TABLE "companies" (
 	"abn" text,
 	"website" text,
 	"job_description" text,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"created_by" uuid NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_by" uuid,
-	"deleted_at" timestamp,
+	"deleted_at" timestamp with time zone,
 	"deleted_by" uuid,
+	"is_deleted" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "companies_abn_unique" UNIQUE("abn")
 );
 --> statement-breakpoint
@@ -34,11 +38,13 @@ CREATE TABLE "users" (
 	"last_name" text NOT NULL,
 	"password_hash" text NOT NULL,
 	"is_admin" boolean DEFAULT false NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"created_by" uuid NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_by" uuid,
-	"deleted_at" timestamp,
+	"deleted_at" timestamp with time zone,
 	"deleted_by" uuid,
+	"is_deleted" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
