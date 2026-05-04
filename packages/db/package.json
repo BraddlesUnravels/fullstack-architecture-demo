@@ -8,6 +8,7 @@
     "./*": "./src/*.ts"
   },
   "scripts": {
+    "dev": "bun run infra:reset && bun run infra:up && bun run db:generate && bun run db:migrate && bun run db:seed",
     "infra:up": "docker-compose -f ../../docker/docker-compose-db.dev.yml up -d",
     "infra:down": "docker-compose -f ../../docker/docker-compose-db.dev.yml down",
     "infra:reset": "docker-compose -f ../../docker/docker-compose-db.dev.yml down -v",
@@ -16,7 +17,6 @@
     "db:seed": "bun src/seed/index.ts",
     "db:test": "bun src/__tests__/db.test.ts",
     "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts"
   },
