@@ -5,6 +5,7 @@
 **/.env**
 **/logs/**
 **/tmp/**
+**/AGENTS.md
 **/*.log**
 
 # Ignore IDE and editor specific files
@@ -17,4 +18,5 @@
 
 # Ignore bun's cache
 **/.bun-cache/**
+
 

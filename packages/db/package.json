@@ -8,7 +8,8 @@
     "./*": "./src/*.ts"
   },
   "scripts": {
-    "dev": "bun run infra:reset && bun run infra:up && bun run db:generate && bun run db:migrate && bun run db:seed",
+    "init": "bun run infra:up && run run db:generate && bun run db:migrate && bun run db:seed",
+    "hot:reset": "bun run infra:reset && bun run infra:up && bun run db:generate && bun run db:migrate && bun run db:seed",
     "infra:up": "docker-compose -f ../../docker/docker-compose-db.dev.yml up -d",
     "infra:down": "docker-compose -f ../../docker/docker-compose-db.dev.yml down",
     "infra:reset": "docker-compose -f ../../docker/docker-compose-db.dev.yml down -v",

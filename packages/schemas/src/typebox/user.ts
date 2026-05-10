@@ -1,4 +1,4 @@
-import { Boolean, Null, Object, Optional, String, Union } from '@sinclair/typebox';
+import { Boolean, Null, Object, Optional, String, Union, Date } from '@sinclair/typebox';
 import { auditColumns } from './audit';
 
 export const userSelectSchema = Object(
@@ -9,7 +9,7 @@ export const userSelectSchema = Object(
     lastName: String(),
     isLocked: Optional(Boolean({ default: false })),
     isAdmin: Optional(Boolean({ default: false })),
-    lastLoginAt: Union([String({ format: 'date-time' }), Null()]),
+    lastLoginAt: Union([String(), Null()]),
     ...auditColumns.properties,
   },
   { additionalProperties: false },

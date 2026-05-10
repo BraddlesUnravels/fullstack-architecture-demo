@@ -1,12 +1,10 @@
 import { cors } from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
-import { Elysia, t } from 'elysia';
-import type { ApiEnv } from './config/env';
-import { healthRoutes } from './routes/health';
-
-const notFoundResponseSchema = t.Object({
-  message: t.String(),
-});
+import { Elysia } from 'elysia';
+import type { ApiEnv } from './config';
+import { ApiError, apiErrorResponseSchema } from './errors';
+import { healthRoutes } from './modules/health';
+import { users } from './modules/user';
 
 type CreateAppOptions = {
   corsOrigin: ApiEnv['corsOrigin'];
@@ -14,6 +12,26 @@ type CreateAppOptions = {
 
 export const createApp = ({ corsOrigin }: CreateAppOptions) =>
   new Elysia({ name: 'job-application-tracker-api' })
+    .error({
+      APP_ERROR: ApiError,
+    })
+    .onError(({ code, error, status }) => {
+      if (error instanceof ApiError) {
+        return status(error.status, error.toResponse());
+      }
+
+      if (code === 'VALIDATION') {
+        return status(422, {
+          code: 'VALIDATION_ERROR',
+          message: error.message,
+        });
+      }
+
+      return status(500, {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Unexpected server error',
+      });
+    })
     .use(
       cors({
         origin: corsOrigin,
@@ -30,21 +48,18 @@ export const createApp = ({ corsOrigin }: CreateAppOptions) =>
         },
       }),
     )
-    .get('/', () => ({
-      name: 'job-application-tracker-api',
-      status: 'ok',
-    }))
+    .use(users)
     .use(healthRoutes)
     .all(
       '*',
-      ({ path, set }) => {
-        set.status = 404;
-
-        return {
+      ({ path, status }) =>
+        status(404, {
+          code: 'ROUTE_NOT_FOUND',
           message: `Route not found: ${path}`,
-        };
-      },
+        }),
       {
-        response: notFoundResponseSchema,
+        response: {
+          404: apiErrorResponseSchema,
+        },
       },
     );
