@@ -3,11 +3,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "ignoreDeprecations": "6.0",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@builder.io/qwik",
+    "types": ["bun-types", "vite/client"],
     "paths": {
+      "@app/api/*": ["../../services/api/src/*"],
       "@app/types/*": ["../../packages/types/src/*"],
       "@app/schemas/*": ["../../packages/schemas/src/*"],
       "@app/utils/*": ["../../packages/utils/src/*"]
     }
   },
-  "include": ["src", "adapters/vite.config.ts"]
+  "include": ["src", "vite.config.ts"]
 }
