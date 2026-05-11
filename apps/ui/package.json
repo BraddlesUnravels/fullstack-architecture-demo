@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "vite --mode ssr",
     "build": "qwik build",
+    "build.client": "vite build",
+    "build.preview": "vite build --mode ssr",
+    "build.server": "vite build --ssr src/entry.ssr.tsx",
     "build:client": "vite build",
     "build:preview": "vite build --mode ssr",
-    "build:server": "vite build -c adapters/vite.config.ts",
+    "build:server": "vite build --ssr src/entry.ssr.tsx",
     "preview": "qwik build preview && vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -17,6 +20,7 @@
   "dependencies": {
     "@builder.io/qwik": "^1.19.2",
     "@builder.io/qwik-city": "^1.19.2",
+    "@elysia/eden": "^1.4.10",
     "@app/types": "workspace:*",
     "@app/schemas": "workspace:*",
     "@app/utils": "workspace:*"
@@ -24,9 +28,11 @@
   "devDependencies": {
     "eslint-plugin-qwik": "latest",
     "vite": "^8.0.10",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.1.5"
   },
   "paths": {
+    "@app/api/*": "../../services/api/src/*",
     "@app/types/*": "../../packages/types/src/*",
     "@app/schemas/*": "../../packages/schemas/src/*",
     "@app/utils/*": "../../packages/utils/src/*"
