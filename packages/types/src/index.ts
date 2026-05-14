@@ -1,7 +1,8 @@
-import { Static, TSchema } from '@sinclair/typebox';
+import type { Static, TSchema } from 'elysia';
 export * from './user';
 export * from './company';
 export * from './application';
+export * from './session';
 
 type ResourceSchemas<TSelect extends TSchema, TCreate extends TSchema, TUpdate extends TSchema> = {
   select: TSelect;

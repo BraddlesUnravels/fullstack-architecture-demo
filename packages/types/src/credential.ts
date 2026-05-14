@@ -1,4 +1,4 @@
-import { Static } from '@sinclair/typebox';
+import type { Static } from 'elysia';
 import {
   credentialSelectSchema,
   credentialInsertSchema,

@@ -51,6 +51,26 @@ export const credential = pgTable('credential', (t) => ({
   ...auditColumns,
 }));
 
+export const session = pgTable(
+  'session',
+  (t) => ({
+    id: t.uuid('id').primaryKey().defaultRandom(),
+    userId: t
+      .uuid('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    expiresAt: t.timestamp('expires_at', { withTimezone: true }).notNull(),
+    revokedAt: t.timestamp('revoked_at', { withTimezone: true }),
+    userAgent: t.text('user_agent'),
+    ipAddress: t.text('ip_address'),
+    ...auditColumns,
+  }),
+  (t) => [
+    index('idx_sessions_user_id').on(t.userId),
+    index('idx_sessions_ip_address').on(t.ipAddress)
+  ],
+);
+
 export const application = pgTable(
   'application',
   (t) => ({
@@ -97,7 +117,15 @@ export const company = pgTable('company', (t) => ({
 
 export const userRelations = relations(user, ({ many }) => ({
   credential: many(credential),
+  sessions: many(session),
   applications: many(application),
+}));
+
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
+  }),
 }));
 
 export const applicationRelations = relations(application, ({ one }) => ({
