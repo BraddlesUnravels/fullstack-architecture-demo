@@ -26,11 +26,12 @@ export const updateUser = async (id: UserRow['id'], data: UpdateUserRow): Promis
   return expectOne(rows, 'Failed to update user');
 };
 
-export const deleteUser = async (id: UserRow['id']): Promise<UserRow> => {
+export const deleteUser = async (id: UserRow['id']): Promise<{ success: boolean }> => {
   const rows = await appDb
     .update(user)
     .set({ isDeleted: true })
     .where(and(eq(user.id, id), eq(user.isDeleted, false)))
     .returning();
-  return expectOne(rows, 'Failed to delete user');
+
+  return { success: rows[0]?.isDeleted ?? false };
 };

@@ -1,6 +1,6 @@
 import { t, type Static } from 'elysia';
 import { userSelectSchema, userInsertSchema, userUpdateSchema } from '@app/schemas/typebox';
-import { apiErrorResponseSchema } from '../../errors';
+import { apiErrorResponseSchema } from '@app/schemas';
 
 const getByEmailQuery = t.Object({
   email: t.String({ format: 'email', error: 'The email address of the user' }),
@@ -16,6 +16,7 @@ export const UserModel = {
   createBody: userInsertSchema,
   updateBody: userUpdateSchema,
   res: userSelectSchema,
+  deleteRes: t.Object({ success: t.Boolean() }),
   apiError: apiErrorResponseSchema,
 } as const;
 
@@ -24,4 +25,4 @@ export type UserGetByIdParams = Static<typeof getByIdParams>;
 export type UserCreateBody = Static<typeof userInsertSchema>;
 export type UserUpdateBody = Static<typeof userUpdateSchema>;
 export type UserResponse = Static<typeof userSelectSchema>;
-export type ApiErrorResponse = Static<typeof apiErrorResponseSchema>;
+export type UserDeleteResponse = Static<typeof UserModel.deleteRes>;

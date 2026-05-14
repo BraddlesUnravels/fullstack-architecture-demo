@@ -1,4 +1,3 @@
-import { t } from 'elysia';
 import { ErrorDefaults } from './defaults';
 
 /**
