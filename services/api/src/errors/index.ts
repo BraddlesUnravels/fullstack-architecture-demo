@@ -57,15 +57,6 @@ export class ApiError extends Error {
     this.cause = cause;
   }
 
-  log() {
-    console.error(
-      `\n\t[${this.name}] ${this.message} (code: ${this.code}, status: ${this.status})\n`,
-    );
-    if (this.stack) {
-      console.error(JSON.stringify(this.stack, null, 2));
-    }
-  }
-
   toResponse() {
     return {
       code: this.code,

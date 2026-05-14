@@ -36,7 +36,8 @@ const toUpdateUserRow = (data: UserUpdateBody): UpdateUserRow => ({
 const findUserByEmail = async ({ email }: UserGetByEmailQuery): Promise<UserResponse> => {
   const user = await userRepo.findUserByEmail(email);
 
-  if (!user || user.isDeleted) throw new UserNotFoundError('No user exists with the provided email');
+  if (!user || user.isDeleted)
+    throw new UserNotFoundError('No user exists with the provided email');
 
   return serializeUser(user);
 };
@@ -44,7 +45,8 @@ const findUserByEmail = async ({ email }: UserGetByEmailQuery): Promise<UserResp
 const findUserById = async ({ id }: UserGetByIdParams): Promise<UserResponse> => {
   const user = await userRepo.findUserById(id);
 
-  if (!user || user.isDeleted) throw new UserNotFoundError('No active user exists with the provided id');
+  if (!user || user.isDeleted)
+    throw new UserNotFoundError('No active user exists with the provided id');
 
   return serializeUser(user);
 };
