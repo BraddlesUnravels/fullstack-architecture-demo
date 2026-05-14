@@ -1,19 +1,19 @@
-import { Boolean, Null, Object, String, Union, Integer, Optional } from '@sinclair/typebox';
+import { t } from 'elysia';
 
-export const auditColumns = Object(
+export const auditColumns = t.Object(
   {
-    createdAt: String({ format: 'date-time' }),
-    createdBy: Union([String({ format: 'uuid' }), Null()]),
+    createdAt: t.String({ format: 'date-time' }),
+    createdBy: t.Union([t.String({ format: 'uuid' }), t.Null()]),
 
-    updatedAt: String({ format: 'date-time' }),
-    updatedBy: Union([String({ format: 'uuid' }), Null()]),
+    updatedAt: t.String({ format: 'date-time' }),
+    updatedBy: t.Union([t.String({ format: 'uuid' }), t.Null()]),
 
-    deletedAt: Union([String({ format: 'date-time' }), Null()]),
-    deletedBy: Union([String({ format: 'uuid' }), Null()]),
+    deletedAt: t.Union([t.String({ format: 'date-time' }), t.Null()]),
+    deletedBy: t.Union([t.String({ format: 'uuid' }), t.Null()]),
 
-    isDeleted: Boolean(),
+    isDeleted: t.Boolean(),
 
-    version: Integer(),
+    version: t.Integer(),
   },
   { additionalProperties: false },
 );

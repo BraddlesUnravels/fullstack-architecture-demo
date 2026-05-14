@@ -1,29 +1,29 @@
-import { Boolean, Null, Object, Optional, String, Union } from '@sinclair/typebox';
+import { t } from 'elysia';
 import { auditColumns } from './audit';
 
-export const credentialSelectSchema = Object(
+export const credentialSelectSchema = t.Object(
   {
-    id: String({ format: 'uuid' }),
-    userId: String({ format: 'uuid' }),
-    hash: String(),
+    id: t.String({ format: 'uuid' }),
+    userId: t.String({ format: 'uuid' }),
+    hash: t.String(),
     ...auditColumns.properties,
   },
   { additionalProperties: false },
 );
 
-export const credentialInsertSchema = Object(
+export const credentialInsertSchema = t.Object(
   {
-    userId: String({ format: 'uuid' }),
-    hash: String(),
+    userId: t.String({ format: 'uuid' }),
+    hash: t.String(),
   },
   { additionalProperties: false },
 );
 
-export const credentialUpdateSchema = Object(
+export const credentialUpdateSchema = t.Object(
   {
-    userId: Optional(String({ format: 'uuid' })),
-    hash: Optional(String()),
-    isDeleted: Optional(Boolean()),
+    userId: t.Optional(t.String({ format: 'uuid' })),
+    hash: t.Optional(t.String()),
+    isDeleted: t.Optional(t.Boolean()),
   },
   { additionalProperties: false },
 );
