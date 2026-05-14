@@ -3,9 +3,10 @@ import { swagger } from '@elysiajs/swagger';
 import { Elysia } from 'elysia';
 import type { ApiEnv } from './config';
 import { apiErrorResponseSchema } from './errors';
-import { errorHandler } from './errors/global-handler';
+import { observabilityPlugin } from './plugins/observability.plugin';
 import { healthRoutes } from './modules/health';
 import { users } from './modules/user';
+import { errorHandlerPlugin } from './plugins/error-handler.plugin';
 
 type CreateAppOptions = {
   corsOrigin: ApiEnv['corsOrigin'];
@@ -13,19 +14,10 @@ type CreateAppOptions = {
 
 export const createApp = ({ corsOrigin }: CreateAppOptions) =>
   new Elysia({ name: 'job-application-tracker-api' })
-    .use(errorHandler)
+    .use(observabilityPlugin)
+    .use(errorHandlerPlugin)
     .use(cors({ origin: corsOrigin }))
-    .use(
-      swagger({
-        path: '/docs',
-        documentation: {
-          info: {
-            title: 'Job Application Tracker API',
-            version: '0.1.0',
-          },
-        },
-      }),
-    )
+    .use(swagger({ path: '/docs' }))
     .use(users)
     .use(healthRoutes)
     .all(
