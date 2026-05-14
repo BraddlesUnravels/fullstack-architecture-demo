@@ -1,40 +1,40 @@
-import { Boolean, Null, Object, Optional, String, Union, Date } from '@sinclair/typebox';
+import { t } from 'elysia';
 import { auditColumns } from './audit';
 
-export const userSelectSchema = Object(
+export const userSelectSchema = t.Object(
   {
-    id: String({ format: 'uuid' }),
-    email: String({ format: 'email' }),
-    firstName: String(),
-    lastName: String(),
-    isLocked: Optional(Boolean({ default: false })),
-    isAdmin: Optional(Boolean({ default: false })),
-    lastLoginAt: Union([String(), Null()]),
+    id: t.String({ format: 'uuid' }),
+    email: t.String({ format: 'email' }),
+    firstName: t.String(),
+    lastName: t.String(),
+    isLocked: t.Optional(t.Boolean({ default: false })),
+    isAdmin: t.Optional(t.Boolean({ default: false })),
+    lastLoginAt: t.Union([t.String({ format: 'date-time' }), t.Null()]),
     ...auditColumns.properties,
   },
   { additionalProperties: false },
 );
 
-export const userInsertSchema = Object(
+export const userInsertSchema = t.Object(
   {
-    email: String({ format: 'email' }),
-    firstName: String(),
-    lastName: String(),
-    isLocked: Optional(Boolean({ default: false })),
-    isAdmin: Optional(Boolean({ default: false })),
-    lastLoginAt: Optional(Union([String({ format: 'date-time' }), Null()])),
+    email: t.String({ format: 'email' }),
+    firstName: t.String(),
+    lastName: t.String(),
+    isLocked: t.Optional(t.Boolean({ default: false })),
+    isAdmin: t.Optional(t.Boolean({ default: false })),
+    lastLoginAt: t.Optional(t.Union([t.String({ format: 'date-time' }), t.Null()])),
   },
   { additionalProperties: false },
 );
 
-export const userUpdateSchema = Object(
+export const userUpdateSchema = t.Object(
   {
-    email: Optional(String({ format: 'email' })),
-    firstName: Optional(String()),
-    lastName: Optional(String()),
-    isLocked: Optional(Boolean({ default: false })),
-    isAdmin: Optional(Boolean({ default: false })),
-    lastLoginAt: Optional(Union([String({ format: 'date-time' }), Null()])),
+    email: t.Optional(t.String({ format: 'email' })),
+    firstName: t.Optional(t.String()),
+    lastName: t.Optional(t.String()),
+    isLocked: t.Optional(t.Boolean({ default: false })),
+    isAdmin: t.Optional(t.Boolean({ default: false })),
+    lastLoginAt: t.Optional(t.Union([t.String({ format: 'date-time' }), t.Null()])),
   },
   { additionalProperties: false },
 );

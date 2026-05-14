@@ -64,8 +64,3 @@ export class ApiError extends Error {
     };
   }
 }
-
-export const apiErrorResponseSchema = t.Object({
-  code: t.String(),
-  message: t.String(),
-});

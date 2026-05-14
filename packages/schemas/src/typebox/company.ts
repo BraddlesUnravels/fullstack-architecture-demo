@@ -1,34 +1,34 @@
-import { Null, Object, Optional, String, Union } from '@sinclair/typebox';
+import { t } from 'elysia';
 import { auditColumns } from './audit';
 
-export const companySelectSchema = Object(
+export const companySelectSchema = t.Object(
   {
-    id: String({ format: 'uuid' }),
-    name: String(),
-    abn: Union([String(), Null()]),
-    website: Union([String(), Null()]),
-    jobDescription: Union([String(), Null()]),
+    id: t.String({ format: 'uuid' }),
+    name: t.String(),
+    abn: t.Union([t.String(), t.Null()]),
+    website: t.Union([t.String(), t.Null()]),
+    jobDescription: t.Union([t.String(), t.Null()]),
     ...auditColumns.properties,
   },
   { additionalProperties: false },
 );
 
-export const companyInsertSchema = Object(
+export const companyInsertSchema = t.Object(
   {
-    name: String(),
-    abn: Optional(Union([String(), Null()])),
-    website: Optional(Union([String(), Null()])),
-    jobDescription: Optional(Union([String(), Null()])),
+    name: t.String(),
+    abn: t.Optional(t.Union([t.String(), t.Null()])),
+    website: t.Optional(t.Union([t.String(), t.Null()])),
+    jobDescription: t.Optional(t.Union([t.String(), t.Null()])),
   },
   { additionalProperties: false },
 );
 
-export const companyUpdateSchema = Object(
+export const companyUpdateSchema = t.Object(
   {
-    name: Optional(String()),
-    abn: Optional(Union([String(), Null()])),
-    website: Optional(Union([String(), Null()])),
-    jobDescription: Optional(Union([String(), Null()])),
+    name: t.Optional(t.String()),
+    abn: t.Optional(t.Union([t.String(), t.Null()])),
+    website: t.Optional(t.Union([t.String(), t.Null()])),
+    jobDescription: t.Optional(t.Union([t.String(), t.Null()])),
   },
   { additionalProperties: false },
 );
