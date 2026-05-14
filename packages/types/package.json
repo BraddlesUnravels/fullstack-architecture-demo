@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@app/schemas": "workspace:*",
-    "@sinclair/typebox": "^0.34.49"
+    "elysia": "^1.4.28"
   },
   "paths": {
     "@app/schemas/*": "../schemas/src/*"

@@ -6,6 +6,7 @@ export * from './user';
 export * from './application';
 export * from './company';
 export * from './credential';
+export * from './session';
 export * from './error-response';
 
 // Best-practice summary:
