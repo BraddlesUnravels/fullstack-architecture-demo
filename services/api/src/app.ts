@@ -4,9 +4,10 @@ import { Elysia } from 'elysia';
 import type { ApiEnv } from './config';
 import { apiErrorResponseSchema } from '@app/schemas/typebox';
 import { observabilityPlugin } from './plugins/observability.plugin';
+import { errorHandlerPlugin } from './plugins/error-handler.plugin';
 import { healthRoutes } from './modules/health';
 import { users } from './modules/user';
-import { errorHandlerPlugin } from './plugins/error-handler.plugin';
+import { auth } from './modules/auth';
 
 type CreateAppOptions = {
   corsOrigin: ApiEnv['corsOrigin'];
@@ -18,6 +19,7 @@ export const createApp = ({ corsOrigin }: CreateAppOptions) =>
     .use(errorHandlerPlugin)
     .use(cors({ origin: corsOrigin }))
     .use(swagger({ path: '/docs' }))
+    .use(auth)
     .use(users)
     .use(healthRoutes)
     .all(

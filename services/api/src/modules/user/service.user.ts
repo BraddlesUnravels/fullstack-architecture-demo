@@ -2,6 +2,7 @@ import { userRepo } from '@app/db';
 import type { InsertUserRow, UserRow, UpdateUserRow } from '@app/db/types';
 import { serializeAuditDates } from '../../utils';
 import {
+  UserCreateFailedError,
   UserDeleteFailedError,
   UserEmailConflictError,
   UserNotFoundError,
@@ -13,9 +14,8 @@ import type {
   UserGetByIdParams,
   UserResponse,
   UserUpdateBody,
+  UserDeleteResponse,
 } from './models.user';
-
-const serializeUser = (user: UserRow): UserResponse => serializeAuditDates(user);
 
 const toDbDate = (value: string | null | undefined): Date | null | undefined => {
   if (value === undefined || value === null) return value;
@@ -39,7 +39,7 @@ const findUserByEmail = async ({ email }: UserGetByEmailQuery): Promise<UserResp
   if (!user || user.isDeleted)
     throw new UserNotFoundError('No user exists with the provided email');
 
-  return serializeUser(user);
+  return serializeAuditDates(user);
 };
 
 const findUserById = async ({ id }: UserGetByIdParams): Promise<UserResponse> => {
@@ -48,7 +48,7 @@ const findUserById = async ({ id }: UserGetByIdParams): Promise<UserResponse> =>
   if (!user || user.isDeleted)
     throw new UserNotFoundError('No active user exists with the provided id');
 
-  return serializeUser(user);
+  return serializeAuditDates(user);
 };
 
 const createUser = async (data: UserCreateBody): Promise<UserResponse> => {
@@ -58,39 +58,25 @@ const createUser = async (data: UserCreateBody): Promise<UserResponse> => {
 
   const newUser = await userRepo.createUser(toInsertUserRow(data));
 
-  return serializeUser(newUser);
+  if (!newUser) throw new UserCreateFailedError();
+
+  return serializeAuditDates(newUser);
 };
 
 const updateUser = async (id: string, data: UserUpdateBody): Promise<UserResponse> => {
-  await findUserById({ id });
+  const updatedUser = await userRepo.updateUser(id, toUpdateUserRow(data));
 
-  try {
-    const updatedUser = await userRepo.updateUser(id, toUpdateUserRow(data));
+  if (!updatedUser) throw new UserUpdateFailedError();
 
-    return serializeUser(updatedUser);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Failed to update user') {
-      throw new UserUpdateFailedError();
-    }
-
-    throw error;
-  }
+  return serializeAuditDates(updatedUser);
 };
 
-const deleteUser = async (id: string): Promise<UserResponse> => {
-  await findUserById({ id });
+const deleteUser = async (id: string): Promise<UserDeleteResponse> => {
+  const { success } = await userRepo.deleteUser(id);
 
-  try {
-    const deletedUser = await userRepo.deleteUser(id);
+  if (!success) throw new UserDeleteFailedError();
 
-    return serializeUser(deletedUser);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Failed to delete user') {
-      throw new UserDeleteFailedError();
-    }
-
-    throw error;
-  }
+  return { success };
 };
 
 export const userService = {

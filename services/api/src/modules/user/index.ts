@@ -1,33 +1,16 @@
 import { Elysia } from 'elysia';
 import { UserModel } from './models.user';
 import { userService } from './service.user';
-const readUserResponse = {
-  200: UserModel.res,
-  404: UserModel.apiError,
-  500: UserModel.apiError,
-} as const;
-
-const createUserResponse = {
-  201: UserModel.res,
-  409: UserModel.apiError,
-  500: UserModel.apiError,
-} as const;
-
-const mutateUserResponse = {
-  200: UserModel.res,
-  404: UserModel.apiError,
-  422: UserModel.apiError,
-  500: UserModel.apiError,
-} as const;
+import { UserResponse } from './response.user';
 
 export const users = new Elysia({ prefix: '/users' })
   .get('/', async ({ query }) => userService.findUserByEmail(query), {
     query: UserModel.getByEmailQuery,
-    response: readUserResponse,
+    response: UserResponse.read,
   })
   .get('/:id', async ({ params }) => userService.findUserById(params), {
     params: UserModel.getByIdParams,
-    response: readUserResponse,
+    response: UserResponse.read,
   })
   .post(
     '/new',
@@ -38,15 +21,23 @@ export const users = new Elysia({ prefix: '/users' })
     },
     {
       body: UserModel.createBody,
-      response: createUserResponse,
+      response: UserResponse.create,
     },
   )
-  .patch('/:id', async ({ params, body }) => userService.updateUser(params.id, body), {
+  .patch('/:id', async ({ params, body }) => await userService.updateUser(params.id, body), {
     params: UserModel.getByIdParams,
     body: UserModel.updateBody,
-    response: mutateUserResponse,
+    response: UserResponse.mutate,
   })
-  .delete('/:id', async ({ params }) => userService.deleteUser(params.id), {
-    params: UserModel.getByIdParams,
-    response: mutateUserResponse,
-  });
+  .delete(
+    '/:id',
+    async ({ params, status }) => {
+      await userService.deleteUser(params.id);
+
+      return status(204, { success: true });
+    },
+    {
+      params: UserModel.getByIdParams,
+      response: UserResponse.delete,
+    },
+  );

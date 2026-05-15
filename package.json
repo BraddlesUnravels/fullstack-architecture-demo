@@ -19,7 +19,7 @@
   "scripts": {
     "dev:ui": "bun run --filter='./apps/*' dev",
     "dev:db:init": "bun run --filter='./packages/db init",
-    "dev:db": "bun run --filter='./packages/* hot:reset",
+    "dev:db": "bun run --filter='./packages/*' hot:reset",
     "dev:api": "bun run --filter='./services/*' dev",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

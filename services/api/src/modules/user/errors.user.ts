@@ -22,6 +22,17 @@ export class UserEmailConflictError extends ApiError {
   }
 }
 
+export class UserCreateFailedError extends ApiError {
+  constructor(message = 'Failed to create user') {
+    super({
+      status: 422,
+      code: 'USER_CREATION_FAILED',
+      message,
+    });
+    this.name = 'UserCreateFailedError';
+  }
+}
+
 export class UserUpdateFailedError extends ApiError {
   constructor(message = 'Failed to update user') {
     super({
