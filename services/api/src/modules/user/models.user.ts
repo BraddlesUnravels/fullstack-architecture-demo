@@ -1,28 +1,17 @@
-import { t, type Static } from 'elysia';
-import { userSelectSchema, userInsertSchema, userUpdateSchema } from '@app/schemas/typebox';
-import { apiErrorResponseSchema } from '@app/schemas';
-
-const getByEmailQuery = t.Object({
-  email: t.String({ format: 'email', error: 'The email address of the user' }),
-});
-
-const getByIdParams = t.Object({
-  id: t.String({ format: 'uuid', error: 'Invalid ID format' }),
-});
+import {
+  userSelectSchema,
+  userInsertSchema,
+  userUpdateSchema,
+  getByEmail,
+  getById,
+  deleteSchema,
+} from '@app/schemas/typebox';
 
 export const UserModel = {
-  getByEmailQuery,
-  getByIdParams,
-  createBody: userInsertSchema,
-  updateBody: userUpdateSchema,
-  res: userSelectSchema,
-  deleteRes: t.Object({ success: t.Boolean() }),
-  apiError: apiErrorResponseSchema,
+  getByEmail,
+  getById,
+  create: userInsertSchema,
+  update: userUpdateSchema,
+  select: userSelectSchema,
+  delete: deleteSchema,
 } as const;
-
-export type UserGetByEmailQuery = Static<typeof getByEmailQuery>;
-export type UserGetByIdParams = Static<typeof getByIdParams>;
-export type UserCreateBody = Static<typeof userInsertSchema>;
-export type UserUpdateBody = Static<typeof userUpdateSchema>;
-export type UserResponse = Static<typeof userSelectSchema>;
-export type UserDeleteResponse = Static<typeof UserModel.deleteRes>;

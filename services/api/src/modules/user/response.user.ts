@@ -1,28 +1,29 @@
 import { UserModel } from './models.user';
+import { apiErrorResponseSchema } from '@app/schemas';
 
 const readUserResponse = {
-  200: UserModel.res,
-  404: UserModel.apiError,
-  500: UserModel.apiError,
+  200: UserModel.select,
+  404: apiErrorResponseSchema,
+  500: apiErrorResponseSchema,
 } as const;
 
 const createUserResponse = {
-  201: UserModel.res,
-  409: UserModel.apiError,
-  500: UserModel.apiError,
+  201: UserModel.select,
+  409: apiErrorResponseSchema,
+  500: apiErrorResponseSchema,
 } as const;
 
 const mutateUserResponse = {
-  200: UserModel.res,
-  404: UserModel.apiError,
-  422: UserModel.apiError,
-  500: UserModel.apiError,
+  200: UserModel.select,
+  404: apiErrorResponseSchema,
+  422: apiErrorResponseSchema,
+  500: apiErrorResponseSchema,
 } as const;
 
 const deleteUserResponse = {
-  204: UserModel.deleteRes,
-  404: UserModel.apiError,
-  500: UserModel.apiError,
+  204: UserModel.delete,
+  404: apiErrorResponseSchema,
+  500: apiErrorResponseSchema,
 } as const;
 
 export const UserResponse = {

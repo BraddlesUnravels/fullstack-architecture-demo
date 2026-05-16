@@ -1,5 +1,4 @@
-import { Object, Static, TSchema, String, Boolean, Union, Null } from '@sinclair/typebox';
-import { TypeCompiler } from '@sinclair/typebox/compiler';
+import { t } from 'elysia';
 
 export * from './audit';
 export * from './user';
@@ -8,6 +7,7 @@ export * from './company';
 export * from './credential';
 export * from './session';
 export * from './error-response';
+export * from './auth';
 
 // Best-practice summary:
 // Schema first
@@ -24,13 +24,15 @@ export * from './error-response';
 // Check = validate only
 // Parse = validate plus construct/clean/default/decode depending on schema
 
-export const createValidator = <T extends TSchema>(schema: T) => {
-  const validator = TypeCompiler.Compile(schema);
+// reusable schema components
+export const getByEmail = t.Object({
+  email: t.String({ format: 'email', error: 'The email address of the user' }),
+});
 
-  return function validate(input: unknown): Static<T> {
-    if (!validator.Check(input)) {
-      throw new Error(`Validation failed: ${JSON.stringify(validator.Errors(input))}`);
-    }
-    return input as Static<T>;
-  };
-};
+export const getById = t.Object({
+  id: t.String({ format: 'uuid', error: 'Invalid ID format' }),
+});
+
+export const deleteSchema = t.Object({
+  success: t.Boolean(),
+});
