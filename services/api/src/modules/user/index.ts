@@ -5,11 +5,11 @@ import { UserResponse } from './response.user';
 
 export const users = new Elysia({ prefix: '/users' })
   .get('/', async ({ query }) => userService.findUserByEmail(query), {
-    query: UserModel.getByEmailQuery,
+    query: UserModel.getByEmail,
     response: UserResponse.read,
   })
   .get('/:id', async ({ params }) => userService.findUserById(params), {
-    params: UserModel.getByIdParams,
+    params: UserModel.getById,
     response: UserResponse.read,
   })
   .post(
@@ -20,13 +20,13 @@ export const users = new Elysia({ prefix: '/users' })
       return status(201, createdUser);
     },
     {
-      body: UserModel.createBody,
+      body: UserModel.create,
       response: UserResponse.create,
     },
   )
   .patch('/:id', async ({ params, body }) => await userService.updateUser(params.id, body), {
-    params: UserModel.getByIdParams,
-    body: UserModel.updateBody,
+    params: UserModel.getById,
+    body: UserModel.update,
     response: UserResponse.mutate,
   })
   .delete(
@@ -37,7 +37,7 @@ export const users = new Elysia({ prefix: '/users' })
       return status(204, { success: true });
     },
     {
-      params: UserModel.getByIdParams,
+      params: UserModel.getById,
       response: UserResponse.delete,
     },
   );

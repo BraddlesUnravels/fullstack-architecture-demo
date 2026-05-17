@@ -1,5 +1,5 @@
 import { createApp } from './app';
-import { apiEnv } from './config';
+import { apiEnv } from './constants';
 
 const app = createApp({ corsOrigin: apiEnv.corsOrigin });
 
