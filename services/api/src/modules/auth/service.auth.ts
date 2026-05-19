@@ -1,6 +1,6 @@
 import { authRepo, userRepo, credentialRepo } from '@app/db';
 import { UserNotFoundError } from '../user/errors.user';
-import { securityService } from '../../services/auth/security.service';
+import { securityService, emailService } from '../../services';
 import {
   InvalidCredentialsError,
   NoCredentialsSetError,
@@ -8,6 +8,7 @@ import {
   EmailConflictError,
   EmailConfirmationMismatchError,
   SessionCreateFailedError,
+  UserCreationFailedError,
 } from './errors.auth';
 import { serializeAuditDates, toDbDate, dateAddition } from '../../utils';
 import { API_CONSTANTS } from '../../constants';
@@ -63,12 +64,17 @@ const logout = async (sessionId: string): Promise<LoggedOut> => {
 const register = async ({ email, confirmEmail }: Register): Promise<Registration> => {
   if (email !== confirmEmail) throw new EmailConfirmationMismatchError();
 
-  const existingUser = await userRepo.findUserByEmail(email);
+  const [existingUser] = await userRepo.findUserByEmail(email);
 
   if (existingUser) throw new EmailConflictError();
 
-  // Continue with user registration logic
-  // jwt token generation, sending confirmation email, etc.
+  const [user] = await userRepo.createUser({ email, firstName: '', lastName: '' });
+
+  if (!user) throw new UserCreationFailedError();
+
+  const jwtUrl = securityService.genJwtUrl(user.id);
+
+  await emailService.sendAccountCreated(email, user.id, jwtUrl);
 
   return {
     email,
