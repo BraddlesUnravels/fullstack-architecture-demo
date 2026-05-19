@@ -5,5 +5,7 @@ export const API_CONSTANTS = {
     EMAIL_MAX_LENGTH: 500,
   },
   jwt: {},
-  email: {},
+  email: {
+    EMAIL_USER: 'stackchatr@gmail.com',
+  },
 } as const;

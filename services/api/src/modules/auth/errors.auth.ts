@@ -65,3 +65,26 @@ export class EmailConfirmationMismatchError extends ApiError {
     this.name = 'EmailConfirmationMismatchError';
   }
 }
+
+export class JwtVerificationError extends ApiError {
+  constructor(message = 'Invalid jwt token', cause?: unknown) {
+    super({
+      status: 401,
+      code: 'JWT_VERIFICATION_FAILED',
+      message,
+      cause,
+    });
+    this.name = 'JwtVerificationError';
+  }
+}
+
+export class UserCreationFailedError extends ApiError {
+  constructor(message = 'Failed to create user') {
+    super({
+      status: 500,
+      code: 'AUTH_USER_CREATION_FAILED',
+      message,
+    });
+    this.name = 'UserCreationFailedError';
+  }
+}
