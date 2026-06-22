@@ -1,5 +1,5 @@
 import type { Static } from 'elysia';
-import {
+import type {
   credentialSelectSchema,
   credentialInsertSchema,
   credentialUpdateSchema,

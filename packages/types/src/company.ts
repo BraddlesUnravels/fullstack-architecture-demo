@@ -1,5 +1,5 @@
 import type { Static } from 'elysia';
-import {
+import type {
   companySelectSchema,
   companyInsertSchema,
   companyUpdateSchema,

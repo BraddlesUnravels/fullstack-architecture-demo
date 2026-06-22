@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import { appDb } from '../../src';
 import { credential } from '../schema';
-import { CredentialRow, InsertCredentialRow, UpdateCredentialRow } from '../types';
+import type { CredentialRow, InsertCredentialRow, UpdateCredentialRow } from '../types';
 
 export async function findCredentialByUserId(
   id: CredentialRow['userId'],

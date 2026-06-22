@@ -1,5 +1,5 @@
-import { Static } from 'elysia';
-import { apiErrorResponseSchema } from '@app/schemas';
+import type { Static } from 'elysia';
+import type { apiErrorResponseSchema } from '@app/schemas';
 
 export * from './app';
 

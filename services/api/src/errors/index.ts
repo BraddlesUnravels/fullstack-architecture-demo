@@ -1,4 +1,5 @@
 import { ErrorDefaults } from './defaults';
+import type { ApiErrorCode } from './api-error-code';
 
 /**
  * AppError is a custom error class that extends the built-in Error class.
@@ -12,16 +13,6 @@ import { ErrorDefaults } from './defaults';
  * * 500 Internal Server Error: An unexpected condition was encountered on the server.
  */
 export type ApiErrorStatus = 400 | 401 | 403 | 404 | 409 | 422 | 500;
-
-export type ApiErrorCode =
-  | 'BAD_REQUEST'
-  | 'UNAUTHORIZED'
-  | 'FORBIDDEN'
-  | 'NOT_FOUND'
-  | 'CONFLICT'
-  | 'UNPROCESSABLE_ENTITY'
-  | 'INTERNAL_SERVER_ERROR'
-  | string;
 
 export type ApiErrorDefaults = Record<
   ApiErrorStatus,

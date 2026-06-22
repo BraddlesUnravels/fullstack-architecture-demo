@@ -1,4 +1,4 @@
-import { ApiErrorCodes } from '../errors';
+import type { ApiErrorCodes } from '../errors';
 
 export const ErrorDefaults = {
   400: {

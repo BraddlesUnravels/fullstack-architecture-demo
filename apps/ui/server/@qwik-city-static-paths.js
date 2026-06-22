@@ -1,13 +1,13 @@
-const staticPaths = new Set(["/q-manifest.json"]);
+const staticPaths = new Set(['/q-manifest.json']);
 function isStaticPath(method, url) {
   if (method.toUpperCase() !== 'GET') {
     return false;
   }
   const p = url.pathname;
-  if (p.startsWith("/build/")) {
+  if (p.startsWith('/build/')) {
     return true;
   }
-  if (p.startsWith("/assets/")) {
+  if (p.startsWith('/assets/')) {
     return true;
   }
   if (staticPaths.has(p)) {

@@ -67,7 +67,7 @@ export const session = pgTable(
   }),
   (t) => [
     index('idx_sessions_user_id').on(t.userId),
-    index('idx_sessions_ip_address').on(t.ipAddress)
+    index('idx_sessions_ip_address').on(t.ipAddress),
   ],
 );
 

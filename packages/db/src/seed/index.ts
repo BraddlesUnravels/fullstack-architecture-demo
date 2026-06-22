@@ -44,8 +44,9 @@ async function seed() {
   await pool.end();
 }
 
-seed().catch((err) => {
-  console.error('❌', err);
-  pool.end();
-  process.exit(1);
-});
+await seed()
+  .then(() => console.log('🎉 Seeding completed successfully!'))
+  .catch((error) => {
+    console.error('❌ Seeding failed:', error);
+    process.exit(1);
+  });

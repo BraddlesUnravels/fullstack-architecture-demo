@@ -12,7 +12,6 @@ export const login = t.Object({
     error: 'The password must be at least 8 characters long',
     maxLength: 500,
   }),
-  req: t.Optional(t.Any()),
 });
 
 export const register = t.Object({

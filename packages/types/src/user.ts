@@ -1,5 +1,5 @@
 import type { Static } from 'elysia';
-import { userSelectSchema, userInsertSchema, userUpdateSchema } from '@app/schemas/typebox';
+import type { userSelectSchema, userInsertSchema, userUpdateSchema } from '@app/schemas/typebox';
 
 export type UserSelect = Static<typeof userSelectSchema>;
 export type UserInsert = Static<typeof userInsertSchema>;

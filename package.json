@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package",
   "name": "job-application-tracker",
   "version": "0.1.0",
   "devDependencies": {
@@ -13,16 +14,23 @@
     "typescript": "^6.0.3"
   },
   "lint-staged": {
-    "*.{js,css,md,ts,tailwindcss,tsx}": "prettier --write"
+    "*.{js,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix --max-warnings=0"
+    ],
+    "*.{md,css,tailwindcss,json,yml,yaml}": "prettier --write"
   },
   "private": false,
   "scripts": {
-    "dev:ui": "bun run --filter='./apps/*' dev",
-    "dev:db:init": "bun run --filter='./packages/db init",
-    "dev:db": "bun run --filter='./packages/*' hot:reset",
-    "dev:api": "bun run --filter='./services/*' dev",
+    "dev:ui": "bun run --filter '@app/ui' dev",
+    "dev:db:init": "bun run --filter '@app/db' init",
+    "dev:db": "bun run --filter '@app/db' hot:reset",
+    "dev:api": "bun run --filter '@app/api' dev",
+    "typecheck": "bun run --filter '@app/*' typecheck",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "bun run --filter '@app/*' lint",
+    "prepare": "husky"
   },
   "type": "module",
   "workspaces": [
