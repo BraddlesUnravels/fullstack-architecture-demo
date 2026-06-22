@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { appDb } from '../../src';
 import { user } from '../schema';
 import type { InsertUserRow, UpdateUserRow, UserRow } from '../types';
-import { DeleteResponse } from '@app/types';
+import type { DeleteResponse } from '@app/types';
 
 export const findUserById = async (id: UserRow['id']): Promise<UserRow[]> => {
   const row = await appDb.select().from(user).where(eq(user.id, id)).limit(1);

@@ -1,8 +1,8 @@
 import { and, eq } from 'drizzle-orm';
 import { appDb } from '../../src';
 import { application } from '../schema';
-import { ApplicationRow, InsertApplicationRow, UpdateApplicationRow } from '../types';
-import { DeleteResponse } from '@app/types';
+import type { ApplicationRow, InsertApplicationRow, UpdateApplicationRow } from '../types';
+import type { DeleteResponse } from '@app/types';
 
 export async function findApplicationById(id: ApplicationRow['id']): Promise<ApplicationRow[]> {
   const row = await appDb.select().from(application).where(eq(application.id, id)).limit(1);

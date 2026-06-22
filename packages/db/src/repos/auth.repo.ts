@@ -1,8 +1,8 @@
 import { and, eq } from 'drizzle-orm';
 import { appDb } from '../../src';
 import { session } from '../schema';
-import { SessionRow, InsertSessionRow, UpdateSessionRow } from '../types';
-import { DeleteResponse } from '@app/types/index';
+import type { SessionRow, InsertSessionRow, UpdateSessionRow } from '../types';
+import type { DeleteResponse } from '@app/types/index';
 
 export const findSessionById = async (id: SessionRow['id']): Promise<SessionRow[]> => {
   const rows = await appDb.select().from(session).where(eq(session.id, id)).limit(1);

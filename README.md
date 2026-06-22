@@ -1,17 +1,46 @@
-# Job Application Tracker
-A Bun + TypeScript monorepo for tracking job applications, with:
-- A Qwik frontend (`apps/ui`)
-- An Elysia API (`services/api`)
-- Shared schema/type/constants packages (`packages/*`)
-- A Drizzle + Postgres data layer (`packages/db`)
+# Job Application Tracker — Full-Stack Architecture Demo
 
-This README reflects the repository as it exists today, including current gaps and rough edges.
+This repository is a focused technical demo, not a complete SaaS product.
+
+It is intentionally scoped to demonstrate production-style full-stack patterns, including authentication flows, API boundaries, relational modelling, seed workflows, and shared contracts, while keeping the implementation original, focused, and easy to inspect.
+
+## Current status
+
+Completed and reviewable today:
+
+- Monorepo structure with shared contracts and package boundaries.
+- PostgreSQL + Drizzle schema, repositories, migrations, and seed data.
+- API service with centralized error handling, structured logging, CORS, and Swagger docs.
+- Auth routes (`register`, `login`, `logout`) and user CRUD routes.
+
+In progress by design:
+
+- Protected applications API slice (planned next).
+- CI and automated test depth beyond current baseline.
+- Frontend completeness (UI remains minimal and non-goal for this stage).
+
+## Why this exists
+
+Most of my recent work has been in proprietary repositories. This project provides a public, inspectable sample of how I structure a full-stack TypeScript system with API-first architecture and clear service boundaries.
+
+## What to review first
+
+For a quick technical review:
+
+- API composition and boundaries: `services/api/src/app.ts`
+- Auth module: `services/api/src/modules/auth/*`
+- User module: `services/api/src/modules/user/*`
+- Error + observability plugins: `services/api/src/plugins/*`
+- Database schema + repositories: `packages/db/src/schema.ts`, `packages/db/src/repos/*`
+- Seed workflow: `packages/db/src/seed/*`
+- Shared runtime contracts: `packages/schemas/src/typebox/*`
 
 ## Monorepo layout
+
 ```text
 .
 ├── apps/
-│   └── ui/                # Qwik + Vite frontend
+│   └── ui/                # Qwik + Vite frontend (minimal scaffold)
 ├── services/
 │   └── api/               # Elysia API service
 ├── packages/
@@ -19,32 +48,73 @@ This README reflects the repository as it exists today, including current gaps a
 │   ├── schemas/           # Runtime validation schemas (TypeBox)
 │   ├── types/             # TS types derived from shared schemas
 │   ├── constants/         # Shared domain constants (JobStatus)
-│   └── utils/             # Shared utilities (currently minimal)
-├── docker/
-│   ├── docker-compose-db.dev.yml
-│   └── scripts/db-setup.sql
-└── package.json           # Workspace scripts
+│   └── utils/             # Shared utilities
+└── docker/
+    └── docker-compose-db.dev.yml
 ```
 
 ## Tech stack
+
 - Runtime/tooling: Bun, TypeScript
-- Frontend: Qwik + Qwik City + Vite
-- API: Elysia + Swagger + CORS
-- Database: PostgreSQL + Drizzle ORM + drizzle-kit
-- Logging: pino (+ pino-pretty in development)
+- API: Elysia, Swagger, CORS
+- Database: PostgreSQL, Drizzle ORM, drizzle-kit
 - Auth/security primitives: argon2, jsonwebtoken
-- Email transport: nodemailer (Gmail service)
+- Logging/observability: pino
+- Frontend: Qwik + Qwik City + Vite
 
-## Current implementation status
-- API is the most complete part of the system.
-- Frontend is scaffolded and currently minimal.
-- Shared schema/type packages are in place and consumed by API/UI.
-- Database schema, repositories, migrations, and seeding are implemented.
-- Auth flows exist (`register`, `login`, `logout`) and include email integration.
+## Prerequisites
 
-## Features currently available
-### API routes
+- Bun
+- Docker
+
+## Quick start (API-focused path)
+
+1. Install dependencies:
+
+```bash
+bun install
+```
+
+2. Create local environment file:
+
+```bash
+cp .env.example .env
+```
+
+3. Start local Postgres:
+
+```bash
+bun run --filter '@app/db' infra:up
+```
+
+4. Apply migrations and seed development data:
+
+```bash
+bun run --filter '@app/db' db:migrate
+bun run --filter '@app/db' db:seed
+```
+
+5. Start the API:
+
+```bash
+bun run dev:api
+```
+
+6. Open docs and health endpoints:
+
+- `http://localhost:3000/docs`
+- `http://localhost:3000/health`
+
+Optional UI run:
+
+```bash
+bun run dev:ui
+```
+
+## API routes currently available
+
 Mounted in `services/api/src/app.ts`:
+
 - `GET /health/`
 - `GET /users?email=<email>`
 - `GET /users/:id`
@@ -54,169 +124,72 @@ Mounted in `services/api/src/app.ts`:
 - `POST /auth/register`
 - `POST /auth/login`
 - `GET /auth/logout/:id`
-- Swagger docs at `GET /docs`
+- `GET /docs`
 
-### Database domain model
+## Database model currently available
+
 Defined in `packages/db/src/schema.ts`:
+
 - `user`
 - `credential`
 - `session`
 - `company`
 - `application`
 
-Shared audit columns are applied across tables (`createdAt`, `updatedAt`, soft-delete fields, and optimistic `version`).
+Shared audit columns include timestamps, soft-delete metadata, and optimistic versioning.
 
-### Frontend status
-Current UI route (`apps/ui/src/routes/index.tsx`) loads and renders a user record via Eden client.
+## Environment variables
 
-`apps/ui/src/lib/home-loader.ts` currently calls a hard-coded user id:
-- `2ce7a38e-e947-482a-baa6-31b214f7834a`
+Use `.env.example` as baseline. Important values:
 
-## Prerequisites
-- Bun (current repo scripts assume Bun workspace execution)
-- Docker (for local Postgres)
+- `DATABASE_URL`: required for DB package and API data access.
+- `API_URL` and `JWT_SECRET`: required by auth token link generation.
+- `EMAIL_PASSWORD`: required for current Gmail-backed email transport.
+- `API_HOST`, `PORT`, `CORS_ORIGIN`, `LOG_LEVEL`: API runtime behavior.
 
-## Quick start
-1. Install dependencies:
+## Useful development commands
+
+Run from repository root:
+
 ```bash
-bun install
-```
-
-2. Create environment file (root):
-```bash
-cp .env.example .env
-```
-
-3. Update `.env` for local Docker defaults and auth/email:
-```env
-# Required for DB + API
-DATABASE_URL=postgresql://admin:password@localhost:5432/app_db
-
-# Required for auth token links
-API_URL=http://localhost:3000
-JWT_SECRET=replace-with-a-long-random-secret
-
-# Required for Gmail transport used by email service
-EMAIL_PASSWORD=replace-with-app-password
-
-# Optional API runtime config
-API_HOST=localhost
-PORT=3000
-CORS_ORIGIN=http://localhost:5173
-LOG_LEVEL=info
-```
-
-Notes:
-- `.env.example` currently includes only `DATABASE_URL`.
-- If you use `docker/docker-compose-db.dev.yml` defaults, `admin/password/app_db` is the correct local connection tuple.
-
-4. Start database (destructive reset + migrate + seed):
-```bash
+bun run dev:api
+bun run dev:ui
 bun run dev:db
 ```
 
-5. Start API:
+Database-focused commands:
+
 ```bash
-bun run dev:api
+bun run --filter '@app/db' infra:up
+bun run --filter '@app/db' infra:down
+bun run --filter '@app/db' infra:reset
+bun run --filter '@app/db' db:migrate
+bun run --filter '@app/db' db:seed
+bun run --filter '@app/db' db:studio
 ```
 
-6. Start UI (in another terminal):
-```bash
-bun run dev:ui
-```
+Quality checks:
 
-Default local URLs:
-- API: `http://localhost:3000`
-- API docs: `http://localhost:3000/docs`
-- UI: Vite default port (typically `http://localhost:5173`)
-
-## Database workflows
-Run from repo root:
-
-Start/stop/reset local Postgres:
-```bash
-bun run --filter @app/db infra:up
-bun run --filter @app/db infra:down
-bun run --filter @app/db infra:reset
-```
-
-Schema and migration workflows:
-```bash
-bun run --filter @app/db db:generate
-bun run --filter @app/db db:migrate
-bun run --filter @app/db db:studio
-```
-
-Seed:
-```bash
-bun run --filter @app/db db:seed
-```
-
-## Development commands
-### Root
 ```bash
 bun run format
 bun run format:check
-bun run dev:ui
-bun run dev:api
-bun run dev:db
+bun run --filter '@app/*' lint
+bun run --filter '@app/*' typecheck
 ```
 
-### Lint and typecheck by workspace
-```bash
-bun run --filter @app/* lint
-bun run --filter @app/* typecheck
-```
+## Testing and CI status
 
-### API build
-```bash
-bun run --filter @app/api build
-```
+- API test command currently references Vitest, but Vitest is not yet installed in `services/api`.
+- Existing CI workflow currently runs dependency review only.
+- Expanding automated tests and CI gates is part of the planned production-pattern slice.
 
-## Testing status
-Current test commands are partially configured:
+## Roadmap (intentional next scope)
 
-- API:
-```bash
-bun run --filter @app/api test
-```
-At the moment this fails because `vitest` is referenced in scripts but not available in the API workspace dependencies.
-
-- UI:
-```bash
-bun run --filter @app/ui test
-```
-Currently errors in the SSR test runner path under this setup.
-
-- DB connectivity check:
-```bash
-bun run --filter @app/db db:test
-```
-Requires Postgres running and a valid `DATABASE_URL`.
-
-## API architecture notes
-- `services/api/src/index.ts` boots the server with env-driven host/port.
-- `services/api/src/app.ts` wires plugins (observability, error handling, CORS, Swagger) and mounts modules.
-- Route modules follow `models + service + response` split (e.g. `services/api/src/modules/user/*`).
-- Error handling is centralized in `services/api/src/plugins/error-handler.plugin.ts`.
-- Request logging and per-request correlation are in `services/api/src/plugins/observability.plugin.ts`.
-
-## Shared contract architecture
-- `@app/schemas` exports TypeBox runtime schemas.
-- `@app/types` derives TS types from those schemas.
-- `@app/db` exports schema and repository functions.
-- `@app/constants` centralizes domain constants (for example `JobStatus`).
-
-## Known gaps / in-progress areas
-- Frontend is still a minimal scaffold and not feature-complete.
-- API currently exposes user/auth/health routes only; company/application endpoints are not yet wired as route modules.
-- `.env.example` is minimal and does not yet document all auth/email variables.
-- Some workspace scripts and tooling are still being normalized.
-
-## Contributing
-- Formatting is enforced via Prettier.
-- A pre-commit hook runs `lint-staged` (`.husky/pre-commit`).
-- Keep changes consistent with shared schema/type package contracts to avoid drift between API/UI/DB.
+- Add one protected vertical slice for applications (`login/register -> protected CRUD flow`).
+- Add focused API tests for auth + protected resource flow.
+- Add CI checks for lint, typecheck, and tests.
+- Keep UI intentionally lightweight for this demo phase.
 
 ## License
-This project is licensed under the terms in `LICENSE`.
+
+This project is licensed under `LICENSE`.

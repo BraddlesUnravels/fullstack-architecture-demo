@@ -1,8 +1,8 @@
 import { and, eq } from 'drizzle-orm';
 import { appDb } from '../../src';
 import { company } from '../schema';
-import { CompanyRow, InsertCompanyRow, UpdateCompanyRow } from '../types';
-import { DeleteResponse } from '@app/types';
+import type { CompanyRow, InsertCompanyRow, UpdateCompanyRow } from '../types';
+import type { DeleteResponse } from '@app/types';
 
 export async function findCompanyById(id: CompanyRow['id']): Promise<CompanyRow[]> {
   const rows = await appDb.select().from(company).where(eq(company.id, id)).limit(1);

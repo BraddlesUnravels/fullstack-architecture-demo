@@ -10,20 +10,21 @@ import {
   SessionCreateFailedError,
   UserCreationFailedError,
 } from './errors.auth';
-import { serializeAuditDates, toDbDate, dateAddition } from '../../utils';
+import { serializeAuditDates, dateAddition } from '../../utils';
 import { API_CONSTANTS } from '../../constants';
-import type { Register, Registration, Login, LoggedIn, Logout, LoggedOut } from '@app/types';
+import type { Register, Registration, LoginInput, LoggedIn, LoggedOut } from '@app/types';
 
 const SESSION_TIMEOUT = API_CONSTANTS.security.SESSION_TIMEOUT; // 48 hours in mins
 
-function extractRequestDetails(req: Request): { ip?: string; userAgent?: string } {
+function extractRequestDetails(req?: Request): { ip?: string; userAgent?: string } {
+  if (!req) return {};
   return {
     ip: req.headers.get('x-forwarded-for') || req.headers.get('remote-addr') || undefined,
     userAgent: req.headers.get('user-agent') || undefined,
   };
 }
 
-const login = async ({ email, password, req }: Login): Promise<LoggedIn> => {
+const login = async ({ email, password, req }: LoginInput): Promise<LoggedIn> => {
   const [user] = await userRepo.findUserByEmail(email);
 
   if (!user) throw new UserNotFoundError('No user exists with the provided email');
@@ -50,7 +51,7 @@ const login = async ({ email, password, req }: Login): Promise<LoggedIn> => {
     user: serializeAuditDates(user),
   };
 };
-``;
+
 const logout = async (sessionId: string): Promise<LoggedOut> => {
   const session = await authRepo.findSessionById(sessionId);
 

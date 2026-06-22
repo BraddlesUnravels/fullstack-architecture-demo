@@ -1,4 +1,4 @@
-const confirmEmail = (tokenUrl: string) => ({
+const confirmEmail = (name: string, tokenUrl: string): { subject: string; html: string } => ({
   subject: 'Confirm your StackChatr account',
   html: `
       <!DOCTYPE html>
@@ -40,7 +40,7 @@ const confirmEmail = (tokenUrl: string) => ({
     `,
 });
 
-const accCreated = (name: string, appLink: string) => ({
+const accCreated = (name: string, appLink: string): { subject: string; html: string } => ({
   subject: 'Your StackChatr account has been created',
   html: `
       <!DOCTYPE html>
@@ -84,7 +84,11 @@ const accCreated = (name: string, appLink: string) => ({
     `,
 });
 
-const resetPassword = (name: string, tokenUrl: string, expiry: string) => ({
+const resetPassword = (
+  name: string,
+  tokenUrl: string,
+  expiry: string,
+): { subject: string; html: string } => ({
   subject: 'Reset your StackChatr password',
   html: `
     <!DOCTYPE html>
