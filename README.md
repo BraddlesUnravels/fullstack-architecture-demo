@@ -81,15 +81,16 @@ bun install
 cp .env.example .env
 ```
 
-3. Start local Postgres:
+3. Bootstrap local database (starts Postgres, applies migrations, and seeds development data):
+
+```bash
+bun run dev:db:init
+```
+
+4. If you want manual DB control instead, run:
 
 ```bash
 bun run --filter '@app/db' infra:up
-```
-
-4. Apply migrations and seed development data:
-
-```bash
 bun run --filter '@app/db' db:migrate
 bun run --filter '@app/db' db:seed
 ```
@@ -146,6 +147,9 @@ Use `.env.example` as baseline. Important values:
 - `API_URL` and `JWT_SECRET`: required by auth token link generation.
 - `EMAIL_PASSWORD`: required for current Gmail-backed email transport.
 - `API_HOST`, `PORT`, `CORS_ORIGIN`, `LOG_LEVEL`: API runtime behavior.
+- All workspaces load environment variables from the repository root `.env` file.
+- Workspace scripts in `apps/ui`, `services/api`, and `packages/db` load `../../.env` via `bun --env-file`.
+- Avoid creating workspace-level `.env` files under `apps/`, `services/`, or `packages/`.
 
 ## Useful development commands
 
@@ -154,8 +158,11 @@ Run from repository root:
 ```bash
 bun run dev:api
 bun run dev:ui
+bun run dev:db:init
 bun run dev:db
 ```
+
+`bun run dev:db` performs a local DB reset (`infra:reset`), then migrates and reseeds. Use it when you explicitly want a clean local DB state.
 
 Database-focused commands:
 
@@ -180,6 +187,7 @@ bun run --filter '@app/*' typecheck
 ## Testing and CI status
 
 - API test command currently references Vitest, but Vitest is not yet installed in `services/api`.
+- UI workspace has Vitest configured, but there are currently no UI test files.
 - Existing CI workflow currently runs dependency review only.
 - Expanding automated tests and CI gates is part of the planned production-pattern slice.
 

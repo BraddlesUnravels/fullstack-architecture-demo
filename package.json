@@ -22,6 +22,7 @@
   },
   "private": false,
   "scripts": {
+    "init": "bun i && bun run dev:db:init && bun run dev:api && bun run dev:ui",
     "dev:ui": "bun run --filter '@app/ui' dev",
     "dev:db:init": "bun run --filter '@app/db' init",
     "dev:db": "bun run --filter '@app/db' hot:reset",
