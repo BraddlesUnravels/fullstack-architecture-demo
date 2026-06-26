@@ -25,9 +25,7 @@ const findUserApplicationByUserId = async (
   userId: ApplicationRow['userId'],
   id: ApplicationRow['id'],
 ): Promise<ApplicationSelect> => {
-  const applications = await applicationRepo.findApplicationByUserId(userId);
-
-  const application = applications.find((app) => app.id === id);
+  const [application] = await applicationRepo.findApplicationById(id);
 
   if (!application || application.isDeleted || application.userId !== userId)
     throw new ApplicationNotFoundError(
@@ -82,7 +80,7 @@ const deleteApplicationForUser = async (
   userId: ApplicationRow['userId'],
   id: ApplicationRow['id'],
 ): Promise<DeleteResponse> => {
-  const [application] = await applicationRepo.findApplicationByUserId(id);
+  const [application] = await applicationRepo.findApplicationById(id);
 
   if (!application || application.isDeleted || application.userId !== userId)
     throw new ApplicationDeleteFailedError(

@@ -20,5 +20,8 @@
     "@app/types/*": "../types/src/*",
     "@app/schemas/*": "../schemas/src/*",
     "@app/db/*": "../db/src/*"
+  },
+  "devDependencies": {
+    "argon2": "^0.44.0"
   }
 }

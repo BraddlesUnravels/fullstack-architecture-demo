@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bun --env-file=../../.env vite --mode ssr",
+    "down": "bunx kill-port 5173",
     "build": "bun --env-file=../../.env qwik build",
     "build.client": "bun --env-file=../../.env vite build",
     "build.preview": "bun --env-file=../../.env vite build --mode ssr",

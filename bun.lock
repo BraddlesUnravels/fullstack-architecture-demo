@@ -84,6 +84,9 @@
         "@app/schemas": "workspace:*",
         "@app/types": "workspace:*",
       },
+      "devDependencies": {
+        "argon2": "^0.44.0",
+      },
     },
     "services/api": {
       "name": "@app/api",

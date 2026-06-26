@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bun --env-file=../../.env run --watch src/index.ts",
+    "down": "bun --env-file=../../.env run src/scripts/down.ts",
     "build": "tsc --noEmit",
     "start": "bun --env-file=../../.env run src/index.ts",
     "test": "bun --env-file=../../.env vitest run",
