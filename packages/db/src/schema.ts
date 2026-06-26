@@ -87,6 +87,7 @@ export const application = pgTable(
     status: t
       .text('status', {
         enum: [
+          JobStatus.ENTERED,
           JobStatus.APPLIED,
           JobStatus.INTERVIEW,
           JobStatus.OFFER,

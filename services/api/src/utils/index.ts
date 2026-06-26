@@ -5,12 +5,19 @@ export type WithAuditDates<T> = T & {
   deletedAt: Date | null;
 };
 
-export const serializeAuditDates = <T>(input: WithAuditDates<T>) => ({
+export type SerializedAuditDates<T> = T & {
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt?: string;
+  deletedAt?: string;
+};
+
+export const serializeAuditDates = <T>(input: WithAuditDates<T>): SerializedAuditDates<T> => ({
   ...input,
   createdAt: input.createdAt.toISOString(),
   updatedAt: input.updatedAt.toISOString(),
-  lastLoginAt: input.lastLoginAt?.toISOString() ?? null,
-  deletedAt: input.deletedAt?.toISOString() ?? null,
+  lastLoginAt: input.lastLoginAt?.toISOString(),
+  deletedAt: input.deletedAt?.toISOString(),
 });
 
 export const toDbDate = (value: string | null | undefined): Date | null | undefined => {

@@ -7,6 +7,7 @@ export type UpdateUserRow = Partial<InsertUserRow>;
 export type CredentialRow = typeof credential.$inferSelect;
 export type InsertCredentialRow = typeof credential.$inferInsert;
 export type UpdateCredentialRow = Partial<InsertCredentialRow>;
+
 export type SessionRow = typeof session.$inferSelect;
 export type InsertSessionRow = typeof session.$inferInsert;
 export type UpdateSessionRow = Partial<InsertSessionRow>;

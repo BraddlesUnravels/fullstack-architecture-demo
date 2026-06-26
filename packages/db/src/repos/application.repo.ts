@@ -11,12 +11,8 @@ export async function findApplicationById(id: ApplicationRow['id']): Promise<App
 export async function findApplicationByUserId(
   userId: ApplicationRow['userId'],
 ): Promise<ApplicationRow[]> {
-  const rows = await appDb
-    .select()
-    .from(application)
-    .where(eq(application.userId, userId))
-    .limit(1);
-  return rows ?? [];
+  const row = await appDb.select().from(application).where(eq(application.userId, userId)).limit(1);
+  return row ?? [];
 }
 
 export async function createApplication(data: InsertApplicationRow): Promise<ApplicationRow[]> {
