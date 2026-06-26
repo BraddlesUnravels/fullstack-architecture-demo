@@ -2,8 +2,10 @@ import { Elysia } from 'elysia';
 import { UserModel } from './models.user';
 import { userService } from './service.user';
 import { UserResponse } from './response.user';
+import { sessionGuard } from '../../plugins/session-guard.plugin';
 
-export const users = new Elysia({ prefix: '/users' })
+export const users = new Elysia({ name: 'users', prefix: '/users' })
+  .use(sessionGuard)
   .get('/', async ({ query }) => userService.findUserByEmail(query), {
     query: UserModel.getByEmail,
     response: UserResponse.read,

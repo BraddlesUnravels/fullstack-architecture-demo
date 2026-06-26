@@ -1,5 +1,6 @@
 import { ApiError } from '../../errors';
 
+// Auth errors
 export class InvalidCredentialsError extends ApiError {
   constructor(message = 'Invalid email or password') {
     super({
@@ -33,6 +34,39 @@ export class SessionNotFoundError extends ApiError {
   }
 }
 
+export class MissingSessionTokenError extends ApiError {
+  constructor(message = 'Authorization header is required') {
+    super({
+      status: 401,
+      code: 'AUTH_MISSING_SESSION_TOKEN',
+      message,
+    });
+    this.name = 'MissingSessionTokenError';
+  }
+}
+
+export class InvalidSessionTokenError extends ApiError {
+  constructor(message = 'Session token is invalid') {
+    super({
+      status: 401,
+      code: 'AUTH_INVALID_SESSION_TOKEN',
+      message,
+    });
+    this.name = 'InvalidSessionTokenError';
+  }
+}
+
+export class SessionExpiredError extends ApiError {
+  constructor(message = 'Session has expired') {
+    super({
+      status: 401,
+      code: 'AUTH_SESSION_EXPIRED',
+      message,
+    });
+    this.name = 'SessionExpiredError';
+  }
+}
+
 export class SessionCreateFailedError extends ApiError {
   constructor(message = 'Failed to create session') {
     super({
@@ -44,6 +78,30 @@ export class SessionCreateFailedError extends ApiError {
   }
 }
 
+export class PasswordConfirmationMismatchError extends ApiError {
+  constructor(message = 'Password and confirm password do not match') {
+    super({
+      status: 400,
+      code: 'AUTH_PASSWORD_CONFIRMATION_MISMATCH',
+      message,
+    });
+    this.name = 'PasswordConfirmationMismatchError';
+  }
+}
+
+export class JwtVerificationError extends ApiError {
+  constructor(message = 'Invalid jwt token', cause?: unknown) {
+    super({
+      status: 401,
+      code: 'JWT_VERIFICATION_FAILED',
+      message,
+      cause,
+    });
+    this.name = 'JwtVerificationError';
+  }
+}
+
+// Email errors
 export class EmailConflictError extends ApiError {
   constructor(message = 'A user with this email already exists') {
     super({
@@ -66,18 +124,7 @@ export class EmailConfirmationMismatchError extends ApiError {
   }
 }
 
-export class JwtVerificationError extends ApiError {
-  constructor(message = 'Invalid jwt token', cause?: unknown) {
-    super({
-      status: 401,
-      code: 'JWT_VERIFICATION_FAILED',
-      message,
-      cause,
-    });
-    this.name = 'JwtVerificationError';
-  }
-}
-
+// User errors
 export class UserCreationFailedError extends ApiError {
   constructor(message = 'Failed to create user') {
     super({
@@ -86,5 +133,16 @@ export class UserCreationFailedError extends ApiError {
       message,
     });
     this.name = 'UserCreationFailedError';
+  }
+}
+
+export class CredentialCreationFailedError extends ApiError {
+  constructor(message = 'Failed to create user credentials') {
+    super({
+      status: 500,
+      code: 'AUTH_CREDENTIAL_CREATE_FAILED',
+      message,
+    });
+    this.name = 'CredentialCreationFailedError';
   }
 }

@@ -89,6 +89,7 @@
       "name": "@app/api",
       "version": "0.0.1",
       "dependencies": {
+        "@app/constants": "workspace:*",
         "@app/db": "workspace:*",
         "@app/schemas": "workspace:*",
         "@app/types": "workspace:*",

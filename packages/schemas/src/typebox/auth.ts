@@ -15,6 +15,16 @@ export const login = t.Object({
 });
 
 export const register = t.Object({
+  firstName: t.String({
+    minLength: 1,
+    error: 'The first name of the user',
+    maxLength: 100,
+  }),
+  lastName: t.String({
+    minLength: 1,
+    error: 'The last name of the user',
+    maxLength: 100,
+  }),
   email: t.String({
     format: 'email',
     error: 'The email address of the user',

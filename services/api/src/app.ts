@@ -5,9 +5,10 @@ import type { ApiEnv } from './constants';
 import { apiErrorResponseSchema } from '@app/schemas/typebox';
 import { observabilityPlugin } from './plugins/observability.plugin';
 import { errorHandlerPlugin } from './plugins/error-handler.plugin';
-import { healthRoutes } from './modules/health';
-import { users } from './modules/user';
 import { auth } from './modules/auth';
+import { users } from './modules/user';
+import { applications } from './modules/application';
+import { healthRoutes } from './modules/health';
 
 type CreateAppOptions = {
   corsOrigin: ApiEnv['corsOrigin'];
@@ -19,9 +20,16 @@ export const createApp = ({ corsOrigin }: CreateAppOptions) =>
     .use(errorHandlerPlugin)
     .use(cors({ origin: corsOrigin }))
     .use(swagger({ path: '/docs' }))
+
+    // Public routes
     .use(auth)
-    .use(users)
     .use(healthRoutes)
+
+    // Protected routes
+    .use(users)
+    .use(applications)
+
+    // Public fallback route for 404
     .all(
       '*',
       ({ path, status }) =>

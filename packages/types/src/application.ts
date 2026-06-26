@@ -1,10 +1,10 @@
 import type { Static } from 'elysia';
 import type {
-  applicationSelectSchema,
-  applicationInsertSchema,
-  applicationUpdateSchema,
+  selectApplicationSchema,
+  insertApplicationSchema,
+  updateApplicationSchema,
 } from '@app/schemas/typebox';
 
-export type ApplicationSelect = Static<typeof applicationSelectSchema>;
-export type ApplicationInsert = Static<typeof applicationInsertSchema>;
-export type ApplicationUpdate = Static<typeof applicationUpdateSchema>;
+export type ApplicationSelect = Static<typeof selectApplicationSchema>;
+export type ApplicationInsert = Static<typeof insertApplicationSchema>;
+export type ApplicationUpdate = Static<typeof updateApplicationSchema>;

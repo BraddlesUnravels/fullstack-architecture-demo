@@ -2,19 +2,40 @@ import { t } from 'elysia';
 import { JobStatus } from '@app/constants';
 import { auditColumns } from './audit';
 
-const applicationStatusSchema = t.Union([
-  t.String({ enum: [JobStatus.APPLIED] }),
-  t.String({ enum: [JobStatus.INTERVIEW] }),
-  t.String({ enum: [JobStatus.OFFER] }),
-  t.String({ enum: [JobStatus.ACCEPTED] }),
-  t.String({ enum: [JobStatus.REJECTED] }),
-]);
+const applicationStatusSchema = t.Enum(JobStatus, {
+  description: 'The status of the job application',
+  default: JobStatus.ENTERED,
+});
 
-export const applicationSelectSchema = t.Object(
+export const insertApplicationSchema = t.Object(
   {
-    id: t.String({ format: 'uuid' }),
-    userId: t.String({ format: 'uuid' }),
-    companyId: t.String({ format: 'uuid' }),
+    userId: t.String({ format: 'string' }),
+    companyId: t.String({ format: 'string' }),
+    role: t.String(),
+    status: applicationStatusSchema,
+    url: t.Optional(t.Union([t.String(), t.Null()])),
+    notes: t.Optional(t.Union([t.String(), t.Null()])),
+  },
+  { additionalProperties: false },
+);
+
+export const updateApplicationSchema = t.Object(
+  {
+    userId: t.Optional(t.String({ format: 'string' })),
+    companyId: t.Optional(t.String({ format: 'string' })),
+    role: t.Optional(t.String()),
+    status: t.Optional(applicationStatusSchema),
+    url: t.Optional(t.Union([t.String(), t.Null()])),
+    notes: t.Optional(t.Union([t.String(), t.Null()])),
+  },
+  { additionalProperties: false },
+);
+
+export const selectApplicationSchema = t.Object(
+  {
+    id: t.String({ format: 'string' }),
+    userId: t.String({ format: 'string' }),
+    companyId: t.String({ format: 'string' }),
     role: t.String(),
     status: applicationStatusSchema,
     url: t.Union([t.String(), t.Null()]),
@@ -24,37 +45,4 @@ export const applicationSelectSchema = t.Object(
   { additionalProperties: false },
 );
 
-export const applicationInsertSchema = t.Object(
-  {
-    userId: t.String({ format: 'uuid' }),
-    companyId: t.String({ format: 'uuid' }),
-    role: t.String(),
-    status: t.Optional(
-      t.Union(
-        [
-          t.String({ enum: [JobStatus.APPLIED] }),
-          t.String({ enum: [JobStatus.INTERVIEW] }),
-          t.String({ enum: [JobStatus.OFFER] }),
-          t.String({ enum: [JobStatus.ACCEPTED] }),
-          t.String({ enum: [JobStatus.REJECTED] }),
-        ],
-        { default: JobStatus.APPLIED },
-      ),
-    ),
-    url: t.Optional(t.Union([t.String(), t.Null()])),
-    notes: t.Optional(t.Union([t.String(), t.Null()])),
-  },
-  { additionalProperties: false },
-);
-
-export const applicationUpdateSchema = t.Object(
-  {
-    userId: t.Optional(t.String({ format: 'uuid' })),
-    companyId: t.Optional(t.String({ format: 'uuid' })),
-    role: t.Optional(t.String()),
-    status: t.Optional(applicationStatusSchema),
-    url: t.Optional(t.Union([t.String(), t.Null()])),
-    notes: t.Optional(t.Union([t.String(), t.Null()])),
-  },
-  { additionalProperties: false },
-);
+export const listApplicationsSchema = t.Array(selectApplicationSchema);
