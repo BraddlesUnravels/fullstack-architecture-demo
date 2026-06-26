@@ -19,12 +19,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@app/schemas": "workspace:*",
+    "@app/types": "workspace:*",
+    "@app/utils": "workspace:*",
     "@builder.io/qwik": "^1.19.2",
     "@builder.io/qwik-city": "^1.19.2",
     "@elysia/eden": "^1.4.10",
-    "@app/types": "workspace:*",
-    "@app/schemas": "workspace:*",
-    "@app/utils": "workspace:*"
+    "@tailwindcss/vite": "^4.3.1",
+    "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
     "eslint-plugin-qwik": "latest",

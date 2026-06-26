@@ -6,9 +6,9 @@ export default component$(() => {
   return (
     <QwikCityProvider>
       <head>
-        <meta charSet="utf-8" />
+        <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Job application tracker</title>
+        <title>Full Stack Demo</title>
       </head>
       <body>
         <RouterOutlet />
