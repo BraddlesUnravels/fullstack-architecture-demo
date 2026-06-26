@@ -13,17 +13,18 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@app/constants": "workspace:*",
     "@app/db": "workspace:*",
     "@app/schemas": "workspace:*",
     "@app/types": "workspace:*",
     "@app/utils": "workspace:*",
-    "@app/constants": "workspace:*",
     "@elysia/eden": "^1.4.10",
     "@elysiajs/cors": "^1.4.2",
     "@elysiajs/swagger": "^1.3.1",
     "argon2": "^0.44.0",
     "elysia": "^1.4.28",
     "jsonwebtoken": "^9.0.3",
+    "kill-port": "^2.0.1",
     "nodemailer": "^8.0.7",
     "pino": "^10.3.1"
   },
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/kill-port": "^2.0.3",
     "@types/nodemailer": "^8.0.0",
     "pino-pretty": "^13.1.3"
   }

@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from '../schema';
-import { users, companies, applications } from './data';
+import { users, credentials, companies, applications } from './data';
 
 console.log('🔧 Setting up database connection... with url: ', process.env.DATABASE_URL);
 
@@ -14,6 +14,7 @@ async function seed() {
   await db.delete(schema.application);
   await db.delete(schema.user);
   await db.delete(schema.company);
+  await db.delete(schema.credential);
 
   const insertedUsers = await db.insert(schema.user).values(users).returning();
   const insertedCompanies = await db.insert(schema.company).values(companies).returning();
@@ -34,6 +35,19 @@ async function seed() {
         ...rest,
         userId: user.id,
         companyId: company.id,
+      };
+    }),
+  );
+
+  await db.insert(schema.credential).values(
+    credentials.map(({ userIndex, ...rest }) => {
+      const user = insertedUsers[userIndex];
+
+      if (!user) throw new Error('no user found to add to credential row');
+
+      return {
+        ...rest,
+        userId: user.id,
       };
     }),
   );

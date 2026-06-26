@@ -1,37 +1,37 @@
+import killPort from 'kill-port';
 import { apiEnv } from '../config';
 
-const parseProcessIds = (input: string) => {
-  return input
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
+const NO_PROCESS_ERROR_MESSAGE = 'No process running on port';
+
+const toErrorMessage = (error: unknown) => {
+  if (error instanceof Error) return error.message;
+  return String(error);
 };
 
-const getProcessIdsByPort = async (port: number) => {
-  const output = await Bun.$`lsof -nP -iTCP:${port} -sTCP:LISTEN -t`.quiet().text();
-
-  return parseProcessIds(output);
-};
-
-const stopProcesses = async (processIds: string[]) => {
-  await Promise.all(
-    processIds.map((processId) => {
-      return Bun.$`kill -TERM ${processId}`.quiet();
-    }),
-  );
+const isNoProcessError = (error: unknown) => {
+  const message = toErrorMessage(error);
+  return message.includes(NO_PROCESS_ERROR_MESSAGE);
 };
 
 const stopApi = async () => {
-  const processIds = await getProcessIdsByPort(apiEnv.port);
+  try {
+    await killPort(apiEnv.port, 'tcp');
+  } catch (err) {
+    if (isNoProcessError(err)) {
+      console.log(`[api] No process is listening on port ${apiEnv.port}`);
+      return;
+    }
 
-  if (processIds.length === 0) {
-    console.log(`[api] No process is listening on port ${apiEnv.port}`);
-    return;
+    throw new Error(`Failed to stop process on port ${apiEnv.port}: ${toErrorMessage(err)}`, {
+      cause: err,
+    });
   }
-
-  await stopProcesses(processIds);
 
   console.log(`[api] Stopped process on port ${apiEnv.port}`);
 };
 
-await stopApi();
+try {
+  await stopApi();
+} catch {
+  process.exit(1);
+}
