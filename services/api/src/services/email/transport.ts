@@ -1,5 +1,5 @@
 import { createTransport } from 'nodemailer';
-import { API_CONSTANTS } from '../../constants';
+import { API_CONSTANTS } from '../../config';
 
 const EMAIL_USER = API_CONSTANTS.email.EMAIL_USER;
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;

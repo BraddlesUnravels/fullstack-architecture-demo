@@ -15,6 +15,13 @@
       "when": 1778752071653,
       "tag": "1778752071_tearful_toro",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782461892107,
+      "tag": "1782461892_sad_exodus",
+      "breakpoints": true
     }
   ]
 }

@@ -11,7 +11,7 @@ import {
   UserCreationFailedError,
 } from './errors.auth';
 import { serializeAuditDates, dateAddition } from '../../utils';
-import { API_CONSTANTS } from '../../constants';
+import { API_CONSTANTS } from '../../config';
 import type { Register, Registration, LoginInput, LoggedIn, LoggedOut } from '@app/types';
 
 const SESSION_TIMEOUT = API_CONSTANTS.security.SESSION_TIMEOUT; // 48 hours in mins

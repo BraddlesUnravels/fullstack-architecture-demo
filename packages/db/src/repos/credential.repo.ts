@@ -29,7 +29,7 @@ export async function updateCredential(
   const row = await appDb
     .update(credential)
     .set(data)
-    .where(and(eq(credential.userId, userId), eq(credential.isDeleted, false)))
+    .where(and(eq(credential.userId, userId), eq(credential.valid, false)))
     .returning();
   return row ?? [];
 }
@@ -37,8 +37,8 @@ export async function updateCredential(
 export async function deleteCredential(userId: CredentialRow['userId']): Promise<CredentialRow[]> {
   const row = await appDb
     .update(credential)
-    .set({ isDeleted: true })
-    .where(and(eq(credential.userId, userId), eq(credential.isDeleted, false)))
+    .set({ valid: true })
+    .where(and(eq(credential.userId, userId), eq(credential.valid, false)))
     .returning();
   return row ?? [];
 }

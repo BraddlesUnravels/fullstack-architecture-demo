@@ -41,15 +41,21 @@ export const user = pgTable(
   (t) => [index('idx_users_email').on(t.email)],
 );
 
-export const credential = pgTable('credential', (t) => ({
-  id: t.uuid('id').primaryKey().defaultRandom(),
-  userId: t
-    .uuid('user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
-  hash: t.text('hash').notNull(),
-  ...auditColumns,
-}));
+export const credential = pgTable(
+  'credential',
+  (t) => ({
+    id: t.uuid('id').primaryKey().defaultRandom(),
+    userId: t
+      .uuid('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    hash: t.text('hash').notNull(),
+    valid: t.boolean('valid').default(true).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    invalidatedAt: timestamp('invalidated_at', { withTimezone: true }),
+  }),
+  (t) => [index('idx_credentials_user_id').on(t.userId)],
+);
 
 export const session = pgTable(
   'session',
@@ -65,10 +71,7 @@ export const session = pgTable(
     ipAddress: t.text('ip_address'),
     ...auditColumns,
   }),
-  (t) => [
-    index('idx_sessions_user_id').on(t.userId),
-    index('idx_sessions_ip_address').on(t.ipAddress),
-  ],
+  (t) => [index('idx_sessions_user_id').on(t.userId)],
 );
 
 export const application = pgTable(
@@ -103,6 +106,7 @@ export const application = pgTable(
   }),
   (t) => [
     index('idx_applications_user_id').on(t.userId),
+    index('idx_status').on(t.status),
     index('idx_applications_company_id').on(t.companyId),
   ],
 );

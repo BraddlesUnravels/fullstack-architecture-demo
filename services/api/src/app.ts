@@ -1,7 +1,7 @@
 import { cors } from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
 import { Elysia } from 'elysia';
-import type { ApiEnv } from './constants';
+import type { ApiEnv } from './config';
 import { apiErrorResponseSchema } from '@app/schemas/typebox';
 import { observabilityPlugin } from './plugins/observability.plugin';
 import { errorHandlerPlugin } from './plugins/error-handler.plugin';

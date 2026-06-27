@@ -1,5 +1,8 @@
+import { securityUtils } from '@app/utils';
 import { JobStatus } from '@app/constants';
 const SEED_CREATED_BY_USER_ID = '00000000-0000-0000-0000-000000000001';
+const SEED_PASSWORD = 'password123';
+const SEED_PASSWORD_HASH = await securityUtils.hashNewPassword(SEED_PASSWORD);
 
 export const users = [
   {
@@ -117,5 +120,30 @@ export const applications = [
     url: 'https://rea.com/jobs/5',
     notes: 'Accepted offer!',
     createdBy: SEED_CREATED_BY_USER_ID,
+  },
+];
+
+// userId are resolved by index after insert
+export const credentials = [
+  {
+    userIndex: 0,
+    userId: undefined, // Will be set after user insertion
+    hash: SEED_PASSWORD_HASH,
+    valid: true,
+    invalidatedAt: undefined,
+  },
+  {
+    userIndex: 1,
+    userId: undefined,
+    hash: SEED_PASSWORD_HASH,
+    valid: true,
+    invalidatedAt: undefined,
+  },
+  {
+    userIndex: 2,
+    userId: undefined,
+    hash: SEED_PASSWORD_HASH,
+    valid: true,
+    invalidatedAt: undefined,
   },
 ];
