@@ -2,7 +2,7 @@
 
 This repository is a focused technical demo, not a complete SaaS product.
 
-It is intentionally scoped to demonstrate production-style full-stack patterns, including authentication flows, API boundaries, relational modelling, seed workflows, and shared contracts, while keeping the implementation original, focused, and easy to inspect.
+It is intentionally scoped to showcase production-style full-stack patterns—authentication flows, API boundaries, relational modelling, seed workflows, and shared contracts—while staying compact and easy to inspect.
 
 ## Current status
 
@@ -11,25 +11,30 @@ Completed and reviewable today:
 - Monorepo structure with shared contracts and package boundaries.
 - PostgreSQL + Drizzle schema, repositories, migrations, and seed data.
 - API service with centralized error handling, structured logging, CORS, and Swagger docs.
-- Auth routes (`register`, `login`, `logout`) and user CRUD routes.
+- Auth routes (`register`, `login`, `logout`) and session-based route guarding.
+- Protected user CRUD routes.
+- Protected application routes (`list`, `read`, `create`, `update`).
+- Minimal Qwik frontend scaffold with shared API client wiring.
 
 In progress by design:
 
-- Protected applications API slice (planned next).
+- Auth completion flows beyond register/login/logout.
 - CI and automated test depth beyond current baseline.
-- Frontend completeness (UI remains minimal and non-goal for this stage).
+- Frontend completeness for authenticated application management.
 
 ## Why this exists
 
-Most of my recent work has been in proprietary repositories. This project provides a public, inspectable sample of how I structure a full-stack TypeScript system with API-first architecture and clear service boundaries.
+Most of my recent work has been in proprietary repositories. This project is a public sample of how I structure a full-stack TypeScript system with API-first architecture and clear service boundaries.
 
 ## What to review first
 
-For a quick technical review:
+For a quick technical pass:
 
 - API composition and boundaries: `services/api/src/app.ts`
 - Auth module: `services/api/src/modules/auth/*`
 - User module: `services/api/src/modules/user/*`
+- Application module: `services/api/src/modules/application/*`
+- Session auth guard: `services/api/src/plugins/session-guard.plugin.ts`
 - Error + observability plugins: `services/api/src/plugins/*`
 - Database schema + repositories: `packages/db/src/schema.ts`, `packages/db/src/repos/*`
 - Seed workflow: `packages/db/src/seed/*`
@@ -65,7 +70,7 @@ For a quick technical review:
 ## Prerequisites
 
 - Bun
-- Docker
+- Docker (or colima running docker for Mac)
 
 ## Quick start (API-focused path)
 
@@ -81,13 +86,13 @@ bun install
 cp .env.example .env
 ```
 
-3. Bootstrap local database (starts Postgres, applies migrations, and seeds development data):
+3. Bootstrap the local database (starts Postgres, applies migrations, and seeds development data):
 
 ```bash
 bun run dev:db:init
 ```
 
-4. If you want manual DB control instead, run:
+4. For manual DB control, run:
 
 ```bash
 bun run --filter '@app/db' infra:up
@@ -116,16 +121,25 @@ bun run dev:ui
 
 Mounted in `services/api/src/app.ts`:
 
+Public routes:
+
 - `GET /health/`
+- `POST /auth/register`
+- `POST /auth/login`
+- `GET /auth/logout/:id`
+- `GET /docs`
+
+Protected routes (require `Authorization: Bearer <session-id>`, where `<session-id>` comes from `POST /auth/login`):
+
 - `GET /users?email=<email>`
 - `GET /users/:id`
 - `POST /users/new`
 - `PATCH /users/:id`
 - `DELETE /users/:id` (soft delete)
-- `POST /auth/register`
-- `POST /auth/login`
-- `GET /auth/logout/:id`
-- `GET /docs`
+- `GET /applications/`
+- `GET /applications/:id`
+- `POST /applications/`
+- `PATCH /applications/:id`
 
 ## Database model currently available
 
@@ -141,7 +155,7 @@ Shared audit columns include timestamps, soft-delete metadata, and optimistic ve
 
 ## Environment variables
 
-Use `.env.example` as baseline. Important values:
+Use `.env.example` as the baseline. Key values:
 
 - `DATABASE_URL`: required for DB package and API data access.
 - `API_URL` and `JWT_SECRET`: required by auth token link generation.
@@ -162,7 +176,7 @@ bun run dev:db:init
 bun run dev:db
 ```
 
-`bun run dev:db` performs a local DB reset (`infra:reset`), then migrates and reseeds. Use it when you explicitly want a clean local DB state.
+`bun run dev:db` performs a local DB reset (`infra:reset`), then migrates and reseeds. Use it when you want a clean local DB state.
 
 Database-focused commands:
 
@@ -186,17 +200,17 @@ bun run --filter '@app/*' typecheck
 
 ## Testing and CI status
 
-- API test command currently references Vitest, but Vitest is not yet installed in `services/api`.
-- UI workspace has Vitest configured, but there are currently no UI test files.
-- Existing CI workflow currently runs dependency review only.
-- Expanding automated tests and CI gates is part of the planned production-pattern slice.
+- Test commands exist in API and UI workspaces, but there are currently no committed test files.
+- CI currently runs format check, lint, and typecheck via `.github/workflows/ci.yml`.
+- Dependency review also runs on pull requests via `.github/workflows/dependency-review.yml`.
+- Expanding automated tests and adding test execution to CI is still planned.
 
 ## Roadmap (intentional next scope)
 
-- Add one protected vertical slice for applications (`login/register -> protected CRUD flow`).
-- Add focused API tests for auth + protected resource flow.
-- Add CI checks for lint, typecheck, and tests.
-- Keep UI intentionally lightweight for this demo phase.
+- Complete auth follow-up flows (for example, email verification and password reset).
+- Add focused API and UI tests for auth + protected resource flows.
+- Extend CI to include automated test execution once suites are in place.
+- Expand UI beyond scaffold-level pages for authenticated application management.
 
 ## License
 
