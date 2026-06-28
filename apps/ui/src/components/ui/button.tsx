@@ -12,20 +12,23 @@ type ButtonSize = keyof typeof buttonSizes;
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
   size: ButtonSize;
-  onClick: QRL<() => void>;
+  onClick$?: QRL<() => void>;
+  className?: string;
 }
 
-export const ButtonAura = component$<ButtonProps>(({ onClick, label, size, ...rest }) => (
-  <div class="aura-dual">
-    <button {...rest} class={buttonSizes[size]} onClick$={onClick}>
-      {label}
-    </button>
-  </div>
-));
+export const ButtonAura = component$<ButtonProps>(
+  ({ onClick$, label, size, className, ...rest }) => (
+    <div class="aura w-full ">
+      <button {...rest} class={className ?? buttonSizes[size]} onClick$={onClick$}>
+        {label}
+      </button>
+    </div>
+  ),
+);
 
-export const Button = component$<ButtonProps>(({ onClick, label, size, ...rest }) => (
+export const Button = component$<ButtonProps>(({ onClick$, label, size, className, ...rest }) => (
   <div>
-    <button {...rest} class={buttonSizes[size]} onClick$={onClick}>
+    <button {...rest} class={className ?? buttonSizes[size]} onClick$={onClick$}>
       {label}
     </button>
   </div>

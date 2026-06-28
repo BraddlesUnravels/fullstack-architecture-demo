@@ -8,7 +8,7 @@ import type {
 
 interface FormFieldProps extends FormHTMLAttributes<HTMLFormElement> {
   label: string;
-  required: boolean;
+  required?: boolean;
   error?: string;
   hint?: string;
 }
@@ -40,22 +40,23 @@ export const FormField = component$<FormFieldProps>(({ label, required = false, 
 
 interface TextInputProps<T> extends InputHTMLAttributes<HTMLInputElement> {
   value: string;
+  className?: string;
   placeholder?: string;
   type?: 'text' | 'email' | 'password';
   required?: boolean;
-  onChange: QRL<(v: T) => void>;
+  returnInput$: QRL<(v: T) => void>;
 }
 
 export const TextInput = component$<TextInputProps<InputEvent>>(
-  ({ value, placeholder, type = 'text', required = false, onChange, ...rest }) => (
+  ({ value, placeholder, className, type = 'text', required = false, returnInput$, ...rest }) => (
     <input
       {...rest}
       type={type}
-      class="input input-primary"
+      class={className ?? 'input input-primary min-w-full'}
       placeholder={placeholder}
       value={value}
       required={required}
-      onInput$={onChange}
+      onInput$={returnInput$}
     />
   ),
 );
@@ -64,18 +65,18 @@ interface TextareaProps<T> extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   value: string;
   placeholder?: string;
   rows?: number;
-  onChange: QRL<(v: T) => void>;
+  returnInput: QRL<(v: T) => void>;
 }
 
 export const TextArea = component$<TextareaProps<InputEvent>>(
-  ({ value, placeholder, rows = 4, onChange, ...rest }) => (
+  ({ value, placeholder, rows = 4, returnInput, ...rest }) => (
     <textarea
       {...rest}
       class="text-area text-area-primary"
       placeholder={placeholder}
       value={value}
       rows={rows}
-      onInput$={onChange}
+      onInput$={returnInput}
     />
   ),
 );
