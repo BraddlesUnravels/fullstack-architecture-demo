@@ -8,7 +8,7 @@ import type {
   loggedout,
 } from '@app/schemas/typebox/auth';
 
-type Login = Static<typeof login>;
+export type Login = Static<typeof login>;
 export type LoginInput = Login & { req?: Request };
 export type Register = Static<typeof register>;
 export type Registration = Static<typeof registration>;

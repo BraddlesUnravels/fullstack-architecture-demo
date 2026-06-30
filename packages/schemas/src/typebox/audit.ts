@@ -8,8 +8,8 @@ export const auditColumns = t.Object(
     updatedAt: t.String({ format: 'date-time' }),
     updatedBy: t.Union([t.String({ format: 'uuid' }), t.Null()]),
 
-    deletedAt: t.Union([t.String({ format: 'date-time' }), t.Null()]),
-    deletedBy: t.Union([t.String({ format: 'uuid' }), t.Null()]),
+    deletedAt: t.Optional(t.Union([t.String({ format: 'date-time' }), t.Null()])),
+    deletedBy: t.Optional(t.Union([t.String({ format: 'uuid' }), t.Null()])),
 
     isDeleted: t.Boolean(),
 

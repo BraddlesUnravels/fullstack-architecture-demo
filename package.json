@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/package",
   "name": "job-application-tracker",
   "version": "0.1.0",
   "devDependencies": {
@@ -13,6 +12,7 @@
     "typescript-eslint": "^8.46.2",
     "typescript": "^6.0.3"
   },
+  "$schema": "https://json.schemastore.org/package",
   "lint-staged": {
     "*.{js,ts,tsx}": [
       "prettier --write",

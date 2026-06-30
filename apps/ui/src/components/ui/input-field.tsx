@@ -5,6 +5,7 @@ import type {
   TextareaHTMLAttributes,
   FormHTMLAttributes,
 } from '@builder.io/qwik';
+// import { HiEyeSlashSolid, HiEyeOutline } from '@qwikest/icons/heroicons';
 
 interface FormFieldProps extends FormHTMLAttributes<HTMLFormElement> {
   label: string;
@@ -39,12 +40,12 @@ export const FormField = component$<FormFieldProps>(({ label, required = false, 
 ));
 
 interface TextInputProps<T> extends InputHTMLAttributes<HTMLInputElement> {
-  value: string;
+  value?: string;
   className?: string;
   placeholder?: string;
   type?: 'text' | 'email' | 'password';
   required?: boolean;
-  returnInput$: QRL<(v: T) => void>;
+  returnInput$?: QRL<(v: T) => void>;
 }
 
 export const TextInput = component$<TextInputProps<InputEvent>>(
@@ -80,3 +81,7 @@ export const TextArea = component$<TextareaProps<InputEvent>>(
     />
   ),
 );
+
+export const PasswordInput = component$<TextInputProps<InputEvent>>(() => {
+  return <TextInput />;
+});

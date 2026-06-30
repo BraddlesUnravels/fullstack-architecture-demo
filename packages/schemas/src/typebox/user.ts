@@ -9,7 +9,7 @@ export const userSelectSchema = t.Object(
     lastName: t.String(),
     isLocked: t.Optional(t.Boolean({ default: false })),
     isAdmin: t.Optional(t.Boolean({ default: false })),
-    lastLoginAt: t.Union([t.String({ format: 'date-time' }), t.Null()]),
+    lastLoginAt: t.Optional(t.Union([t.String({ format: 'date-time' }), t.Null()])),
     ...auditColumns.properties,
   },
   { additionalProperties: false },
