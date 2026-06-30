@@ -5,7 +5,6 @@ export const login = t.Object({
   email: t.String({
     format: 'email',
     error: 'The email address of the user',
-    pattern: '^[^@]+@[^@]+\\.[^@]+$',
   }),
   password: t.String({
     minLength: 8,
