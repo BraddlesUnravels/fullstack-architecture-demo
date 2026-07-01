@@ -1,4 +1,5 @@
-import type { Static, TSchema } from 'elysia';
+import type * as v from 'valibot';
+
 export * from './user';
 export * from './company';
 export * from './application';
@@ -17,14 +18,20 @@ export type DeleteResponse = {
   success: boolean;
 };
 
-type ResourceSchemas<TSelect extends TSchema, TCreate extends TSchema, TUpdate extends TSchema> = {
+type ResourceSchemas<
+  TSelect extends v.GenericSchema,
+  TCreate extends v.GenericSchema,
+  TUpdate extends v.GenericSchema,
+> = {
   select: TSelect;
   insert: TCreate;
   update: TUpdate;
 };
 
-export type ResourceTypes<T extends ResourceSchemas<TSchema, TSchema, TSchema>> = {
-  select: Static<T['select']>;
-  insert: Static<T['insert']>;
-  update: Static<T['update']>;
+export type ResourceTypes<
+  T extends ResourceSchemas<v.GenericSchema, v.GenericSchema, v.GenericSchema>,
+> = {
+  select: v.InferOutput<T['select']>;
+  insert: v.InferOutput<T['insert']>;
+  update: v.InferOutput<T['update']>;
 };

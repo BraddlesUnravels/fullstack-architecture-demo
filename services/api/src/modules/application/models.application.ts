@@ -5,7 +5,7 @@ import {
   selectApplicationSchema,
   listApplicationsSchema,
   deleteSchema,
-} from '@app/schemas/typebox';
+} from '@app/schemas';
 
 export const ApplicationModel = {
   getById,

@@ -1,6 +1,6 @@
-import type { Static } from 'elysia';
-import type { userSelectSchema, userInsertSchema, userUpdateSchema } from '@app/schemas/typebox';
+import type * as v from 'valibot';
+import type { userSelectSchema, userInsertSchema, userUpdateSchema } from '@app/schemas';
 
-export type UserSelect = Static<typeof userSelectSchema>;
-export type UserInsert = Static<typeof userInsertSchema>;
-export type UserUpdate = Static<typeof userUpdateSchema>;
+export type UserSelect = v.InferInput<typeof userSelectSchema>;
+export type UserInsert = v.InferInput<typeof userInsertSchema>;
+export type UserUpdate = v.InferInput<typeof userUpdateSchema>;

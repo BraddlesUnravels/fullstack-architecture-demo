@@ -1,10 +1,6 @@
-import type { Static } from 'elysia';
-import type {
-  sessionSelectSchema,
-  sessionInsertSchema,
-  sessionUpdateSchema,
-} from '@app/schemas/typebox';
+import type * as v from 'valibot';
+import type { sessionSelectSchema, sessionInsertSchema, sessionUpdateSchema } from '@app/schemas';
 
-export type SessionSelect = Static<typeof sessionSelectSchema>;
-export type SessionInsert = Static<typeof sessionInsertSchema>;
-export type SessionUpdate = Static<typeof sessionUpdateSchema>;
+export type SessionSelect = v.InferInput<typeof sessionSelectSchema>;
+export type SessionInsert = v.InferInput<typeof sessionInsertSchema>;
+export type SessionUpdate = v.InferInput<typeof sessionUpdateSchema>;

@@ -1,4 +1,4 @@
-import { apiErrorResponseSchema } from '@app/schemas/typebox';
+import { apiErrorResponseSchema } from '@app/schemas';
 import { ApplicationModel } from './models.application';
 
 const readApplicationResponse = {

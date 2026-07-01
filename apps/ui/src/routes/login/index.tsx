@@ -1,15 +1,14 @@
 import { component$ } from '@builder.io/qwik';
 import { routeAction$ } from '@builder.io/qwik-city';
-import type { Static } from '@sinclair/typebox';
-import { login } from '@app/schemas';
 import { api } from '../../lib';
-import { typeBoxValidator } from '../../lib/type-box-vaildator';
 import { BgGradient } from './bg-gradient';
 import { ProjectIntro } from './intro-section';
 import { LoginCard } from './login-card';
 import { ProjectScope } from './project-scope';
-
-type LoginFormInput = Static<typeof login>;
+type LoginFormInput = {
+  email: string;
+  password: string;
+};
 
 export const useLoginAction = routeAction$(async (rawForm, { fail }) => {
   const form = rawForm as LoginFormInput;
@@ -28,12 +27,11 @@ export const useLoginAction = routeAction$(async (rawForm, { fail }) => {
 
     return fail(statusCode, { code: errorCode, message: errorMessage });
   }
-  console.log(JSON.stringify(data, null, 2));
   return {
     sessionId: data.sessionId,
     user: data.user,
   };
-}, typeBoxValidator(login));
+});
 
 export type LoginActionStore = ReturnType<typeof useLoginAction>;
 
