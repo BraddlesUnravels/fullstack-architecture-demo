@@ -1,17 +1,9 @@
-import type { Static } from 'elysia';
-import type {
-  register,
-  registration,
-  login,
-  loggedin,
-  logout,
-  loggedout,
-} from '@app/schemas/typebox/auth';
+import type * as v from 'valibot';
+import type { register, registration, login, loggedin, logout, loggedout } from '@app/schemas';
 
-export type Login = Static<typeof login>;
-export type LoginInput = Login & { req?: Request };
-export type Register = Static<typeof register>;
-export type Registration = Static<typeof registration>;
-export type LoggedIn = Static<typeof loggedin>;
-export type Logout = Static<typeof logout>;
-export type LoggedOut = Static<typeof loggedout>;
+export type LoginInput = v.InferInput<typeof login & { req?: Request }>;
+export type Register = v.InferInput<typeof register>;
+export type Registration = v.InferInput<typeof registration>;
+export type LoggedIn = v.InferInput<typeof loggedin>;
+export type Logout = v.InferInput<typeof logout>;
+export type LoggedOut = v.InferInput<typeof loggedout>;

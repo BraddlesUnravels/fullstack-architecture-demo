@@ -5,7 +5,7 @@ import {
   getByEmail,
   getById,
   deleteSchema,
-} from '@app/schemas/typebox';
+} from '@app/schemas';
 
 export const UserModel = {
   getByEmail,
