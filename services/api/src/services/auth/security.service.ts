@@ -5,7 +5,7 @@ import { JwtVerificationError } from '../../modules/auth/errors.auth';
 const API_URL = process.env.API_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const isPasswordMatch = async (password: string, hash: string): Promise<boolean> => {
+const isPasswordMatch = async (password: string, hash: string): Promise<boolean> => {
   return argon2id.verify(hash, password);
 };
 

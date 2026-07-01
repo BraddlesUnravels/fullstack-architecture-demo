@@ -1,3 +1,1 @@
-import { JobStatus } from './status-codes';
-
-export { JobStatus };
+export * from './status-codes';

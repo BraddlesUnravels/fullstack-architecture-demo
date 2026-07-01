@@ -12,6 +12,7 @@ Completed and reviewable today:
 - PostgreSQL + Drizzle schema, repositories, migrations, and seed data.
 - API service with centralized error handling, structured logging, CORS, and Swagger docs.
 - Auth routes (`register`, `login`, `logout`) and session-based route guarding.
+- Auth flows with Redis-backed staged registration (`register`, `verify-email`, `complete-registration`, `login`, `logout`).
 - Protected user CRUD routes.
 - Protected application routes (`list`, `read`, `create`, `update`).
 - Minimal Qwik frontend scaffold with shared API client wiring.
@@ -32,6 +33,7 @@ For a quick technical pass:
 
 - API composition and boundaries: `services/api/src/app.ts`
 - Auth module: `services/api/src/modules/auth/*`
+- Redis-backed staged registration store: `packages/redis/src/*`
 - User module: `services/api/src/modules/user/*`
 - Application module: `services/api/src/modules/application/*`
 - Session auth guard: `services/api/src/plugins/session-guard.plugin.ts`
@@ -53,9 +55,11 @@ For a quick technical pass:
 │   ├── schemas/           # Runtime validation schemas (TypeBox)
 │   ├── types/             # TS types derived from shared schemas
 │   ├── constants/         # Shared domain constants (JobStatus)
+│   ├── redis/             # Redis client + staged registration storage helpers
 │   └── utils/             # Shared utilities
 └── docker/
-    └── docker-compose-db.dev.yml
+    ├── docker-compose-db.dev.yml
+    └── docker-compose-redis.dev.yml
 ```
 
 ## Tech stack
@@ -63,6 +67,7 @@ For a quick technical pass:
 - Runtime/tooling: Bun, TypeScript
 - API: Elysia, Swagger, CORS
 - Database: PostgreSQL, Drizzle ORM, drizzle-kit
+- Cache/store: Redis (staged registration lifecycle)
 - Auth/security primitives: argon2, jsonwebtoken
 - Logging/observability: pino
 - Frontend: Qwik + Qwik City + Vite
@@ -86,27 +91,34 @@ bun install
 cp .env.example .env
 ```
 
-3. Bootstrap the local database (starts Postgres, applies migrations, and seeds development data):
+3. Start local infrastructure services:
+
+```bash
+bun run dev:infra:up
+```
+
+4. Bootstrap the local database (applies migrations and seeds development data):
 
 ```bash
 bun run dev:db:init
 ```
 
-4. For manual DB control, run:
+5. For manual DB/Redis control, run:
 
 ```bash
 bun run --filter '@app/db' infra:up
 bun run --filter '@app/db' db:migrate
 bun run --filter '@app/db' db:seed
+bun run --filter '@app/redis' infra:up
 ```
 
-5. Start the API:
+6. Start the API:
 
 ```bash
 bun run dev:api
 ```
 
-6. Open docs and health endpoints:
+7. Open docs and health endpoints:
 
 - `http://localhost:3000/docs`
 - `http://localhost:3000/health`
@@ -125,6 +137,8 @@ Public routes:
 
 - `GET /health/`
 - `POST /auth/register`
+- `GET /auth/verify-email?registrationId=<id>`
+- `POST /auth/complete-registration`
 - `POST /auth/login`
 - `GET /auth/logout/:id`
 - `GET /docs`
@@ -158,6 +172,7 @@ Shared audit columns include timestamps, soft-delete metadata, and optimistic ve
 Use `.env.example` as the baseline. Key values:
 
 - `DATABASE_URL`: required for DB package and API data access.
+- `REDIS_URL`, `REDIS_CONNECT_TIMEOUT_MS`, `REDIS_KEY_PREFIX`: required for staged registration tokens.
 - `API_URL` and `JWT_SECRET`: required by auth token link generation.
 - `EMAIL_PASSWORD`: required for current Gmail-backed email transport.
 - `API_HOST`, `PORT`, `CORS_ORIGIN`, `LOG_LEVEL`: API runtime behavior.
@@ -172,6 +187,7 @@ Run from repository root:
 ```bash
 bun run dev:api
 bun run dev:ui
+bun run dev:infra:up
 bun run dev:db:init
 bun run dev:db
 ```
@@ -184,6 +200,9 @@ Database-focused commands:
 bun run --filter '@app/db' infra:up
 bun run --filter '@app/db' infra:down
 bun run --filter '@app/db' infra:reset
+bun run --filter '@app/redis' infra:up
+bun run --filter '@app/redis' infra:down
+bun run --filter '@app/redis' infra:reset
 bun run --filter '@app/db' db:migrate
 bun run --filter '@app/db' db:seed
 bun run --filter '@app/db' db:studio

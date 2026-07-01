@@ -17,7 +17,26 @@ export const logoutResponse = {
 
 export const registrationResponse = {
   200: AuthModel.registration,
-  400: apiErrorResponseSchema,
+  401: apiErrorResponseSchema,
+  410: apiErrorResponseSchema,
+  422: apiErrorResponseSchema,
   409: apiErrorResponseSchema,
+  500: apiErrorResponseSchema,
+} as const;
+
+export const verifyEmailResponse = {
+  200: AuthModel.verifiedEmail,
+  409: apiErrorResponseSchema,
+  410: apiErrorResponseSchema,
+  422: apiErrorResponseSchema,
+  500: apiErrorResponseSchema,
+} as const;
+
+export const completeRegistrationResponse = {
+  200: AuthModel.completedRegistration,
+  400: apiErrorResponseSchema,
+  401: apiErrorResponseSchema,
+  410: apiErrorResponseSchema,
+  422: apiErrorResponseSchema,
   500: apiErrorResponseSchema,
 } as const;

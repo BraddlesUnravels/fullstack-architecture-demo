@@ -3,10 +3,10 @@ import { template } from './email-template';
 
 export const emailService = {
   testConnection: () => transport.verify(),
-  sendConfirmEmail: (email: string, name: string, tokenUrl: string) => {
+  sendConfirmEmail: (email: string, tokenUrl: string) => {
     return transport.sendMail({
       to: email,
-      ...template.confirmEmail(name, tokenUrl),
+      ...template.confirmEmail(tokenUrl),
     });
   },
   sendAccountCreated: (email: string, name: string, appLink: string) => {
