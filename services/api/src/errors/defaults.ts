@@ -26,6 +26,11 @@ export const ErrorDefaults = {
     status: 409,
     message: 'Conflict',
   },
+  410: {
+    code: 'GONE',
+    status: 410,
+    message: 'Gone',
+  },
   422: {
     code: 'UNPROCESSABLE_ENTITY',
     status: 422,

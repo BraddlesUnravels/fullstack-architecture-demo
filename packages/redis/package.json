@@ -1,0 +1,22 @@
+{
+  "name": "@app/redis",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "infra:up": "docker-compose -f ../../docker/docker-compose-redis.dev.yml up -d",
+    "infra:down": "docker-compose -f ../../docker/docker-compose-redis.dev.yml down",
+    "infra:reset": "docker-compose -f ../../docker/docker-compose-redis.dev.yml down -v",
+    "redis:cli": "docker exec -it app_redis redis-cli",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "redis": "^6.1.0",
+    "@app/types": "workspace:*"
+  }
+}

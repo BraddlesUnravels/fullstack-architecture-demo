@@ -3,25 +3,32 @@ import { appDb } from '../../src';
 import { user } from '../schema';
 import type { InsertUserRow, UpdateUserRow, UserRow } from '../types';
 import type { DeleteResponse } from '@app/types';
+import type { NullToUndefined } from '@app/types';
+import { stripNulls } from '../helpers';
 
-export const findUserById = async (id: UserRow['id']): Promise<UserRow[]> => {
+export const findUserById = async (id: UserRow['id']): Promise<NullToUndefined<UserRow>[]> => {
   const row = await appDb.select().from(user).where(eq(user.id, id)).limit(1);
-  return row ?? [];
+  return stripNulls(row) ?? [];
 };
 
-export const findUserByEmail = async (email: UserRow['email']): Promise<UserRow[]> => {
+export const findUserByEmail = async (
+  email: UserRow['email'],
+): Promise<NullToUndefined<UserRow>[]> => {
   const row = await appDb.select().from(user).where(eq(user.email, email)).limit(1);
-  return row ?? [];
+  return stripNulls(row) ?? [];
 };
 
-export const createUser = async (data: InsertUserRow): Promise<UserRow[]> => {
+export const createUser = async (data: InsertUserRow): Promise<NullToUndefined<UserRow>[]> => {
   const row = await appDb.insert(user).values(data).returning();
-  return row ?? [];
+  return stripNulls(row) ?? [];
 };
 
-export const updateUser = async (id: UserRow['id'], data: UpdateUserRow): Promise<UserRow[]> => {
+export const updateUser = async (
+  id: UserRow['id'],
+  data: UpdateUserRow,
+): Promise<NullToUndefined<UserRow>[]> => {
   const row = await appDb.update(user).set(data).where(eq(user.id, id)).returning();
-  return row ?? [];
+  return stripNulls(row) ?? [];
 };
 
 export const deleteUser = async (id: UserRow['id']): Promise<DeleteResponse> => {

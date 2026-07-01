@@ -1,4 +1,4 @@
-const confirmEmail = (name: string, tokenUrl: string): { subject: string; html: string } => ({
+const confirmEmail = (tokenUrl: string): { subject: string; html: string } => ({
   subject: 'Confirm your StackChatr account',
   html: `
       <!DOCTYPE html>
@@ -14,7 +14,7 @@ const confirmEmail = (name: string, tokenUrl: string): { subject: string; html: 
               <table width="600" style="background:#ffffff;padding:30px;border-radius:8px;">
                 <tr>
                   <td>
-                    <h2 style="margin-top:0;">Welcome to StackChatr, ${name}</h2>
+                    <h2 style="margin-top:0;">Hi there!</h2>
                     <p>Thanks for registering. Please confirm your email to activate your account.</p>
 
 

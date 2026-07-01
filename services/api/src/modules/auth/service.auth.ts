@@ -1,21 +1,17 @@
-import { authRepo, userRepo, credentialRepo } from '@app/db';
+import { authRepo, credentialRepo, userRepo } from '@app/db';
+import { API_CONSTANTS } from '../../config';
+import { securityService } from '../../services';
+import { dateAddition, serializeAuditDates } from '../../utils';
 import { UserNotFoundError } from '../user/errors.user';
-import { securityService, emailService } from '../../services';
 import {
-  EmailConflictError,
   InvalidCredentialsError,
   NoCredentialsSetError,
   SessionCreateFailedError,
   SessionNotFoundError,
-  UserCreationFailedError,
 } from './errors.auth';
-import { serializeAuditDates, dateAddition } from '../../utils';
-import { API_CONSTANTS } from '../../config';
-import type { Register, Registration, LoginInput, LoggedIn, LoggedOut } from '@app/types';
+import type { LoggedIn, LoggedOut, LoginInput } from '@app/types';
 
 const SESSION_TIMEOUT = API_CONSTANTS.security.SESSION_TIMEOUT; // 48 hours in mins
-const DEFAULT_REGISTER_FIRST_NAME = 'There';
-const DEFAULT_REGISTER_LAST_NAME = 'User';
 
 function extractRequestDetails(req?: Request): { ip?: string; userAgent?: string } {
   if (!req) return {};
@@ -63,31 +59,7 @@ const logout = async (sessionId: string): Promise<LoggedOut> => {
   return { success: Boolean(deleted) };
 };
 
-const register = async ({ email }: Register): Promise<Registration> => {
-  const [existingUser] = await userRepo.findUserByEmail(email);
-
-  if (existingUser) throw new EmailConflictError();
-
-  const [user] = await userRepo.createUser({
-    email,
-    firstName: DEFAULT_REGISTER_FIRST_NAME,
-    lastName: DEFAULT_REGISTER_LAST_NAME,
-  });
-
-  if (!user) throw new UserCreationFailedError();
-
-  const jwtUrl = securityService.genJwtUrl(user.id);
-
-  await emailService.sendAccountCreated(email, DEFAULT_REGISTER_FIRST_NAME, jwtUrl);
-
-  return {
-    email,
-    message: 'Registration successful. Please check your email to confirm your account.',
-  };
-};
-
 export const authService = {
-  register,
   login,
   logout,
 };

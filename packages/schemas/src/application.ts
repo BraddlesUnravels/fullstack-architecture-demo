@@ -31,8 +31,8 @@ export const selectApplicationSchema = v.strictObject({
   companyId: v.string(),
   role: v.string(),
   status: applicationStatusSchema,
-  url: v.nullable(v.string()),
-  notes: v.nullable(v.string()),
+  url: v.exactOptional(v.union([v.string(), v.undefined()])),
+  notes: v.exactOptional(v.union([v.string(), v.undefined()])),
   ...auditColumns.entries,
 });
 

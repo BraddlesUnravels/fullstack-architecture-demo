@@ -12,6 +12,17 @@ export class InvalidCredentialsError extends ApiError {
   }
 }
 
+export class RegistrationLinkExpiredError extends ApiError {
+  constructor(message = 'Registration link has expired') {
+    super({
+      status: 410,
+      code: 'AUTH_REGISTRATION_LINK_EXPIRED',
+      message,
+    });
+    this.name = 'RegistrationLinkExpiredError';
+  }
+}
+
 export class NoCredentialsSetError extends ApiError {
   constructor(message = 'No credentials set for this user') {
     super({
