@@ -1,6 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import { boolean, index, pgTable, timestamp, uuid, integer } from 'drizzle-orm/pg-core';
-import { JobStatus } from '@app/constants';
+import { JobStatus, UserTier } from '@app/constants';
 
 export const auditColumns = {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -31,10 +31,16 @@ export const user = pgTable(
   (t) => ({
     id: t.uuid('id').primaryKey().defaultRandom(),
     email: t.text('email').notNull().unique(),
+    verifiedAt: t.timestamp('verified_at', { withTimezone: true }),
     firstName: t.text('first_name').notNull(),
     lastName: t.text('last_name').notNull(),
     isLocked: t.boolean('is_locked').default(false).notNull(),
-    isAdmin: t.boolean('is_admin').default(false).notNull(),
+    tier: t
+      .text('tier', {
+        enum: [UserTier.FREE, UserTier.PREMIUM, UserTier.ADMIN] as const,
+      })
+      .notNull()
+      .default(UserTier.FREE),
     lastLoginAt: t.timestamp('last_login_at', { withTimezone: true }),
     ...auditColumns,
   }),
