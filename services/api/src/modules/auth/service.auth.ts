@@ -26,7 +26,7 @@ const login = async ({
   email,
   password,
   _req,
-}: LoginInput & { req: Request }): Promise<LoggedIn> => {
+}: LoginInput & { _req: Request }): Promise<LoggedIn> => {
   const [user] = await userRepo.findUserByEmail(email);
   if (!user) throw new UserNotFoundError('No user exists with the provided email');
 
@@ -43,7 +43,7 @@ const login = async ({
   };
 };
 
-const logout = (_sessionId: string): Promise<LoggedOut> => {
+const logout = (_sessionId: string): LoggedOut => {
   // TODO: Implement redis session invalidation logic here
 
   return { success: true };
