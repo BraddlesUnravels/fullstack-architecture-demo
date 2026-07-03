@@ -1,5 +1,5 @@
 import { securityUtils } from '@app/utils';
-import { JobStatus } from '@app/constants';
+import { JobStatus, UserTier } from '@app/constants';
 const SEED_CREATED_BY_USER_ID = '00000000-0000-0000-0000-000000000001';
 const SEED_PASSWORD = 'password123';
 const SEED_PASSWORD_HASH = await securityUtils.hashNewPassword(SEED_PASSWORD);
@@ -10,7 +10,7 @@ export const users = [
     firstName: 'Alice',
     lastName: 'Smith',
     isLocked: false,
-    isAdmin: false,
+    tier: UserTier.FREE,
     lastLoginAt: null,
     createdBy: SEED_CREATED_BY_USER_ID,
   },
@@ -19,7 +19,7 @@ export const users = [
     firstName: 'Bob',
     lastName: 'Jones',
     isLocked: false,
-    isAdmin: false,
+    tier: UserTier.FREE,
     lastLoginAt: null,
     createdBy: SEED_CREATED_BY_USER_ID,
   },
@@ -28,7 +28,7 @@ export const users = [
     firstName: 'Carol',
     lastName: 'White',
     isLocked: false,
-    isAdmin: false,
+    tier: UserTier.FREE,
     lastLoginAt: null,
     createdBy: SEED_CREATED_BY_USER_ID,
   },

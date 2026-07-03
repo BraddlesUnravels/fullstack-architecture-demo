@@ -1,7 +1,8 @@
 import { component$ } from '@builder.io/qwik';
 import { routeAction$ } from '@builder.io/qwik-city';
 import { api } from '../../lib';
-import { BgGradient } from './bg-gradient';
+import PublicLayout from '../../components/layout/public-layout';
+import { BgGradient } from '../../components/ui/bg-gradient';
 import { ProjectIntro } from './intro-section';
 import { LoginCard } from './login-card';
 import { ProjectScope } from './project-scope';
@@ -38,16 +39,14 @@ export type LoginActionStore = ReturnType<typeof useLoginAction>;
 export default component$(() => {
   const loginAction = useLoginAction();
   return (
-    <div id="login-page-container" class="flex-1 h-full justify-items-center">
-      <div class="min-w-xs max-w-sm h-full sm:max-w-2/3 md:max-w-2/3 lg:max-w-1/2 xl:max-w-2/3">
-        <BgGradient />
+    <PublicLayout>
+      <BgGradient />
 
-        <ProjectIntro />
+      <ProjectIntro />
 
-        <LoginCard loginAction={loginAction} />
+      <LoginCard loginAction={loginAction} />
 
-        <ProjectScope />
-      </div>
-    </div>
+      <ProjectScope />
+    </PublicLayout>
   );
 });

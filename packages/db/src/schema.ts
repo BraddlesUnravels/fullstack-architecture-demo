@@ -1,6 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import { boolean, index, pgTable, timestamp, uuid, integer } from 'drizzle-orm/pg-core';
-import { JobStatus } from '@app/constants';
+import { JobStatus, UserTier } from '@app/constants';
 
 export const auditColumns = {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -31,10 +31,15 @@ export const user = pgTable(
   (t) => ({
     id: t.uuid('id').primaryKey().defaultRandom(),
     email: t.text('email').notNull().unique(),
-    firstName: t.text('first_name').notNull(),
-    lastName: t.text('last_name').notNull(),
+    firstName: t.text('first_name'),
+    lastName: t.text('last_name'),
     isLocked: t.boolean('is_locked').default(false).notNull(),
-    isAdmin: t.boolean('is_admin').default(false).notNull(),
+    tier: t
+      .text('tier', {
+        enum: [UserTier.FREE, UserTier.PREMIUM, UserTier.ADMIN] as const,
+      })
+      .notNull()
+      .default(UserTier.FREE),
     lastLoginAt: t.timestamp('last_login_at', { withTimezone: true }),
     ...auditColumns,
   }),
@@ -55,23 +60,6 @@ export const credential = pgTable(
     invalidatedAt: timestamp('invalidated_at', { withTimezone: true }),
   }),
   (t) => [index('idx_credentials_user_id').on(t.userId)],
-);
-
-export const session = pgTable(
-  'session',
-  (t) => ({
-    id: t.uuid('id').primaryKey().defaultRandom(),
-    userId: t
-      .uuid('user_id')
-      .notNull()
-      .references(() => user.id, { onDelete: 'cascade' }),
-    expiresAt: t.timestamp('expires_at', { withTimezone: true }).notNull(),
-    revokedAt: t.timestamp('revoked_at', { withTimezone: true }),
-    userAgent: t.text('user_agent'),
-    ipAddress: t.text('ip_address'),
-    ...auditColumns,
-  }),
-  (t) => [index('idx_sessions_user_id').on(t.userId)],
 );
 
 export const application = pgTable(
@@ -99,7 +87,7 @@ export const application = pgTable(
         ] as const,
       })
       .notNull()
-      .default(JobStatus.APPLIED),
+      .default(JobStatus.ENTERED),
     url: t.text('url'),
     notes: t.text('notes'),
     ...auditColumns,
@@ -122,15 +110,7 @@ export const company = pgTable('company', (t) => ({
 
 export const userRelations = relations(user, ({ many }) => ({
   credential: many(credential),
-  sessions: many(session),
   applications: many(application),
-}));
-
-export const sessionRelations = relations(session, ({ one }) => ({
-  user: one(user, {
-    fields: [session.userId],
-    references: [user.id],
-  }),
 }));
 
 export const applicationRelations = relations(application, ({ one }) => ({

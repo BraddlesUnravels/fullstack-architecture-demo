@@ -9,10 +9,11 @@ import type { ApiErrorCode } from './api-error-code';
  * * 403 Forbidden: The server understood the request, but refuses to authorize it.
  * * 404 Not Found: The requested resource could not be found.
  * * 409 Conflict: The request could not be completed due to a conflict with the current state of the resource.
+ * * 410 Gone: The requested resource no longer exists.
  * * 422 Unprocessable Entity: The request was well-formed but was unable to be followed due to semantic errors.
  * * 500 Internal Server Error: An unexpected condition was encountered on the server.
  */
-export type ApiErrorStatus = 400 | 401 | 403 | 404 | 409 | 422 | 500;
+export type ApiErrorStatus = 400 | 401 | 403 | 404 | 409 | 410 | 422 | 500;
 
 export type ApiErrorDefaults = Record<
   ApiErrorStatus,

@@ -3,8 +3,9 @@ import type * as v from 'valibot';
 export * from './user';
 export * from './company';
 export * from './application';
-export * from './session';
 export * from './auth';
+export * from './credential';
+export * from './redis';
 
 export type GetById = {
   id: string;
@@ -35,3 +36,13 @@ export type ResourceTypes<
   insert: v.InferOutput<T['insert']>;
   update: v.InferOutput<T['update']>;
 };
+
+export type NullToUndefined<T> = T extends Date
+  ? Date
+  : T extends null
+    ? undefined
+    : T extends readonly (infer U)[]
+      ? NullToUndefined<U>[]
+      : T extends object
+        ? { [K in keyof T]: NullToUndefined<T[K]> }
+        : T;
