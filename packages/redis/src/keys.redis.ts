@@ -6,7 +6,7 @@ const prefixedKey = (...parts: string[]) => [regPrefix, ...parts].join(':');
 
 export const redisKeys = {
   pendingRegistration: (registrationId: string) =>
-    prefixedKey('auth', 'registration', 'pending', registrationId),
+    prefixedKey('pending', 'registration', 'id', registrationId),
   pendingRegistrationByEmail: (email: string) =>
-    prefixedKey('auth', 'registration', 'email', encodeKeyPart(email)),
+    prefixedKey('pending', 'registration', 'email', encodeKeyPart(email)),
 };

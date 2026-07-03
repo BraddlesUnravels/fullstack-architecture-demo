@@ -36,7 +36,10 @@ export const redisClient = createClient({
 });
 
 // TODO: Add a logger to log redis connection events and errors
-redisClient.on('error', (err) => console.error('Redis client error', err));
+redisClient.on('error', (err) => {
+  console.error('Redis client error', err);
+  throw new Error('Redis client error');
+});
 
 // Connection promise to ensure async connection attempts are not duplicated.
 let connectPromise: Promise<unknown> | undefined;

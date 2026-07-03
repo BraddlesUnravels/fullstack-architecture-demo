@@ -9,14 +9,13 @@ const parsePendingRegistrationRecord = (
 
   const parsed = JSON.parse(value) as PendingRegistrationRecord;
   if (!parsed.registrationId || !parsed.email) return undefined;
-  if (parsed.state !== 'pending' && parsed.state !== 'verified') return undefined;
 
   return parsed;
 };
 
 const savePendingRegistrationRecord = async (
   record: PendingRegistrationRecord,
-  ttlSeconds: number,
+  ttlSeconds?: number,
 ) => {
   const client = await getRedisClient();
   const pendingByEmailKey = redisKeys.pendingRegistrationByEmail(record.email);
@@ -39,13 +38,12 @@ const savePendingRegistrationRecord = async (
 export const createPendingRegistration = async (
   registrationId: string,
   email: string,
-  ttlSeconds: number,
+  ttlSeconds?: number,
 ) => {
   return savePendingRegistrationRecord(
     {
       registrationId,
       email,
-      state: 'pending',
       attempts: 0,
     },
     ttlSeconds,
@@ -59,19 +57,6 @@ export const readPendingRegistration = async (
   const payload = await client.get(redisKeys.pendingRegistration(registrationId));
 
   return parsePendingRegistrationRecord(payload);
-};
-
-export const markRegistrationVerified = async (
-  record: PendingRegistrationRecord,
-  ttlSeconds: number,
-) => {
-  return savePendingRegistrationRecord(
-    {
-      ...record,
-      state: 'verified',
-    },
-    ttlSeconds,
-  );
 };
 
 export const consumePendingRegistration = async (

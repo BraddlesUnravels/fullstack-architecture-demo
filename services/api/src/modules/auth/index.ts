@@ -19,8 +19,8 @@ export const auth = new Elysia({ prefix: '/auth' })
     body: AuthModel.register,
     response: registrationResponse,
   })
-  .get('/verify-email', async ({ query }) => await registrationService.verifyEmail(query), {
-    query: AuthModel.verifyEmail,
+  .get('/verify-email/:id', async ({ params }) => await registrationService.verifyEmail(params), {
+    params: AuthModel.verifyEmail,
     response: verifyEmailResponse,
   })
   .post(

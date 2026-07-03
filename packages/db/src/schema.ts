@@ -31,7 +31,6 @@ export const user = pgTable(
   (t) => ({
     id: t.uuid('id').primaryKey().defaultRandom(),
     email: t.text('email').notNull().unique(),
-    verifiedAt: t.timestamp('verified_at', { withTimezone: true }),
     firstName: t.text('first_name'),
     lastName: t.text('last_name'),
     isLocked: t.boolean('is_locked').default(false).notNull(),
@@ -63,23 +62,6 @@ export const credential = pgTable(
   (t) => [index('idx_credentials_user_id').on(t.userId)],
 );
 
-export const session = pgTable(
-  'session',
-  (t) => ({
-    id: t.uuid('id').primaryKey().defaultRandom(),
-    userId: t
-      .uuid('user_id')
-      .notNull()
-      .references(() => user.id, { onDelete: 'cascade' }),
-    expiresAt: t.timestamp('expires_at', { withTimezone: true }).notNull(),
-    revokedAt: t.timestamp('revoked_at', { withTimezone: true }),
-    userAgent: t.text('user_agent'),
-    ipAddress: t.text('ip_address'),
-    ...auditColumns,
-  }),
-  (t) => [index('idx_sessions_user_id').on(t.userId)],
-);
-
 export const application = pgTable(
   'application',
   (t) => ({
@@ -105,7 +87,7 @@ export const application = pgTable(
         ] as const,
       })
       .notNull()
-      .default(JobStatus.APPLIED),
+      .default(JobStatus.ENTERED),
     url: t.text('url'),
     notes: t.text('notes'),
     ...auditColumns,
@@ -128,15 +110,7 @@ export const company = pgTable('company', (t) => ({
 
 export const userRelations = relations(user, ({ many }) => ({
   credential: many(credential),
-  sessions: many(session),
   applications: many(application),
-}));
-
-export const sessionRelations = relations(session, ({ one }) => ({
-  user: one(user, {
-    fields: [session.userId],
-    references: [user.id],
-  }),
 }));
 
 export const applicationRelations = relations(application, ({ one }) => ({

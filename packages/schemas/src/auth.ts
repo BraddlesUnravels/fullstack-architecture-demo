@@ -21,7 +21,7 @@ export const registration = v.strictObject({
   message: v.string(),
 });
 export const verifyEmail = v.strictObject({
-  base64Id: v.message(v.pipe(v.string(), v.minLength(1)), 'Registration ID is required'),
+  id: v.message(v.pipe(v.string(), v.minLength(1)), 'Registration ID is required'),
 });
 
 export const verifiedEmail = v.strictObject({

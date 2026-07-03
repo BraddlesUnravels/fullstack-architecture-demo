@@ -1,11 +1,10 @@
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, randomBytes /*, timingSafeEqual*/ } from 'node:crypto';
 import { emailService } from '../../services';
 import { securityService } from '../../services';
 import { credentialRepo, userRepo } from '@app/db';
 import {
   consumePendingRegistration,
   createPendingRegistration,
-  markRegistrationVerified,
   readPendingRegistration,
 } from '@app/redis';
 import {
@@ -26,7 +25,6 @@ import type {
 import { UserNotFoundError } from '../user/errors.user';
 
 const REGISTRATION_LINK_TTL_SECONDS = 60 * 15;
-const REGISTRATION_COMPLETION_TTL_SECONDS = 60 * 30;
 const DEFAULT_APP_LINK = process.env.CORS_ORIGIN || 'http://localhost:5173';
 const API_URL = process.env.API_URL;
 if (!API_URL) throw new Error('Missing API_URL');
@@ -44,13 +42,20 @@ const encodeRegistrationId = (registrationId: string): string => {
 };
 
 const createVerificationUrl = (encodedId: string): string => {
-  return `${API_URL}/auth/verify-email?id=${encodedId}`;
+  return `${API_URL}/auth/verify-email/${encodedId}`;
 };
+
+// const compareHashedStrings = (hashedStr1: string, hashedStr2: string): boolean => {
+//   const buffer1 = Buffer.from(hashedStr1);
+//   const buffer2 = Buffer.from(hashedStr2);
+
+//   return timingSafeEqual(buffer1, buffer2);
+// };
 
 const handleRegistrationId = () => {
   const registrationId = createRegistrationId();
   const encodedId = encodeRegistrationId(registrationId);
-  const hashedId = hashString(registrationId);
+  const hashedId = hashString(encodedId);
   return { encodedId, hashedId };
 };
 
@@ -74,18 +79,19 @@ const register = async ({ email }: Register): Promise<Registration> => {
   };
 };
 
-const verifyEmail = async ({ base64Id }: VerifyEmail): Promise<VerifiedEmail> => {
-  // confirm registration link by hashing the base64Id and checking if it exists in redis
-  const hashedId = hashString(base64Id);
-
+const verifyEmail = async ({ id }: VerifyEmail): Promise<VerifiedEmail> => {
+  console.log('Verifying email with ID:', id);
+  const hashedId = hashString(id);
+  console.log('Hashed ID:', hashedId);
   const record = await readPendingRegistration(hashedId);
   if (!record) throw new RegistrationLinkExpiredError();
+
+  console.log('Found pending registration record:', record);
 
   const [existingUser] = await userRepo.findUserByEmail(record.email);
 
   if (existingUser) {
-    await markRegistrationVerified(record, REGISTRATION_COMPLETION_TTL_SECONDS);
-
+    await consumePendingRegistration(hashedId);
     return {
       success: true,
       userId: existingUser.id,
@@ -95,10 +101,9 @@ const verifyEmail = async ({ base64Id }: VerifyEmail): Promise<VerifiedEmail> =>
 
   const [createdUser] = await userRepo.createUser({
     email: record.email,
-    verifiedAt: new Date(),
   });
   if (!createdUser) throw new UserCreationFailedError();
-
+  console.log('Created user:', createdUser);
   await consumePendingRegistration(hashedId);
 
   return {
