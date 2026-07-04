@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@app/schemas/*": ["../../packages/schemas/src/*"]
+      "@app/schemas/*": ["../../packages/schemas/src/*"],
+      "@app/constants": ["../../packages/constants/src/*"]
     }
   },
   "include": ["src"]

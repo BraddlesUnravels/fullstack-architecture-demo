@@ -1,27 +1,36 @@
 import { Elysia } from 'elysia';
-import { InvalidSessionTokenError, MissingSessionTokenError } from '../modules/auth/errors.auth';
+import { readSession } from '@app/redis';
+import { MissingSessionTokenError, SessionExpiredError } from '../modules/auth/errors.auth';
+import { API_CONSTANTS } from '../config';
+import { hashSessionToken } from '../services/auth/security.service';
 
-const BEARER_PREFIX = /^Bearer\s+/i;
+const COOKIE_NAME = API_CONSTANTS.cookie.COOKIE_NAME;
 
-const extractTokenFromHeader = (authorization?: string): string => {
-  if (!authorization) throw new MissingSessionTokenError();
+const extractTokenFromCookie = (sessionCookieValue: string | undefined): string => {
+  if (!sessionCookieValue)
+    throw new MissingSessionTokenError('Your session has expiresd, please log in again');
 
-  if (!BEARER_PREFIX.test(authorization))
-    throw new InvalidSessionTokenError('Authorization header must be in the format.');
+  const sessionToken = sessionCookieValue.trim();
 
-  const sessionId = authorization.replace(BEARER_PREFIX, '').trim();
-
-  if (!sessionId) throw new InvalidSessionTokenError('Session token is missing');
-  return sessionId;
+  return sessionToken;
 };
-// TODO: Add async when implementing redis session validation logic
+
 export const sessionGuard = new Elysia({ name: 'session-auth' }).resolve(
   { as: 'scoped' },
-  ({ headers }) => {
-    const sessionId = extractTokenFromHeader(headers.authorization);
+  async ({ cookie }) => {
+    const sessionCookie = cookie[COOKIE_NAME];
+    const sessionCookieValue =
+      sessionCookie && typeof sessionCookie.value === 'string' ? sessionCookie.value : undefined;
+    const sessionToken = extractTokenFromCookie(sessionCookieValue);
+    const sessionTokenHash = hashSessionToken(sessionToken);
+    const session = await readSession(sessionTokenHash);
 
-    // TODO: Implement redis session validation logic here
+    if (!session) throw new SessionExpiredError();
 
-    return { sessionId };
+    return {
+      session: {
+        userId: session.userId,
+      },
+    };
   },
 );

@@ -29,7 +29,7 @@ export const useLoginAction = routeAction$(async (rawForm, { fail }) => {
     return fail(statusCode, { code: errorCode, message: errorMessage });
   }
   return {
-    sessionId: data.sessionId,
+    success: data.success,
     user: data.user,
   };
 });

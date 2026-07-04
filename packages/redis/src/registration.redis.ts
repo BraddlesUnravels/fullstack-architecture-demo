@@ -1,6 +1,6 @@
-import { getRedisClient } from './client.redis';
-import { redisKeys } from './keys.redis';
 import type { PendingRegistrationRecord } from '@app/types';
+import { getRegistrationRedisClient } from './client.redis';
+import { redisKeys } from './keys.redis';
 
 const parsePendingRegistrationRecord = (
   value: string | null,
@@ -17,7 +17,7 @@ const savePendingRegistrationRecord = async (
   record: PendingRegistrationRecord,
   ttlSeconds?: number,
 ) => {
-  const client = await getRedisClient();
+  const client = await getRegistrationRedisClient();
   const pendingByEmailKey = redisKeys.pendingRegistrationByEmail(record.email);
   const existingRegistrationId = await client.get(pendingByEmailKey);
 
@@ -44,7 +44,6 @@ export const createPendingRegistration = async (
     {
       registrationId,
       email,
-      attempts: 0,
     },
     ttlSeconds,
   );
@@ -53,7 +52,7 @@ export const createPendingRegistration = async (
 export const readPendingRegistration = async (
   registrationId: string,
 ): Promise<PendingRegistrationRecord | undefined> => {
-  const client = await getRedisClient();
+  const client = await getRegistrationRedisClient();
   const payload = await client.get(redisKeys.pendingRegistration(registrationId));
 
   return parsePendingRegistrationRecord(payload);
@@ -62,7 +61,7 @@ export const readPendingRegistration = async (
 export const consumePendingRegistration = async (
   registrationId: string,
 ): Promise<PendingRegistrationRecord | undefined> => {
-  const client = await getRedisClient();
+  const client = await getRegistrationRedisClient();
   const record = await readPendingRegistration(registrationId);
   if (!record) return undefined;
 

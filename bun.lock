@@ -69,6 +69,7 @@
       "name": "@app/redis",
       "version": "0.0.1",
       "dependencies": {
+        "@app/constants": "workspace:*",
         "@app/types": "workspace:*",
         "redis": "^6.1.0",
       },
@@ -86,6 +87,7 @@
       "name": "@app/types",
       "version": "0.0.1",
       "dependencies": {
+        "@app/constants": "workspace:*",
         "@app/schemas": "workspace:*",
         "valibot": "^1.4.2",
       },

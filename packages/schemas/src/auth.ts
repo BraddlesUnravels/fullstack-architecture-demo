@@ -55,15 +55,13 @@ export const completedRegistration = v.strictObject({
   message: v.string(),
 });
 
-export const logout = v.strictObject({
-  id: v.message(v.pipe(v.string(), v.uuid()), 'Invalid user ID format'),
-});
+export const logout = v.strictObject({});
 
 export const loggedout = v.strictObject({
   success: v.boolean(),
 });
 
 export const loggedin = v.strictObject({
-  sessionId: v.string(),
+  success: v.boolean(),
   user: userSelectSchema,
 });

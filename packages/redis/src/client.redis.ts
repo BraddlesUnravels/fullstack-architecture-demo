@@ -1,70 +1,85 @@
 import { createClient } from 'redis';
+import { REDIS_CONSTANTS } from './constants.redis';
 
-const DEFAULT_REDIS_URL = 'redis://localhost:6379';
-const DEFAULT_CONNECT_TIMEOUT_MS = 5000;
-const DEFAULT_RETRY_BASE_DELAY_MS = 50;
-const MAX_RETRY_DELAY_MS = 2000;
+const { DEFAULT_URL, TIMEOUT_MS, REGISTRATION_DB, SESSION_DB, RETRY_DELAY_MS, MAX_RETRY_DELAY_MS } =
+  REDIS_CONSTANTS;
 
-const parsePositiveNumber = (value: string | undefined, fallback: number): number => {
-  if (!value) return fallback;
-
-  const parsed = Number(value);
-
-  if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
-
-  return parsed;
+type RedisClient = ReturnType<typeof createClient>;
+type RedisClientState = {
+  client: RedisClient;
+  connectPromise?: Promise<void>;
 };
 
-const redisUrl = process.env.REDIS_URL || DEFAULT_REDIS_URL;
-const redisConnectTimeoutMs = parsePositiveNumber(
-  process.env.REDIS_CONNECT_TIMEOUT_MS,
-  DEFAULT_CONNECT_TIMEOUT_MS,
-);
+const redisUrl = process.env.REDIS_URL || DEFAULT_URL;
 
-export const redisClient = createClient({
-  url: redisUrl,
-  socket: {
-    connectTimeout: redisConnectTimeoutMs,
-    reconnectStrategy: (retries) => {
-      // This adds a random retry delay stops all clients from retrying at the same time.
-      const jitter = Math.floor(Math.random() * 200);
-      const delay = Math.min(2 ** retries * DEFAULT_RETRY_BASE_DELAY_MS, MAX_RETRY_DELAY_MS);
+const createRedisClient = (database: number): RedisClient =>
+  createClient({
+    url: redisUrl,
+    database,
+    socket: {
+      connectTimeout: TIMEOUT_MS,
+      reconnectStrategy: (retries) => {
+        // This adds a random retry delay stops all clients from retrying at the same time.
+        const jitter = Math.floor(Math.random() * 200);
+        const delay = Math.min(2 ** retries * RETRY_DELAY_MS, MAX_RETRY_DELAY_MS);
 
-      return delay + jitter;
+        return delay + jitter;
+      },
     },
-  },
-});
+  });
 
-// TODO: Add a logger to log redis connection events and errors
-redisClient.on('error', (err) => {
-  console.error('Redis client error', err);
-  throw new Error('Redis client error');
-});
+const registrationRedisState: RedisClientState = {
+  client: createRedisClient(REGISTRATION_DB),
+};
 
-// Connection promise to ensure async connection attempts are not duplicated.
-let connectPromise: Promise<unknown> | undefined;
+const sessionRedisState: RedisClientState = {
+  client: createRedisClient(SESSION_DB),
+};
 
-export const connectRedis = async () => {
-  if (redisClient.isOpen) return;
+const attachErrorHandler = (clientName: string, state: RedisClientState) => {
+  state.client.on('error', (err) => {
+    console.error(`${clientName} Redis client error`, err);
+    throw new Error(`${clientName} Redis client error`);
+  });
+};
 
-  if (!connectPromise) {
-    connectPromise = redisClient
+attachErrorHandler('Registration', registrationRedisState);
+attachErrorHandler('Session', sessionRedisState);
+
+const connectRedisClient = async (state: RedisClientState) => {
+  if (state.client.isOpen) return;
+
+  if (!state.connectPromise) {
+    state.connectPromise = state.client
       .connect()
       .then(() => undefined)
       .finally(() => {
-        connectPromise = undefined;
+        state.connectPromise = undefined;
       });
   }
 
-  await connectPromise;
+  await state.connectPromise;
 };
 
-export const getRedisClient = async () => {
-  await connectRedis();
-  return redisClient;
+const getConnectedRedisClient = async (state: RedisClientState): Promise<RedisClient> => {
+  await connectRedisClient(state);
+  return state.client;
+};
+
+export const getRegistrationRedisClient = async (): Promise<RedisClient> =>
+  getConnectedRedisClient(registrationRedisState);
+
+export const getSessionRedisClient = async (): Promise<RedisClient> =>
+  getConnectedRedisClient(sessionRedisState);
+
+const closeRedisClient = async (client: RedisClient) => {
+  if (!client.isOpen) return;
+  await client.quit();
 };
 
 export const closeRedis = async () => {
-  if (!redisClient.isOpen) return;
-  await redisClient.quit();
+  await Promise.all([
+    closeRedisClient(registrationRedisState.client),
+    closeRedisClient(sessionRedisState.client),
+  ]);
 };

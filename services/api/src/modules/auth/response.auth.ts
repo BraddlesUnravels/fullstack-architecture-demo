@@ -11,7 +11,7 @@ export const loginResponse = {
 
 export const logoutResponse = {
   200: AuthModel.loggedout,
-  404: apiErrorResponseSchema,
+  401: apiErrorResponseSchema,
   500: apiErrorResponseSchema,
 } as const;
 
