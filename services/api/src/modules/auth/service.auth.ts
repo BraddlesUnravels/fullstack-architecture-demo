@@ -1,32 +1,21 @@
-import { randomUUID } from 'crypto';
 import { credentialRepo, userRepo } from '@app/db';
-//import { API_CONSTANTS } from '../../config';
-import { securityService } from '../../services';
+import { createSession, deleteSession } from '@app/redis';
+import type { LoggedOut, LoginInput, UserSelect } from '@app/types';
+import { hashSessionToken, isPasswordMatch, createSessionToken } from '../../services';
 import { serializeAuditDates } from '../../utils';
 import { UserNotFoundError } from '../user/errors.user';
-import {
-  InvalidCredentialsError,
-  NoCredentialsSetError,
-  // SessionCreateFailedError,
-  // SessionNotFoundError,
-} from './errors.auth';
-import type { LoggedIn, LoggedOut, LoginInput } from '@app/types';
+import { InvalidCredentialsError, NoCredentialsSetError } from './errors.auth';
+import type { CookieJar } from '../../types';
+import { API_CONSTANTS } from '../../config';
 
-// const SESSION_TIMEOUT = API_CONSTANTS.security.SESSION_TIMEOUT; // 48 hours in mins
+type LoginResult = {
+  sessionToken: string;
+  user: UserSelect;
+};
 
-// function extractRequestDetails(req?: Request): { ip?: string; userAgent?: string } {
-//   if (!req) return {};
-//   return {
-//     ip: req.headers.get('x-forwarded-for') || req.headers.get('remote-addr') || undefined,
-//     userAgent: req.headers.get('user-agent') || undefined,
-//   };
-// }
+const { TTL_SECONDS, COOKIE_NAME } = API_CONSTANTS.cookie;
 
-const login = async ({
-  email,
-  password,
-  _req,
-}: LoginInput & { _req: Request }): Promise<LoggedIn> => {
+const login = async ({ email, password }: LoginInput): Promise<LoginResult> => {
   const [user] = await userRepo.findUserByEmail(email);
   if (!user) throw new UserNotFoundError('No user exists with the provided email');
 
@@ -34,17 +23,28 @@ const login = async ({
   if (!credentials)
     throw new NoCredentialsSetError('No credentials set for the user with the provided email');
 
-  const isMatch = await securityService.isPasswordMatch(password, credentials.hash);
+  const isMatch = await isPasswordMatch(password, credentials.hash);
   if (!isMatch) throw new InvalidCredentialsError();
 
+  const sessionToken = createSessionToken();
+  const sessionTokenHash = hashSessionToken(sessionToken);
+
+  await createSession(sessionTokenHash, user.id, user.tier, TTL_SECONDS);
+
   return {
-    sessionId: randomUUID(),
+    sessionToken,
     user: serializeAuditDates(user),
   };
 };
 
-const logout = (_sessionId: string): LoggedOut => {
-  // TODO: Implement redis session invalidation logic here
+const logout = async (cookie: CookieJar): Promise<LoggedOut> => {
+  const session = cookie[COOKIE_NAME];
+
+  const token = typeof session?.value === 'string' ? session?.value : undefined;
+
+  if (token) await deleteSession(hashSessionToken(token));
+
+  session?.remove();
 
   return { success: true };
 };

@@ -1,7 +1,8 @@
 import { createHash, randomBytes /*, timingSafeEqual*/ } from 'node:crypto';
 import { emailService } from '../../services';
-import { securityService } from '../../services';
+import { hashNewPassword } from '../../services';
 import { credentialRepo, userRepo } from '@app/db';
+import { UserNotFoundError } from '../user/errors.user';
 import {
   consumePendingRegistration,
   createPendingRegistration,
@@ -22,7 +23,6 @@ import type {
   VerifiedEmail,
   VerifyEmail,
 } from '@app/types';
-import { UserNotFoundError } from '../user/errors.user';
 
 const REGISTRATION_LINK_TTL_SECONDS = 60 * 15;
 const DEFAULT_APP_LINK = process.env.CORS_ORIGIN || 'http://localhost:5173';
@@ -44,13 +44,6 @@ const encodeRegistrationId = (registrationId: string): string => {
 const createVerificationUrl = (encodedId: string): string => {
   return `${API_URL}/auth/verify-email/${encodedId}`;
 };
-
-// const compareHashedStrings = (hashedStr1: string, hashedStr2: string): boolean => {
-//   const buffer1 = Buffer.from(hashedStr1);
-//   const buffer2 = Buffer.from(hashedStr2);
-
-//   return timingSafeEqual(buffer1, buffer2);
-// };
 
 const handleRegistrationId = () => {
   const registrationId = createRegistrationId();
@@ -80,13 +73,9 @@ const register = async ({ email }: Register): Promise<Registration> => {
 };
 
 const verifyEmail = async ({ id }: VerifyEmail): Promise<VerifiedEmail> => {
-  console.log('Verifying email with ID:', id);
   const hashedId = hashString(id);
-  console.log('Hashed ID:', hashedId);
   const record = await readPendingRegistration(hashedId);
   if (!record) throw new RegistrationLinkExpiredError();
-
-  console.log('Found pending registration record:', record);
 
   const [existingUser] = await userRepo.findUserByEmail(record.email);
 
@@ -103,7 +92,7 @@ const verifyEmail = async ({ id }: VerifyEmail): Promise<VerifiedEmail> => {
     email: record.email,
   });
   if (!createdUser) throw new UserCreationFailedError();
-  console.log('Created user:', createdUser);
+
   await consumePendingRegistration(hashedId);
 
   return {
@@ -129,7 +118,7 @@ const completeRegistration = async ({
   if (!updatedUser || !updatedUser.firstName)
     throw new UserCreationFailedError('Failed to complete registration');
 
-  const hash = await securityService.hashNewPassword(password);
+  const hash = await hashNewPassword(password);
   const [createdCredential] = await credentialRepo.createCredential({
     userId: user.id,
     hash,

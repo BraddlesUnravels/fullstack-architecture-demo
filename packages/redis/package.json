@@ -17,6 +17,11 @@
   },
   "dependencies": {
     "redis": "^6.1.0",
-    "@app/types": "workspace:*"
+    "@app/types": "workspace:*",
+    "@app/constants": "workspace:*"
+  },
+  "paths": {
+    "@app/types/*": "../types/src/*",
+    "@app/constants": "../constants/src/index.ts"
   }
 }

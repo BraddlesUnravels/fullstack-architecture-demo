@@ -13,7 +13,7 @@ import type {
 } from '@app/schemas';
 import type { NullToUndefined } from '@app/types';
 
-export type LoginInput = v.InferInput<typeof login & { req?: Request }>;
+export type LoginInput = v.InferInput<typeof login>;
 export type Register = v.InferInput<typeof register>;
 export type Registration = v.InferInput<typeof registration>;
 export type VerifyEmail = v.InferInput<typeof verifyEmail>;

@@ -2,6 +2,7 @@ import { Elysia } from 'elysia';
 import { AuthModel } from './models.auth';
 import { authService } from './service.auth';
 import { registrationService } from './service.registration';
+import { setSessionCookie } from '../../services';
 import {
   completeRegistrationResponse,
   loginResponse,
@@ -13,7 +14,14 @@ import {
 export const auth = new Elysia({ prefix: '/auth' })
   .post(
     '/login',
-    async ({ body, request }) => await authService.login({ ...body, _req: request }),
+    async ({ body, cookie }) => {
+      const { sessionToken, user } = await authService.login(body);
+      setSessionCookie(cookie, sessionToken);
+      return {
+        success: true,
+        user,
+      };
+    },
     {
       body: AuthModel.login,
       response: loginResponse,
@@ -35,7 +43,6 @@ export const auth = new Elysia({ prefix: '/auth' })
       response: completeRegistrationResponse,
     },
   )
-  .get('/logout/:id', ({ params }) => authService.logout(params.id), {
-    params: AuthModel.logout,
+  .post('/logout', async ({ cookie }) => await authService.logout(cookie), {
     response: logoutResponse,
   });

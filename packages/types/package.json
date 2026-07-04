@@ -13,9 +13,11 @@
   },
   "dependencies": {
     "@app/schemas": "workspace:*",
+    "@app/constants": "workspace:*",
     "valibot": "^1.4.2"
   },
   "paths": {
-    "@app/schemas/*": "../schemas/src/*"
+    "@app/schemas/*": "../schemas/src/*",
+    "@app/constants": "../constants/src/index.ts"
   }
 }

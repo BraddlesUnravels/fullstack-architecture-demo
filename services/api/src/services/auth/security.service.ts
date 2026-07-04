@@ -1,26 +1,30 @@
 import argon2id from 'argon2';
 import jwt from 'jsonwebtoken';
-import { JwtVerificationError } from '../../modules/auth/errors.auth';
+import { createHash, randomBytes } from 'node:crypto';
+import { JwtVerificationError, SessionCreateFailedError } from '../../modules/auth/errors.auth';
+import type { CookieJar } from '../../types';
+import { API_CONSTANTS } from '../../config';
 
 const API_URL = process.env.API_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
+const { COOKIE_NAME, TTL_SECONDS } = API_CONSTANTS.cookie;
 
-const isPasswordMatch = async (password: string, hash: string): Promise<boolean> => {
+export const isPasswordMatch = async (password: string, hash: string): Promise<boolean> => {
   return argon2id.verify(hash, password);
 };
 
-const hashNewPassword = async (password: string): Promise<string> => {
+export const hashNewPassword = async (password: string): Promise<string> => {
   return argon2id.hash(password);
 };
 
-const genJwtUrl = (userId: string) => {
+export const genJwtUrl = (userId: string) => {
   const token = jwt.sign({ userId, purpose: 'email-verification' }, JWT_SECRET!, {
     expiresIn: '1d',
   });
   return `${API_URL}/auth/verify-email?token=${token}`;
 };
 
-const jwtVerify = (token: string) => {
+export const jwtVerify = (token: string) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET!);
     return decoded;
@@ -29,9 +33,22 @@ const jwtVerify = (token: string) => {
   }
 };
 
-export const securityService = {
-  isPasswordMatch,
-  hashNewPassword,
-  genJwtUrl,
-  jwtVerify,
+export const createSessionToken = (): string => randomBytes(32).toString('base64url');
+
+export const hashSessionToken = (token: string): string =>
+  createHash('sha256').update(token).digest('hex');
+
+export const setSessionCookie = (cookie: CookieJar, sessionToken: string) => {
+  const sessionCookie = cookie[COOKIE_NAME];
+  if (!sessionCookie) throw new SessionCreateFailedError();
+
+  sessionCookie.value = sessionToken;
+
+  sessionCookie.set({
+    httpOnly: true,
+    path: '/',
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: TTL_SECONDS,
+  });
 };
