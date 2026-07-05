@@ -7,7 +7,7 @@ import { observabilityPlugin } from './plugins/observability.plugin';
 import { errorHandlerPlugin } from './plugins/error-handler.plugin';
 import { auth } from './modules/auth';
 import { users } from './modules/user';
-// import { applications } from './modules/application';
+import { applications } from './modules/application';
 import { healthRoutes } from './modules/health';
 
 type CreateAppOptions = {
@@ -27,7 +27,7 @@ export const createApp = ({ corsOrigin }: CreateAppOptions) =>
 
     // Protected routes
     .use(users)
-    // .use(applications)
+    .use(applications)
 
     // Public fallback route for 404
     .all(
