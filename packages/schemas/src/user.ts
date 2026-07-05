@@ -5,11 +5,10 @@ import { UserTier } from '@app/constants';
 export const userSelectSchema = v.strictObject({
   id: v.pipe(v.string(), v.uuid()),
   email: v.pipe(v.string(), v.email()),
-  verifiedAt: v.exactOptional(v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()])),
-  firstName: v.exactOptional(v.string()),
-  lastName: v.exactOptional(v.string()),
-  isLocked: v.exactOptional(v.boolean()),
-  tier: v.exactOptional(v.enum(UserTier)),
+  firstName: v.exactOptional(v.union([v.string(), v.undefined()])),
+  lastName: v.exactOptional(v.union([v.string(), v.undefined()])),
+  isLocked: v.boolean(),
+  tier: v.enum(UserTier),
   lastLoginAt: v.exactOptional(v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()])),
   ...auditColumns.entries,
 });

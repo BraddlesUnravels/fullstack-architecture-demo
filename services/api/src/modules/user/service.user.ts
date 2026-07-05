@@ -46,12 +46,10 @@ const findUserById = async ({ id }: GetById): Promise<UserSelect> => {
 };
 
 const createUser = async (data: UserInsert): Promise<UserSelect> => {
-  const existingUser = await userRepo.findUserByEmail(data.email);
-
+  const [existingUser] = await userRepo.findUserByEmail(data.email);
   if (existingUser) throw new UserEmailConflictError();
 
   const [newUser] = await userRepo.createUser(toInsertUserRow(data));
-
   if (!newUser) throw new UserCreateFailedError();
 
   return serializeAuditDates(newUser);

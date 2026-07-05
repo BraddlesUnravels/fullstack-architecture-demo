@@ -9,7 +9,7 @@ export const API_CONSTANTS = {
   cookie: {
     COOKIE_NAME: 'sid',
     TTL_SECONDS: 60 * 60 * 8, // 8 hours in seconds
-    INACTIVITY_TIMEOUT_MILLIS: 0.001 * 1000 * 60 * 60 * 4, // 4hrs
+    INACTIVITY_TIMEOUT_MILLIS: 1000 * 60 * 60 * 4, // 4hrs
   },
   jwt: {},
   email: {
