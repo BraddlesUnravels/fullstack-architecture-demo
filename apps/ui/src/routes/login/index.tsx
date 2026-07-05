@@ -13,7 +13,7 @@ type LoginFormInput = {
 
 export const useLoginAction = routeAction$(async (rawForm, { fail }) => {
   const form = rawForm as LoginFormInput;
-  const { data, error, status } = await api.auth.login.post(form);
+  const { data, error, status } = await api.auth.post(form);
 
   if (status !== 200 || !data) {
     const statusCode = typeof status === 'number' ? status : 500;

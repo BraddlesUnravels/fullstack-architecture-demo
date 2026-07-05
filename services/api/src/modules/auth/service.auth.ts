@@ -9,7 +9,7 @@ import type { CookieJar } from '../../types';
 import { API_CONSTANTS } from '../../config';
 
 type LoginResult = {
-  sessionToken: string;
+  token: string;
   user: UserSelect;
 };
 
@@ -26,13 +26,13 @@ const login = async ({ email, password }: LoginInput): Promise<LoginResult> => {
   const isMatch = await isPasswordMatch(password, credentials.hash);
   if (!isMatch) throw new InvalidCredentialsError();
 
-  const sessionToken = createSessionToken();
-  const sessionTokenHash = hashSessionToken(sessionToken);
+  const token = createSessionToken();
+  const sessionTokenHash = hashSessionToken(token);
 
   await createSession(sessionTokenHash, user.id, user.tier, TTL_SECONDS);
 
   return {
-    sessionToken,
+    token,
     user: serializeAuditDates(user),
   };
 };
