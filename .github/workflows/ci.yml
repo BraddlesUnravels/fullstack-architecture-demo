@@ -8,7 +8,7 @@ on:
 
 jobs:
   quality-checks:
-    name: Format, typecheck, and lint
+    name: Format, typecheck, lint, and test
     runs-on: ubuntu-latest
 
     steps:
@@ -31,3 +31,6 @@ jobs:
 
       - name: Lint code
         run: bun run lint
+
+      - name: Run API tests
+        run: bun run --filter '@app/api' test

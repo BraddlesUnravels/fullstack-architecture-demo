@@ -12,5 +12,7 @@ export const auditColumns = v.strictObject({
 
   isDeleted: v.exactOptional(v.boolean()),
 
+  verifiedAt: v.exactOptional(v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()])),
+
   version: v.pipe(v.number(), v.integer()),
 });
