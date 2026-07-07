@@ -44,7 +44,7 @@ export const setSessionCookie = (cookie: CookieJar, sessionToken: string) => {
 
   sessionCookie.value = sessionToken;
 
-  sessionCookie.set({
+  return sessionCookie.set({
     httpOnly: true,
     path: '/',
     sameSite: 'lax',

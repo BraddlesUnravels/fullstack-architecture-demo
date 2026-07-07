@@ -1,5 +1,4 @@
 import * as v from 'valibot';
-import { userSelectSchema } from './user';
 
 export const login = v.strictObject({
   email: v.message(v.pipe(v.string(), v.email()), 'The email address of the user'),
@@ -10,10 +9,7 @@ export const login = v.strictObject({
 });
 
 export const register = v.strictObject({
-  email: v.message(
-    v.pipe(v.string(), v.email(), v.regex(/^[^@]+@[^@]+\.[^@]+$/)),
-    'The email address of the user',
-  ),
+  email: v.message(v.pipe(v.string(), v.email()), 'The email address of the user'),
 });
 
 export const registration = v.strictObject({
@@ -63,5 +59,6 @@ export const loggedout = v.strictObject({
 
 export const loggedin = v.strictObject({
   success: v.boolean(),
-  user: userSelectSchema,
+  token: v.string(),
+  exp: v.number(),
 });

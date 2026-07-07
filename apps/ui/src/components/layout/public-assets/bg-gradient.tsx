@@ -1,6 +1,6 @@
 import { component$ } from '@builder.io/qwik';
 
-export const BgGradient = component$(() => (
+export default component$(() => (
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
     <div
       aria-hidden="true"
