@@ -8,36 +8,39 @@ import type {
 // import { HiEyeSlashSolid, HiEyeOutline } from '@qwikest/icons/heroicons';
 
 interface FormFieldProps extends FormHTMLAttributes<HTMLFormElement> {
-  label: string;
+  label?: string;
   required?: boolean;
-  error?: string;
-  hint?: string;
+  error?: boolean;
+  hint?: boolean;
+  message?: string;
 }
 
-export const FormField = component$<FormFieldProps>(({ label, required = false, error, hint }) => (
-  <div class="form-control">
-    <label class="label">
-      <span class="label-text">
-        {label}
-        {required && <span class="text-error ml-1">*</span>}
-      </span>
-    </label>
-    {/* inputs are wrrapped in this slot */}
-    <Slot />
-
-    {error && (
+export const FormField = component$<FormFieldProps>(
+  ({ label, required = false, error, hint, message }) => (
+    <div class="form-control">
       <label class="label">
-        <span class="label-text-alt text-error">{error}</span>
+        <span class="label-text">
+          {label}
+          {required && <span class="text-error ml-1">*</span>}
+        </span>
       </label>
-    )}
+      {/* inputs are wrrapped in this slot */}
+      <Slot />
 
-    {hint && (
-      <label class="label">
-        <span class="label-text-alt text-base/70">{hint}</span>
-      </label>
-    )}
-  </div>
-));
+      {error && (
+        <label class="label">
+          <span class="label-text-alt text-error">{message}</span>
+        </label>
+      )}
+
+      {hint && (
+        <label class="label">
+          <span class="label-text-alt text-base/70">{message}</span>
+        </label>
+      )}
+    </div>
+  ),
+);
 
 interface TextInputProps<T> extends InputHTMLAttributes<HTMLInputElement> {
   value?: string;

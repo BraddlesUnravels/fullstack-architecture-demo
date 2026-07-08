@@ -46,7 +46,7 @@ describe('modules/auth/service.auth', () => {
   });
 
   describe('login', () => {
-    it('should return session token and serialized user when credentials are valid', async () => {
+    it('should return session `success: true` token and cookie expiry user when credentials are valid', async () => {
       const user = createUserRow();
       const credentials = createCredentialRow({ userId: user.id });
 
@@ -69,9 +69,8 @@ describe('modules/auth/service.auth', () => {
         28800,
       );
       expect(result.token).toBe('session-token');
-      expect(result.user.id).toBe(user.id);
-      expect(result.user.createdAt).toBe(user.createdAt.toISOString());
-      expect(result.user.updatedAt).toBe(user.updatedAt.toISOString());
+      expect(result.exp).toBeTruthy();
+      expect(result.success).toBe(true);
     });
 
     it('should throw an error when no user exists for the email', async () => {

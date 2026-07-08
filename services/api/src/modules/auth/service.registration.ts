@@ -1,4 +1,4 @@
-import { createHash, randomBytes /*, timingSafeEqual*/ } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { emailService } from '../../services';
 import { hashNewPassword } from '../../services';
 import { credentialRepo, userRepo } from '@app/db';
@@ -42,7 +42,7 @@ const encodeRegistrationId = (registrationId: string): string => {
 };
 
 const createVerificationUrl = (encodedId: string): string => {
-  return `${API_URL}/auth/verify-email/${encodedId}`;
+  return `${API_URL}/auth/${encodedId}`;
 };
 
 const handleRegistrationId = () => {

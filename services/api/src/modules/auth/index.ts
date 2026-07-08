@@ -15,11 +15,12 @@ export const auth = new Elysia({ prefix: '/auth' })
   .post(
     '/',
     async ({ body, cookie }) => {
-      const { token, user } = await authService.login(body);
+      const { success, token, exp } = await authService.login(body);
       setSessionCookie(cookie, token);
       return {
-        success: true,
-        user,
+        success,
+        token,
+        exp,
       };
     },
     {
@@ -27,7 +28,7 @@ export const auth = new Elysia({ prefix: '/auth' })
       response: loginResponse,
     },
   )
-  .post('/register', async ({ body }) => await registrationService.register(body), {
+  .put('/', async ({ body }) => await registrationService.register(body), {
     body: AuthModel.register,
     response: registrationResponse,
   })
@@ -35,7 +36,7 @@ export const auth = new Elysia({ prefix: '/auth' })
     params: AuthModel.verifyEmail,
     response: verifyEmailResponse,
   })
-  .put('/', async ({ body }) => await registrationService.completeRegistration(body), {
+  .patch('/', async ({ body }) => await registrationService.completeRegistration(body), {
     body: AuthModel.completeRegistration,
     response: completeRegistrationResponse,
   })

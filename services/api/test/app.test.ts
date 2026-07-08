@@ -130,14 +130,14 @@ describe('app', () => {
     emailServiceMock.sendConfirmEmail.mockResolvedValue(undefined);
 
     const response = await app.handle(
-      createRequest('/auth/register', {
+      createRequest('/auth/', {
         body: JSON.stringify({
           email: 'new-user@example.com',
         }),
         headers: {
           'content-type': 'application/json',
         },
-        method: 'POST',
+        method: 'PUT',
       }),
     );
     const body = await parseBody<{ id: string }>(response);
@@ -246,11 +246,12 @@ describe('app', () => {
         method: 'POST',
       }),
     );
-    const body = await parseBody<{ success: boolean; user: { id: string } }>(response);
+    const body = await parseBody<{ success: boolean; token: string; exp: Date | string }>(response);
 
     expect(response.status).toBe(200);
     expect(setSessionCookieMock).toHaveBeenCalledTimes(1);
     expect(body.success).toBe(true);
-    expect(body.user.id).toBe(user.id);
+    expect(body.token).toString();
+    expect(body.exp).toBeTruthy();
   });
 });

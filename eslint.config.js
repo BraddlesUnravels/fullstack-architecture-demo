@@ -19,4 +19,21 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
+  {
+    files: ['apps/ui/src/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/only-throw-error': [
+        'error',
+        {
+          allow: [
+            {
+              from: 'package',
+              package: '@builder.io/qwik-city',
+              name: 'RedirectMessage',
+            },
+          ],
+        },
+      ],
+    },
+  },
 );
