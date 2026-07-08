@@ -1,13 +1,14 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, type QRL } from '@builder.io/qwik';
 import { Form } from '@builder.io/qwik-city';
-import { FormField, TextInput, ButtonAura } from '../../ui';
+import { FormField, TextInput, ButtonAura, Button } from '../../ui';
 import type { LoginActionStore } from '../../../routes/index';
 
 type LoginCardProps = {
   loginAction: LoginActionStore;
+  onShowRegister$: QRL<() => void>;
 };
 
-export default component$<LoginCardProps>(({ loginAction }) => (
+export default component$<LoginCardProps>(({ loginAction, onShowRegister$ }) => (
   <div
     id="form-wrap"
     class="flex min-w-full justify-center"
@@ -15,7 +16,7 @@ export default component$<LoginCardProps>(({ loginAction }) => (
   >
     <div class="w-full max-w-md rounded-2xl bg-linear-to-b from-transparent via-white/40 to-transparent p-px shadow-2xl shadow-black/30">
       <Form action={loginAction} class="rounded-[calc(1rem-1px)] bg-[#16232d] p-8 backdrop-blur-xl">
-        <div class="mb-8">
+        <div class="mb-3">
           <h2 class="text-2xl font-bold tracking-tight text-white">Welcome back</h2>
 
           <p class="mt-2 text-sm leading-6 text-slate-400">
@@ -59,13 +60,33 @@ export default component$<LoginCardProps>(({ loginAction }) => (
           </FormField>
 
           <div id="button-wrap" aria-controls="Login button" aria-label="Login button">
-            <ButtonAura
-              label="Login"
-              size="md"
-              type="submit"
-              className="w-full cursor-pointer rounded-lg bg-linear-to-r from-teal-400 to-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:brightness-110"
-            />
+            {loginAction.isRunning && (
+              <ButtonAura
+                label="Login"
+                size="md"
+                type="submit"
+                className="w-full cursor-pointer rounded-lg bg-linear-to-r from-teal-400 to-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:brightness-110"
+              />
+            )}
+            {!loginAction.isRunning && (
+              <Button
+                label="Login"
+                size="md"
+                type="submit"
+                className="w-full cursor-pointer rounded-lg bg-linear-to-r from-teal-400 to-cyan-400 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:brightness-110"
+              />
+            )}
           </div>
+        </div>
+        <div class="mt-5 text-center text-sm text-slate-400">
+          Need an account?{' '}
+          <button
+            type="button"
+            onClick$={onShowRegister$}
+            class="cursor-pointer font-semibold text-cyan-300 transition hover:text-cyan-200"
+          >
+            Register
+          </button>
         </div>
       </Form>
     </div>
