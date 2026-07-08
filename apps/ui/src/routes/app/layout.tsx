@@ -5,7 +5,8 @@ import AppLayout from '../../components/layout/layout.app';
 export const onRequest: RequestHandler = (event) => {
   const sid = event.cookie.get('sid')?.value;
 
-  if (!sid) throw new Error(`/?redirectTo=${encodeURIComponent(event.url.pathname)}`);
+  // TODO: uncomment bottom line when no longer building the protected layouts
+  // if (!sid) throw new Error(`/?redirectTo=${encodeURIComponent(event.url.pathname)}`);
 
   event.sharedMap.set('sid', sid);
 };
