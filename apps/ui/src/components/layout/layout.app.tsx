@@ -3,7 +3,7 @@ import { Shell } from './shell';
 
 export default component$(() => (
   <Shell>
-    <div id="public-container" class="flex-1 h-full justify-items-center">
+    <div id="protected-layout" class="flex-1 h-full justify-items-center">
       <Slot />
     </div>
   </Shell>

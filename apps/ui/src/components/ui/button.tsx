@@ -18,7 +18,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const ButtonAura = component$<ButtonProps>(
   ({ onClick$, label, size, className, ...rest }) => (
-    <div class="aura w-full ">
+    <div class="aura w-full">
       <button {...rest} class={className ?? buttonSizes[size]} onClick$={onClick$}>
         {label}
       </button>
@@ -27,9 +27,7 @@ export const ButtonAura = component$<ButtonProps>(
 );
 
 export const Button = component$<ButtonProps>(({ onClick$, label, size, className, ...rest }) => (
-  <div>
-    <button {...rest} class={className ?? buttonSizes[size]} onClick$={onClick$}>
-      {label}
-    </button>
-  </div>
+  <button {...rest} class={className ?? buttonSizes[size]} onClick$={onClick$}>
+    {label}
+  </button>
 ));
