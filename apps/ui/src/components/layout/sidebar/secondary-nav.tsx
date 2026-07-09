@@ -41,11 +41,11 @@ export default component$(() => {
 
                 <span
                   class={[
-                    'grid h-[var(--nav-icon)] w-[var(--nav-icon)] shrink-0 place-items-center rounded-xl text-lg transition',
+                    'grid py-0 h-[var(--nav-icon)] w-[var(--nav-icon)] shrink-0 place-items-center text-lg transition',
                     active ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-200',
                   ]}
                 >
-                  <item.icon />
+                  <item.icon class="h-[var(--nav-icon)] w-[var(--nav-icon)]" />
                 </span>
 
                 <span class="nav-label font-medium leading-none lg:text-xs [@media(max-height:720px)]:lg:hidden">

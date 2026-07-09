@@ -5,23 +5,18 @@ import SideBarMenu from './sidebar';
 
 const contentBaseClasses = [
   'relative isolate m-2 flex h-[calc(100dvh-1rem)] min-w-0 flex-1 z-10 overflow-hidden',
-  'rounded-[1rem] backdrop-blur-md',
-  'shadow-2xl shadow-black/30',
+  'rounded-[1rem] border border-white/15 bg-white/3 backdrop-blur-2xl',
+
+  /**
+   * Desktop outer spacing
+   */
   'lg:my-3 lg:mr-3 lg:ml-0 lg:h-[calc(100dvh-1.5rem)]',
 
   /**
-   * Page spacing
+   * Inner page spacing
    */
   'p-[var(--page-pad)]',
-  '[--page-pad:clamp(1rem,2.2vw,2rem)]',
-  '[--page-gap:clamp(1rem,1.8vw,1.5rem)]',
-
-  /**
-   * Gradient border only, not background
-   */
-  "after:content-['']",
-  'after:pointer-events-none after:absolute after:inset-0 after:z-20 after:rounded-[inherit] after:p-px',
-  'after:bg-linear-to-br after:from-cyan-300/8 after:via-white/3 after:to-green-300/8',
+  '[--page-pad:clamp(0.75rem,1.4vw,1.25rem)]',
 ].join(' ');
 
 export default component$(() => (
@@ -30,7 +25,18 @@ export default component$(() => (
       <BackgroundGradient>
         <SideBarMenu>
           <section id="content-base" class={contentBaseClasses}>
-            <Slot />
+            {/* Gradient borders right/left */}
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-y-3 right-0 w-px bg-linear-to-b from-transparent via-green-300/60 to-transparent"
+            />
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-y-3 left-0 w-px bg-linear-to-b from-transparent via-green-300/60 to-transparent"
+            />
+            <>
+              <Slot />
+            </>
           </section>
         </SideBarMenu>
       </BackgroundGradient>
