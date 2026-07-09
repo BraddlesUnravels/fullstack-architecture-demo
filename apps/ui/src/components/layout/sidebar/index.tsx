@@ -9,7 +9,7 @@ export default component$(() => {
       <input id="protected-sidebar" type="checkbox" class="drawer-toggle hidden" />
 
       <div class="drawer-content h-dvh min-w-0 overflow-hidden">
-        <main class="h-dvh min-w-0 overflow-hidden">
+        <main class="relative z-10 h-full min-h-0 w-full gap-[var(--page-gap)] overflow-hidden">
           <Slot />
         </main>
       </div>

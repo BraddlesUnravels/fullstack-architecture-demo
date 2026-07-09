@@ -3,7 +3,7 @@ import BrandLogo from './sidebar-logo';
 
 const asideClasses = [
   'relative flex h-[calc(100dvh-1rem)] w-80 flex-col overflow-hidden',
-  'rounded-[1rem] border border-white/15 bg-slate-950/20',
+  'rounded-[1rem] border border-white/15 bg-white/3',
   'backdrop-blur-2xl lg:m-3',
   'lg:h-[calc(100dvh-1.5rem)] lg:w-[7.5rem] lg:items-center',
   'p-[var(--side-pad)]',

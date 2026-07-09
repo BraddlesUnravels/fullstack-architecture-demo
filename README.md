@@ -15,7 +15,7 @@ Completed and reviewable today:
 - Auth endpoints for register, verify-email, complete-registration, login, and logout.
 - Protected user CRUD routes.
 - Protected application routes (`list`, `read`, `create`, `update`).
-- Qwik UI with animated register/login page and a protected `/app` shell scaffold.
+- Qwik UI with animated register/login page and a protected `/app` shell scaffold with sidebar navigation and layered gradient styling.
 - API test suite under `services/api/test`, executed in CI.
 
 In progress by design:
