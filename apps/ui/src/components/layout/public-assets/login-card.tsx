@@ -14,7 +14,7 @@ export default component$<LoginCardProps>(({ loginAction, onShowRegister$ }) => 
     class="flex min-w-full justify-center"
     aria-label="Please enter your login details in the form below"
   >
-    <div class="w-full max-w-md rounded-2xl bg-linear-to-b from-transparent via-white/40 to-transparent p-px shadow-2xl shadow-black/30">
+    <div class="w-full max-w-md rounded-2xl bg-linear-to-b from-transparent via-green-300/60 to-transparent p-px shadow-2xl shadow-black/30">
       <Form action={loginAction} class="rounded-[calc(1rem-1px)] bg-[#16232d] p-8 backdrop-blur-xl">
         <div class="mb-3">
           <h2 class="text-2xl font-bold tracking-tight text-white">Welcome back</h2>
