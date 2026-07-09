@@ -1,6 +1,6 @@
 import { component$, Slot } from '@builder.io/qwik';
 import type { RequestHandler } from '@builder.io/qwik-city';
-import AppLayout from '../../components/layout/layout.app';
+import AppLayout from '../../components/layout/layout.protected';
 
 export const onRequest: RequestHandler = (event) => {
   const sid = event.cookie.get('sid')?.value;
