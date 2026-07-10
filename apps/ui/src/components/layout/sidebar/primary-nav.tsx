@@ -1,15 +1,20 @@
 import { component$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
 import type { NavItem } from '../../../lib';
-import { IoCalendarClearSharp, IoPulseSharp, IoFileTrayFullSharp } from '@qwikest/icons/ionicons';
-import { InJournalPage, In3DBridge } from '@qwikest/icons/iconoir';
+import {
+  InJournalPage,
+  In3DBridge,
+  InActivity,
+  InMultiplePages,
+  InCalendar,
+} from '@qwikest/icons/iconoir';
 
 const primaryNav: NavItem[] = [
-  { label: 'Applications', href: '/applications', icon: IoFileTrayFullSharp },
+  { label: 'Applications', href: '/applications', icon: InMultiplePages },
   { label: 'Pipeline', href: '/pipeline', icon: In3DBridge },
-  { label: 'Calendar', href: '/calendar', icon: IoCalendarClearSharp },
+  { label: 'Calendar', href: '/calendar', icon: InCalendar },
   { label: 'Notes', href: '/notes', icon: InJournalPage },
-  { label: 'Analytics', href: '/analytics', icon: IoPulseSharp },
+  { label: 'Analytics', href: '/analytics', icon: InActivity },
 ];
 
 export default component$(() => {
@@ -29,7 +34,7 @@ export default component$(() => {
               <a
                 href={item.href}
                 class={[
-                  'group relative flex h-[var(--nav-item)] items-center gap-3 rounded-2xl px-4 text-sm transition',
+                  'group relative flex h-[var(--nav-item)] items-center gap-3 px-4 text-sm transition',
                   'lg:flex-col lg:justify-center lg:gap-1.5 lg:px-2',
                   '[@media(max-height:680px)]:rounded-xl',
                   active
@@ -38,16 +43,19 @@ export default component$(() => {
                 ]}
               >
                 {active && (
-                  <span class="absolute -left-[var(--side-pad)] top-1/2 h-[calc(var(--nav-item)*0.85)] w-1 -translate-y-1/2 rounded-r-full bg-cyan-300 shadow-[0_0_22px_rgba(34,211,238,0.85)]" />
+                  <span
+                    id="active-overlay"
+                    class="absolute -left-[var(--side-pad)] top-1/2 h-[calc(var(--nav-item)*0.85)] w-1 -translate-y-1/2 rounded-r-full bg-cyan-300 shadow-[0_0_22px_rgba(34,211,238,0.85)]"
+                  />
                 )}
 
                 <span
                   class={[
-                    'grid h-[var(--nav-icon)] w-[var(--nav-icon)] shrink-0 place-items-center rounded-xl text-lg transition',
+                    'grid py-0 h-[var(--nav-icon)] w-[var(--nav-icon)] shrink-0 place-items-center text-lg transition',
                     active ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-200',
                   ]}
                 >
-                  <item.icon />
+                  <item.icon class="h-[var(--nav-icon)] w-[var(--nav-icon)]" />
                 </span>
 
                 <span class="nav-label font-medium leading-none lg:text-xs [@media(max-height:720px)]:lg:hidden">
