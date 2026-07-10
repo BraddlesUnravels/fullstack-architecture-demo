@@ -26,6 +26,7 @@ export default component$(() => (
         <SideBarMenu>
           <section id="content-base" class={contentBaseClasses}>
             {/* Gradient borders right/left */}
+
             <div
               aria-hidden="true"
               class="pointer-events-none absolute inset-y-3 right-0 w-px bg-linear-to-b from-transparent via-green-300/60 to-transparent"
@@ -34,6 +35,12 @@ export default component$(() => (
               aria-hidden="true"
               class="pointer-events-none absolute inset-y-3 left-0 w-px bg-linear-to-b from-transparent via-green-300/60 to-transparent"
             />
+
+            <div class="pointer-events-none absolute inset-0">
+              <div class="absolute left-0 top-0 h-[28rem] w-[28rem] rounded-full bg-indigo-500/20 blur-3xl" />
+              <div class="absolute bottom-0 right-0 h-[30rem] w-[30rem] rounded-full bg-cyan-500/15 blur-3xl" />
+              <div class="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-cyan-400/[0.04]" />
+            </div>
             <>
               <Slot />
             </>
