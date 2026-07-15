@@ -1,0 +1,72 @@
+name: Build and start API
+description: Build and validate the production API container
+
+runs:
+  using: composite
+
+  steps:
+    - name: Build API image
+      shell: bash
+      run: |
+        docker build \
+          --file docker/Dockerfile.elysia \
+          --target production \
+          --tag fullstack-api:test \
+          .
+
+    - name: Start API container
+      shell: bash
+      run: |
+        docker run \
+          --detach \
+          --name app_api \
+          --network app-network \
+          --network-alias api \
+          --publish 4000:4000 \
+          --env API_HOST \
+          --env CORS_ORIGIN \
+          --env EMAIL_PASSWORD \
+          --env JWT_SECRET \
+          --env LOG_LEVEL \
+          --env PORT \
+          --env POSTGRES_DB \
+          --env POSTGRES_PASSWORD \
+          --env POSTGRES_USER \
+          --env REDIS_URL \
+          --env POSTGRES_HOST=postgres \
+          --health-cmd='bun -e '\''fetch("http://localhost:4000/health").then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))'\''' \
+          --health-interval=10s \
+          --health-timeout=5s \
+          --health-retries=20 \
+          --health-start-period=15s \
+          fullstack-api:test
+
+    - name: Wait for API
+      shell: bash
+      run: |
+        for attempt in {1..100}; do
+          status="$(docker inspect \
+            --format='{{.State.Health.Status}}' \
+            app_api)"
+
+          if [ "$status" = "healthy" ]; then
+            echo "API is healthy."
+            exit 0
+          fi
+
+          if [ "$status" = "unhealthy" ]; then
+            docker logs app_api
+            exit 1
+          fi
+
+          if [ $((attempt % 10)) -eq 0 ]; then
+            echo "API health status after ${attempt} checks: ${status}"
+            docker logs app_api --tail 100 || true
+          fi
+
+          sleep 3
+        done
+
+        echo "API did not become healthy in time."
+        docker logs app_api
+        exit 1

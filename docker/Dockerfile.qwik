@@ -1,0 +1,62 @@
+FROM oven/bun:1 AS bun
+
+# ---------------------------------------------------------
+# Build using Node
+# Work around for Qwik bug where the build completes but does not terminate
+# ---------------------------------------------------------
+FROM node:22-bookworm-slim AS build
+
+# Retain Bun for package installation and workspace scripts.
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+
+WORKDIR /app
+
+COPY . .
+
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+    bun install --frozen-lockfile
+
+WORKDIR /app/apps/ui
+
+# Node is now available for the Qwik/Vite executables.
+RUN bun run build
+
+
+# ---------------------------------------------------------
+# Production runtime using Bun
+# ---------------------------------------------------------
+FROM oven/bun:1-slim AS production
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --from=build --chown=bun:bun \
+    /app/node_modules \
+    ./node_modules
+
+COPY --from=build --chown=bun:bun \
+    /app/package.json \
+    ./package.json
+
+COPY --from=build --chown=bun:bun \
+    /app/packages \
+    ./packages
+
+COPY --from=build --chown=bun:bun \
+    /app/apps/ui/package.json \
+    ./apps/ui/package.json
+
+COPY --from=build --chown=bun:bun \
+    /app/apps/ui/dist \
+    ./apps/ui/dist
+
+COPY --from=build --chown=bun:bun \
+    /app/apps/ui/server \
+    ./apps/ui/server
+
+WORKDIR /app/apps/ui
+
+USER bun
+
+CMD ["bun", "./server/entry.bun.js"]

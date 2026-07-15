@@ -10,11 +10,11 @@ import {
 } from '@qwikest/icons/iconoir';
 
 const primaryNav: NavItem[] = [
-  { label: 'Applications', href: '/applications', icon: InMultiplePages },
-  { label: 'Pipeline', href: '/pipeline', icon: In3DBridge },
-  { label: 'Calendar', href: '/calendar', icon: InCalendar },
-  { label: 'Notes', href: '/notes', icon: InJournalPage },
-  { label: 'Analytics', href: '/analytics', icon: InActivity },
+  { label: 'Applications', href: '/app/applications', icon: InMultiplePages },
+  { label: 'Pipeline', href: '/app/pipeline', icon: In3DBridge },
+  { label: 'Calendar', href: '/app/calendar', icon: InCalendar },
+  { label: 'Notes', href: '/app/notes', icon: InJournalPage },
+  { label: 'Analytics', href: '/app/analytics', icon: InActivity },
 ];
 
 export default component$(() => {

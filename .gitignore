@@ -2,7 +2,7 @@
 **/dist/**
 **/build/**
 **/coverage/**
-**/.env**
+**/.env
 **/logs/**
 **/tmp/**
 **/AGENTS.md
@@ -18,7 +18,10 @@
 
 # Ignore bun's cache
 **/.bun-cache/**
+apps/ui/server/**
+!apps/ui/server/package.json
 
 # Files
-**.png
-
+best-layout-yet.png
+final-component-help.png
+has-good-compents.png

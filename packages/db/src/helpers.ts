@@ -23,3 +23,15 @@ export const stripNulls = <T>(value: T): NullToUndefined<T> => {
 
   return value as NullToUndefined<T>;
 };
+
+export const getConnectionString = () => {
+  const password = process.env.POSTGRES_PASSWORD;
+  const user = process.env.POSTGRES_USER;
+  const database = process.env.POSTGRES_DB || 'app_db';
+  const host = process.env.POSTGRES_HOST || 'localhost';
+
+  if (!password || !user)
+    throw new Error('Missing required environment variables for database connection');
+
+  return { connectionString: `postgresql://${user}:${password}@${host}:5432/${database}` };
+};

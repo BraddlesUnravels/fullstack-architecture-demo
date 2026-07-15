@@ -2,10 +2,12 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from '../schema';
 import { users, credentials, companies, applications } from './data';
+import { getConnectionString } from '../helpers';
 
-console.log('🔧 Setting up database connection... with url: ', process.env.DATABASE_URL);
+const connection = getConnectionString();
+console.log('🔧 Setting up database connection...');
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool(connection);
 const db = drizzle(pool, { schema });
 
 async function seed() {

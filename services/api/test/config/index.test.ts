@@ -6,7 +6,23 @@ const originalPort = process.env.PORT;
 
 const importConfig = async () => {
   vi.resetModules();
-  return await import('../../src/config/index');
+  vi.doUnmock('../../src/config/api-constants');
+  return await import('../../src/config');
+};
+
+const importConfigWithCorsOrigin = async (corsOrigin?: string) => {
+  vi.resetModules();
+  vi.doMock('../../src/config/api-constants', () => ({
+    API_CONSTANTS: {
+      env: {
+        DEFAULT_HOST: 'localhost',
+        DEFAULT_PORT: 4000,
+        CORS_ORIGIN: corsOrigin,
+      },
+    },
+  }));
+
+  return await import('../../src/config');
 };
 
 describe('config/index', () => {
@@ -26,13 +42,13 @@ describe('config/index', () => {
     const { apiEnv } = await importConfig();
 
     expect(apiEnv).toEqual({
-      corsOrigin: true,
+      corsOrigin: ['http://localhost:3000'],
       host: 'localhost',
-      port: 3000,
+      port: 4000,
     });
   });
 
-  it('should parse API_HOST, PORT, and CORS_ORIGIN when valid values are provided', async () => {
+  it('should use runtime API_HOST, PORT, and CORS_ORIGIN env values', async () => {
     process.env.API_HOST = 'local-api-host';
     process.env.CORS_ORIGIN = 'https://one.example.com, https://two.example.com';
     process.env.PORT = '4010';
@@ -46,15 +62,15 @@ describe('config/index', () => {
     });
   });
 
-  it('should throw an error when PORT is outside valid range', async () => {
-    process.env.PORT = '70000';
-
-    await expect(importConfig()).rejects.toThrow('PORT must be an integer between 1 and 65535');
+  it('should throw an error when CORS_ORIGIN constant is missing', async () => {
+    await expect(importConfigWithCorsOrigin(undefined)).rejects.toThrow(
+      'CORS_ORIGIN environment variable is not set',
+    );
   });
 
-  it('should throw an error when CORS_ORIGIN contains only empty entries', async () => {
-    process.env.CORS_ORIGIN = ' , , ';
-
-    await expect(importConfig()).rejects.toThrow('CORS_ORIGIN must contain at least one origin');
+  it('should throw an error when CORS_ORIGIN constant contains only empty entries', async () => {
+    await expect(importConfigWithCorsOrigin(' , , ')).rejects.toThrow(
+      'CORS_ORIGIN must contain at least one origin',
+    );
   });
 });

@@ -15,6 +15,7 @@
     "infra:reset": "docker-compose -f ../../docker/docker-compose-db.dev.yml down -v",
     "db:generate": "bun --env-file=../../.env drizzle-kit generate",
     "db:migrate": "bun --env-file=../../.env drizzle-kit migrate",
+    "db:apply-migrations": "bun --env-file=../../.env src/scripts/apply-migrations.ts",
     "db:seed": "bun --env-file=../../.env src/seed/index.ts",
     "wait:15": "bun -e \"await new Promise(r => setTimeout(r, 15000))\"",
     "db:test": "bun --env-file=../../.env src/__tests__/db.test.ts",

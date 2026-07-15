@@ -7,11 +7,13 @@ const ROOT_ENV_DIR = fileURLToPath(new URL('../..', import.meta.url));
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, ROOT_ENV_DIR, '');
-  const apiUrl = env.API_URL || 'http://localhost:3000';
+  const apiUrl = env.API_URL || 'http://api:4000';
   return {
     envDir: ROOT_ENV_DIR,
     plugins: [qwikCity(), qwikVite(), tailwindcss()],
     server: {
+      port: 3000,
+      strictPort: true,
       proxy: {
         '/api': {
           target: apiUrl,

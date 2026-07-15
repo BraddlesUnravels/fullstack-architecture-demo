@@ -1,7 +1,7 @@
 import { component$, type QRL } from '@builder.io/qwik';
 import { Form } from '@builder.io/qwik-city';
 import { FormField, TextInput, ButtonAura, Button } from '../../ui';
-import type { LoginActionStore } from '../../../routes/index';
+import type { LoginActionStore } from '../../../routes';
 
 type LoginCardProps = {
   loginAction: LoginActionStore;
