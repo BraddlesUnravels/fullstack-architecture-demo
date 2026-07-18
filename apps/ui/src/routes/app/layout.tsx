@@ -15,7 +15,10 @@ export const onRequest: RequestHandler = (event) => {
 export default component$(() => {
   return (
     <AppLayout>
-      <section class="relative flex h-full min-h-0 w-full flex-col overflow-hidden">
+      <section
+        id="inner-content-wrapper"
+        class="relative flex h-full min-h-0 w-full flex-col overflow-hidden"
+      >
         <WorkspaceHeader
           name="Placeholder"
           onAddApplication$={() => console.log('Add Application')}

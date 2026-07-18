@@ -54,8 +54,8 @@ export default component$(() => (
       class="pointer-events-none absolute bottom-[-18rem] right-24 h-[34rem] w-[42rem] rounded-full bg-teal-300/10 blur-[150px] mix-blend-screen"
     />
 
-    <section id="app-content" class="relative z-10">
+    <div>
       <Slot />
-    </section>
+    </div>
   </div>
 ));

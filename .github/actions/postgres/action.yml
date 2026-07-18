@@ -1,0 +1,47 @@
+name: Start Postgres
+description: Start and validate the PostgreSQL container
+
+runs:
+  using: composite
+
+  steps:
+    - name: Start Postgres container
+      shell: bash
+      run: |
+        docker run \
+          --detach \
+          --name app_postgres \
+          --network app-network \
+          --network-alias postgres \
+          --env POSTGRES_DB \
+          --env POSTGRES_USER \
+          --env POSTGRES_PASSWORD \
+          --health-cmd="pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" \
+          --health-interval=5s \
+          --health-timeout=5s \
+          --health-retries=20 \
+          postgres:17-alpine
+
+    - name: Wait for Postgres
+      shell: bash
+      run: |
+        for attempt in {1..30}; do
+          status="$(docker inspect \
+            --format='{{.State.Health.Status}}' \
+            app_postgres)"
+
+          if [ "$status" = "healthy" ]; then
+            echo "Postgres is healthy."
+            exit 0
+          fi
+
+          if [ "$status" = "unhealthy" ]; then
+            docker logs app_postgres
+            exit 1
+          fi
+
+          sleep 2
+        done
+
+        docker logs app_postgres
+        exit 1

@@ -1,0 +1,25 @@
+FROM oven/bun:1 AS build
+
+WORKDIR /app
+
+# Copy the complete monorepo before installing so Bun can discover workspaces.
+COPY . .
+
+RUN bun install --frozen-lockfile
+
+WORKDIR /app/services/api
+
+RUN bun run build
+
+FROM oven/bun:1-slim AS production
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# The build ran from /app/services/api, so dist is created here.
+COPY --from=build /app/services/api/dist ./dist
+
+USER bun
+
+CMD ["bun", "./dist/index.js"]

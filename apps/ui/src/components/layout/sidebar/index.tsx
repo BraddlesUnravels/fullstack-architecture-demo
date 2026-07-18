@@ -5,8 +5,8 @@ import SecondaryNav from './secondary-nav';
 
 export default component$(() => {
   return (
-    <div id="protected-layout" class="drawer h-dvh w-full overflow-hidden lg:drawer-open">
-      <input id="protected-sidebar" type="checkbox" class="drawer-toggle hidden" />
+    <div id="side-bar-menu" class="drawer h-dvh overflow-hidden lg:drawer-open">
+      <input type="checkbox" class="drawer-toggle hidden" />
 
       <div class="drawer-content h-dvh min-w-0 overflow-hidden">
         <main class="relative z-10 h-full min-h-0 w-full gap-[var(--page-gap)] overflow-hidden">

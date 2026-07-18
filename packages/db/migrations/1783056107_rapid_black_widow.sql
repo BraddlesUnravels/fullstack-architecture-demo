@@ -15,7 +15,7 @@ CREATE TABLE "application" (
 	"deleted_by" uuid,
 	"version" integer DEFAULT 1 NOT NULL
 );
---> statement-breakpoint
+
 CREATE TABLE "company" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE "company" (
 	"version" integer DEFAULT 1 NOT NULL,
 	CONSTRAINT "company_abn_unique" UNIQUE("abn")
 );
---> statement-breakpoint
+
 CREATE TABLE "credential" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE "credential" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"invalidated_at" timestamp with time zone
 );
---> statement-breakpoint
+
 CREATE TABLE "user" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"email" text NOT NULL,
@@ -60,12 +60,12 @@ CREATE TABLE "user" (
 	"version" integer DEFAULT 1 NOT NULL,
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
---> statement-breakpoint
-ALTER TABLE "application" ADD CONSTRAINT "application_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "application" ADD CONSTRAINT "application_company_id_company_id_fk" FOREIGN KEY ("company_id") REFERENCES "public"."company"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "credential" ADD CONSTRAINT "credential_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "idx_applications_user_id" ON "application" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "idx_status" ON "application" USING btree ("status");--> statement-breakpoint
-CREATE INDEX "idx_applications_company_id" ON "application" USING btree ("company_id");--> statement-breakpoint
-CREATE INDEX "idx_credentials_user_id" ON "credential" USING btree ("user_id");--> statement-breakpoint
+
+ALTER TABLE "application" ADD CONSTRAINT "application_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "application" ADD CONSTRAINT "application_company_id_company_id_fk" FOREIGN KEY ("company_id") REFERENCES "public"."company"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "credential" ADD CONSTRAINT "credential_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+CREATE INDEX "idx_applications_user_id" ON "application" USING btree ("user_id");
+CREATE INDEX "idx_status" ON "application" USING btree ("status");
+CREATE INDEX "idx_applications_company_id" ON "application" USING btree ("company_id");
+CREATE INDEX "idx_credentials_user_id" ON "credential" USING btree ("user_id");
 CREATE INDEX "idx_users_email" ON "user" USING btree ("email");

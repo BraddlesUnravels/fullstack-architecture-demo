@@ -233,6 +233,7 @@ describe('modules/auth/service.registration', () => {
       emailServiceMock.sendAccountCreated.mockResolvedValue(undefined);
 
       const result = await registrationService.completeRegistration(input);
+      const expectedAppLink = process.env.CORS_ORIGIN || 'http://localhost:5173';
 
       expect(hashNewPasswordMock).toHaveBeenCalledWith('password-1234');
       expect(credentialRepoMock.createCredential).toHaveBeenCalledWith({
@@ -242,7 +243,7 @@ describe('modules/auth/service.registration', () => {
       expect(emailServiceMock.sendAccountCreated).toHaveBeenCalledWith(
         'completed@example.com',
         'Pat',
-        'http://localhost:5173',
+        expectedAppLink,
       );
       expect(result).toEqual({
         message: 'Registration complete. You can now log in.',

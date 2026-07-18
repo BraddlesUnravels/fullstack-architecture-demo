@@ -1,10 +1,10 @@
 import { component$, Slot } from '@builder.io/qwik';
-import PublicLayout from '../components/layout/public-assets/layout.public';
+import AppShell from '../components/layout/public-assets/app-shell';
 
 export default component$(() => {
   return (
-    <PublicLayout>
+    <AppShell>
       <Slot />
-    </PublicLayout>
+    </AppShell>
   );
 });

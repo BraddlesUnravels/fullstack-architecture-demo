@@ -1,22 +1,22 @@
-export * from './api-constants';
+import { API_CONSTANTS } from './api-constants';
+export { API_CONSTANTS };
 
-const DEFAULT_PORT = 3000;
-const DEFAULT_HOST = 'localhost';
+const { DEFAULT_HOST, DEFAULT_PORT, CORS_ORIGIN: DEFAULT_CORS_ORIGIN } = API_CONSTANTS.env;
 
-const parsePort = (value?: string) => {
+const parsePort = (value?: string): number => {
   if (!value) return DEFAULT_PORT;
 
-  const port = Number(value);
+  const parsedPort = Number(value);
 
-  if (!Number.isInteger(port) || port < 1 || port > 65535) {
-    throw new Error('PORT must be an integer between 1 and 65535');
+  if (!Number.isInteger(parsedPort) || parsedPort <= 0) {
+    throw new Error('PORT must be a positive integer');
   }
 
-  return port;
+  return parsedPort;
 };
 
-const parseCorsOrigin = (value?: string): true | string[] => {
-  if (!value) return true;
+const parseCorsOrigin = (value?: string): string[] => {
+  if (!value) throw new Error('CORS_ORIGIN environment variable is not set');
 
   const origins = value
     .split(',')
@@ -33,11 +33,15 @@ const parseCorsOrigin = (value?: string): true | string[] => {
 export type ApiEnv = {
   host: string;
   port: number;
-  corsOrigin: true | string[];
+  corsOrigin: string[];
 };
 
+const host = process.env.API_HOST ?? DEFAULT_HOST;
+const port = parsePort(process.env.PORT);
+const corsOrigin = parseCorsOrigin(process.env.CORS_ORIGIN ?? DEFAULT_CORS_ORIGIN);
+
 export const apiEnv: ApiEnv = {
-  host: process.env.API_HOST || DEFAULT_HOST,
-  port: parsePort(process.env.PORT),
-  corsOrigin: parseCorsOrigin(process.env.CORS_ORIGIN),
+  host,
+  port,
+  corsOrigin,
 };

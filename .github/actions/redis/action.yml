@@ -1,0 +1,44 @@
+name: Start Redis
+description: Start and validate the Redis container
+
+runs:
+  using: composite
+
+  steps:
+    - name: Start Redis container
+      shell: bash
+      run: |
+        docker run \
+          --detach \
+          --name app_redis \
+          --network app-network \
+          --network-alias redis \
+          --health-cmd="redis-cli ping" \
+          --health-interval=5s \
+          --health-timeout=5s \
+          --health-retries=20 \
+          redis:7-alpine
+
+    - name: Wait for Redis
+      shell: bash
+      run: |
+        for attempt in {1..30}; do
+          status="$(docker inspect \
+            --format='{{.State.Health.Status}}' \
+            app_redis)"
+
+          if [ "$status" = "healthy" ]; then
+            echo "Redis is healthy."
+            exit 0
+          fi
+
+          if [ "$status" = "unhealthy" ]; then
+            docker logs app_redis
+            exit 1
+          fi
+
+          sleep 2
+        done
+
+        docker logs app_redis
+        exit 1

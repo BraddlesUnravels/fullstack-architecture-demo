@@ -1,0 +1,62 @@
+name: Build and start UI
+description: Build and validate the production UI container
+
+runs:
+  using: composite
+
+  steps:
+    - name: Build UI image
+      shell: bash
+      run: |
+        docker build \
+          --file docker/Dockerfile.qwik \
+          --target production \
+          --tag fullstack-ui:test \
+          .
+
+    - name: Start UI container
+      shell: bash
+      run: |
+        docker run \
+          --detach \
+          --name app_ui \
+          --network app-network \
+          --network-alias ui \
+          --publish 3000:3000 \
+          --env API_URL=http://api:4000 \
+          --health-cmd='bun -e '\''fetch("http://localhost:3000").then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))'\''' \
+          --health-interval=10s \
+          --health-timeout=5s \
+          --health-retries=20 \
+          --health-start-period=15s \
+          fullstack-ui:test
+
+    - name: Wait for UI
+      shell: bash
+      run: |
+        for attempt in {1..100}; do
+          status="$(docker inspect \
+            --format='{{.State.Health.Status}}' \
+            app_ui)"
+
+          if [ "$status" = "healthy" ]; then
+            echo "UI is healthy."
+            exit 0
+          fi
+
+          if [ "$status" = "unhealthy" ]; then
+            docker logs app_ui
+            exit 1
+          fi
+
+          if [ $((attempt % 10)) -eq 0 ]; then
+            echo "UI health status after ${attempt} checks: ${status}"
+            docker logs app_ui --tail 100 || true
+          fi
+
+          sleep 3
+        done
+
+        echo "UI did not become healthy in time."
+        docker logs app_ui
+        exit 1

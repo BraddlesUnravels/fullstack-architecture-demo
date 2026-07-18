@@ -26,8 +26,8 @@ import type {
 
 const REGISTRATION_LINK_TTL_SECONDS = 60 * 15;
 const DEFAULT_APP_LINK = process.env.CORS_ORIGIN || 'http://localhost:5173';
-const API_URL = process.env.API_URL;
-if (!API_URL) throw new Error('Missing API_URL');
+const DEFAULT_API_URL = 'http://localhost:4000';
+const API_URL = process.env.API_URL || DEFAULT_API_URL;
 
 const createRegistrationId = (): string => {
   return randomBytes(32).toString('hex');

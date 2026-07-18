@@ -27,11 +27,5 @@ export const baseLogger = pino({
           ignore: 'pid,hostname',
         },
       }
-    : {
-        target: 'pino/file',
-        options: {
-          mkdir: true,
-          destination: 'logs/api.log',
-        },
-      },
+    : undefined,
 });

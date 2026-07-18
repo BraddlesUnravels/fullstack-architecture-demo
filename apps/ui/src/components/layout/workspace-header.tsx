@@ -9,7 +9,10 @@ type HeaderProps = {
 };
 
 export default component$<HeaderProps>(({ name, onAddApplication$, onSearchApplication$ }) => (
-  <header class="flex flex-col gap-3 min-w-full h-auto lg:flex-row lg:items-start lg:justify-between">
+  <header
+    id="workspace-header"
+    class="flex flex-col gap-3 min-w-full h-auto lg:flex-row lg:items-start lg:justify-between"
+  >
     <div class="min-w-0">
       <p class="text-sm text-slate-300/80">Welcome back{name ? `, ${name} 👋` : ' 👋'}</p>
 

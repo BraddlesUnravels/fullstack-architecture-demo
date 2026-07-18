@@ -1,4 +1,3 @@
-import argon2id from 'argon2';
 import jwt from 'jsonwebtoken';
 import { createHash, randomBytes } from 'node:crypto';
 import { JwtVerificationError, SessionCreateFailedError } from '../../modules/auth/errors.auth';
@@ -10,11 +9,13 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const { COOKIE_NAME, TTL_SECONDS } = API_CONSTANTS.cookie;
 
 export const isPasswordMatch = async (password: string, hash: string): Promise<boolean> => {
-  return argon2id.verify(hash, password);
+  return Bun.password.verify(password, hash);
 };
 
 export const hashNewPassword = async (password: string): Promise<string> => {
-  return argon2id.hash(password);
+  return Bun.password.hash(password, {
+    algorithm: 'argon2id',
+  });
 };
 
 export const genJwtUrl = (userId: string) => {
