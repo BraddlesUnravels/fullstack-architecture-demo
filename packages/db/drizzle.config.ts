@@ -3,8 +3,8 @@ import { defineConfig } from 'drizzle-kit';
 const getDbCredentials = () => {
   const password = process.env.POSTGRES_PASSWORD;
   const user = process.env.POSTGRES_USER;
-  const database = 'app_db';
-  const host = 'postgres';
+  const database = process.env.POSTGRES_DB || 'app_db';
+  const host = process.env.POSTGRES_HOST || 'localhost';
 
   if (!password || !user)
     throw new Error('Missing required environment variables for database connection');

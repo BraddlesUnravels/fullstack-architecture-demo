@@ -1,149 +1,128 @@
-import { securityUtils } from '@app/utils';
+import { faker } from '@faker-js/faker';
 import { JobStatus, UserTier } from '@app/constants';
-const SEED_CREATED_BY_USER_ID = '00000000-0000-0000-0000-000000000001';
-const SEED_PASSWORD = 'password123';
-const SEED_PASSWORD_HASH = await securityUtils.hashNewPassword(SEED_PASSWORD);
+import type {
+  InsertApplicationRow,
+  InsertCompanyRow,
+  InsertCredentialRow,
+  InsertUserRow,
+} from '../types';
 
-export const users = [
-  {
-    email: 'alice@example.com',
-    firstName: 'Alice',
-    lastName: 'Smith',
-    isLocked: false,
-    tier: UserTier.FREE,
-    lastLoginAt: null,
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    email: 'bob@example.com',
-    firstName: 'Bob',
-    lastName: 'Jones',
-    isLocked: false,
-    tier: UserTier.FREE,
-    lastLoginAt: null,
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    email: 'carol@example.com',
-    firstName: 'Carol',
-    lastName: 'White',
-    isLocked: false,
-    tier: UserTier.FREE,
-    lastLoginAt: null,
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-];
+const APPLICATION_ROLES = [
+  'Frontend Engineer',
+  'Backend Engineer',
+  'Full Stack Engineer',
+  'Software Engineer',
+  'Platform Engineer',
+  'Site Reliability Engineer',
+  'DevOps Engineer',
+  'Staff Engineer',
+  'Engineering Manager',
+] as const;
 
-export const companies = [
-  {
-    name: 'Atlassian',
-    website: 'https://atlassian.com',
-    abn: '53102443916',
-    jobDescription: 'Building collaboration tools',
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    name: 'Canva',
-    website: 'https://canva.com',
-    abn: null,
-    jobDescription: null,
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    name: 'Afterpay',
-    website: 'https://afterpay.com',
-    abn: null,
-    jobDescription: 'Buy now, pay later',
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    name: 'REA Group',
-    website: 'https://realestate.com.au',
-    abn: '54008559269',
-    jobDescription: 'Real estate listings',
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-];
+const APPLICATION_STATUSES = [
+  JobStatus.ENTERED,
+  JobStatus.APPLIED,
+  JobStatus.INTERVIEW,
+  JobStatus.OFFER,
+  JobStatus.ACCEPTED,
+  JobStatus.REJECTED,
+] as const;
 
-// userId/companyId are resolved by index after insert
-export const applications = [
-  {
-    userIndex: 0,
-    companyIndex: 0,
-    role: 'Senior Frontend Engineer',
-    status: JobStatus.INTERVIEW,
-    url: 'https://atlassian.com/jobs/1',
-    notes: 'Referred by a friend',
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    userIndex: 0,
-    companyIndex: 1,
-    role: 'Full Stack Developer',
-    status: JobStatus.APPLIED,
-    url: null,
-    notes: null,
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    userIndex: 1,
-    companyIndex: 2,
-    role: 'Backend Engineer',
-    status: JobStatus.OFFER,
-    url: 'https://afterpay.com/jobs/2',
-    notes: 'Good culture fit',
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    userIndex: 1,
-    companyIndex: 3,
-    role: 'Platform Engineer',
-    status: JobStatus.REJECTED,
-    url: null,
-    notes: 'Rejected after round 2',
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    userIndex: 2,
-    companyIndex: 0,
-    role: 'DevOps Engineer',
-    status: JobStatus.APPLIED,
-    url: null,
-    notes: null,
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-  {
-    userIndex: 2,
-    companyIndex: 3,
-    role: 'Software Engineer',
-    status: JobStatus.ACCEPTED,
-    url: 'https://rea.com/jobs/5',
-    notes: 'Accepted offer!',
-    createdBy: SEED_CREATED_BY_USER_ID,
-  },
-];
+const APPLICATION_NOTES = [
+  'Applied through company career page',
+  'Reached out by recruiter',
+  'Strong alignment with role requirements',
+  'Pending recruiter screen',
+  'Waiting on final interview feedback',
+  'Referral from network',
+] as const;
 
-// userId are resolved by index after insert
-export const credentials = [
-  {
-    userIndex: 0,
-    userId: undefined, // Will be set after user insertion
-    hash: SEED_PASSWORD_HASH,
+const normalizeEmailPart = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+const createUserTier = () => {
+  const randomWeight = faker.number.int({ min: 1, max: 100 });
+
+  if (randomWeight <= 85) return UserTier.FREE;
+  if (randomWeight <= 97) return UserTier.PREMIUM;
+
+  return UserTier.ADMIN;
+};
+
+export const createUsers = (count: number, createdBy: string): InsertUserRow[] => {
+  return Array.from({ length: count }, (_, index) => {
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const emailPrefix = normalizeEmailPart(`${firstName}.${lastName}.${index + 1}`);
+
+    return {
+      email: `${emailPrefix}@example.com`,
+      firstName,
+      lastName,
+      isLocked: faker.datatype.boolean({ probability: 0.03 }),
+      tier: createUserTier(),
+      lastLoginAt: faker.datatype.boolean({ probability: 0.7 })
+        ? faker.date.recent({ days: 90 })
+        : undefined,
+      createdBy,
+    };
+  });
+};
+
+export const createCompanies = (count: number, createdBy: string): InsertCompanyRow[] => {
+  return Array.from({ length: count }, (_, index) => {
+    const companyName = faker.company.name();
+    const domain = `${normalizeEmailPart(faker.internet.domainWord())}-${index + 1}.example.com`;
+
+    return {
+      name: companyName,
+      website: `https://${domain}`,
+      abn: index % 3 === 0 ? `53${String(index + 1).padStart(9, '0')}` : undefined,
+      jobDescription: faker.datatype.boolean({ probability: 0.8 })
+        ? faker.company.catchPhrase()
+        : undefined,
+      createdBy,
+    };
+  });
+};
+
+export const createCredentials = (
+  userIds: string[],
+  passwordHash: string,
+): InsertCredentialRow[] => {
+  return userIds.map((userId) => ({
+    userId,
+    hash: passwordHash,
     valid: true,
     invalidatedAt: undefined,
-  },
-  {
-    userIndex: 1,
-    userId: undefined,
-    hash: SEED_PASSWORD_HASH,
-    valid: true,
-    invalidatedAt: undefined,
-  },
-  {
-    userIndex: 2,
-    userId: undefined,
-    hash: SEED_PASSWORD_HASH,
-    valid: true,
-    invalidatedAt: undefined,
-  },
-];
+  }));
+};
+
+export const createApplications = (options: {
+  companyIds: string[];
+  createdBy: string;
+  maxApplicationsPerUser: number;
+  userIds: string[];
+}): InsertApplicationRow[] => {
+  const applications: InsertApplicationRow[] = [];
+  const { userIds, companyIds, maxApplicationsPerUser, createdBy } = options;
+
+  for (const userId of userIds) {
+    const totalApplications = faker.number.int({ min: 1, max: maxApplicationsPerUser });
+
+    for (let applicationIndex = 0; applicationIndex < totalApplications; applicationIndex += 1) {
+      applications.push({
+        userId,
+        companyId: faker.helpers.arrayElement(companyIds),
+        role: faker.helpers.arrayElement(APPLICATION_ROLES),
+        status: faker.helpers.arrayElement(APPLICATION_STATUSES),
+        url: faker.datatype.boolean({ probability: 0.75 }) ? faker.internet.url() : undefined,
+        notes: faker.datatype.boolean({ probability: 0.7 })
+          ? faker.helpers.arrayElement(APPLICATION_NOTES)
+          : undefined,
+        createdBy,
+      });
+    }
+  }
+
+  return applications;
+};

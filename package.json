@@ -29,7 +29,7 @@
     "reset": "bun run dev:db:reset && bun run --filter '@app/redis' infra:reset && bun run --filter '@app/redis' infra:up && bun run dev:api && bun run dev:ui",
     "stop": "bun run --filter '@app/api' down && bun run --filter '@app/ui' down && bun run --filter '@app/db' infra:down && bun run --filter '@app/redis' infra:down",
     "test": "bun run --filter '@app/api' test",
-    "dev:infra:up": "docker-compose -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml up -d --remove-orphans && bun run --filter '@app/db' wait:15 && bun run --filter '@app/db' db:migrate && bun run --filter '@app/db' db:seed",
+    "dev:infra:up": "docker-compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml up -d --remove-orphans && bun run --filter '@app/db' wait:15 && bun run --filter '@app/db' db:migrate && bun run --filter '@app/db' db:seed",
     "dev:ui": "bun run --filter '@app/ui' dev",
     "dev:db:init": "bun run --filter '@app/db' init",
     "dev:db:reset": "bun run --filter '@app/db' hot:reset",
