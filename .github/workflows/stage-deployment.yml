@@ -80,7 +80,7 @@ jobs:
           docker logs app_api --tail 300 || true
           docker logs app_ui --tail 300 || true
 
-      - name: Print successful API container status
+      - name: Print successful container diagnostics
         if: success()
         shell: bash
         run: |
@@ -88,3 +88,8 @@ jobs:
             --all \
             --filter "name=app_api" \
             --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}'
+
+      - name: Tear down staged stack
+        if: always()
+        shell: bash
+        run: .github/scripts/tear-down-stage.sh

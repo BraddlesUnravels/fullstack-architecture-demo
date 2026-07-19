@@ -36,8 +36,11 @@ remove_image_if_exists() {
     return
   fi
 
-  docker image rm "$image_name" > /dev/null || true
-  echo "[tear-down] Removed image: ${image_name}"
+  if docker image rm "$image_name" > /dev/null; then
+    echo "[tear-down] Removed image: ${image_name}"
+  else
+    echo "[tear-down] Could not remove image: ${image_name}"
+  fi
 }
 
 echo "[tear-down] Starting staged production cleanup"
