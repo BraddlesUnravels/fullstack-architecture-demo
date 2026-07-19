@@ -1,8 +1,10 @@
 import pino from 'pino';
 
 const isDev = process.env.NODE_ENV !== 'production';
+const isTest = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
 
 export const baseLogger = pino({
+  enabled: !isTest,
   level: process.env.LOG_LEVEL || 'info',
   redact: {
     paths: [

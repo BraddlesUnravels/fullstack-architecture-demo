@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ApplicationSummary } from '@app/types';
 import { createApp } from '../src/app';
 import {
   createApplicationRow,
@@ -7,7 +8,6 @@ import {
   createUserRow,
 } from './helpers/factories';
 import { UserTier } from '@app/constants';
-import { ApplicationRow } from '@app/db/types';
 
 const {
   applicationRepoMock,
@@ -30,6 +30,7 @@ const {
     createApplication: vi.fn(),
     findApplicationById: vi.fn(),
     findApplicationByUserId: vi.fn(),
+    listAllApplicationSummaryByUserId: vi.fn(),
     updateApplication: vi.fn(),
   },
   consumePendingRegistrationMock: vi.fn(),
@@ -204,7 +205,22 @@ describe('app', () => {
         tier: UserTier.FREE,
       }),
     );
-    applicationRepoMock.findApplicationByUserId.mockResolvedValue([application]);
+    applicationRepoMock.listAllApplicationSummaryByUserId.mockResolvedValue([
+      {
+        company: {
+          abn: undefined,
+          jobDescription: 'Platform role',
+          name: 'Acme',
+          website: undefined,
+        },
+        createdAt: application.createdAt,
+        id: application.id,
+        notes: application.notes,
+        role: application.role,
+        status: application.status,
+        updatedAt: application.updatedAt,
+      },
+    ]);
 
     const response = await app.handle(
       createRequest('/applications/', {
@@ -213,7 +229,7 @@ describe('app', () => {
         },
       }),
     );
-    const body = await parseBody<Array<ApplicationRow>>(response);
+    const body = await parseBody<ApplicationSummary[]>(response);
 
     expect(response.status).toBe(200);
     expect(body).toHaveLength(1);

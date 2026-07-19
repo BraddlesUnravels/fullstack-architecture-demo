@@ -36,4 +36,19 @@ export const selectApplicationSchema = v.strictObject({
   ...auditColumns.entries,
 });
 
-export const listApplicationsSchema = v.array(selectApplicationSchema);
+export const applicationSummarySchema = v.strictObject({
+  id: v.string(),
+  role: v.string(),
+  status: applicationStatusSchema,
+  notes: v.exactOptional(v.union([v.string(), v.undefined()])),
+  createdAt: v.exactOptional(v.union([v.date(), v.undefined()])),
+  updatedAt: v.exactOptional(v.union([v.date(), v.undefined()])),
+  company: v.strictObject({
+    name: v.string(),
+    website: v.exactOptional(v.union([v.string(), v.undefined()])),
+    jobDescription: v.exactOptional(v.union([v.string(), v.undefined()])),
+    abn: v.exactOptional(v.union([v.string(), v.undefined()])),
+  }),
+});
+
+export const listApplicationsSchema = v.array(applicationSummarySchema);

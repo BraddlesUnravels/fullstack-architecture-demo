@@ -1,6 +1,11 @@
 import { applicationRepo } from '@app/db';
 import type { ApplicationRow, UpdateApplicationRow } from '@app/db/types';
-import type { ApplicationSelect, ApplicationInsert, DeleteResponse } from '@app/types';
+import type {
+  ApplicationSelect,
+  ApplicationInsert,
+  DeleteResponse,
+  ApplicationSummary,
+} from '@app/types';
 import { serializeAuditDates } from '../../utils';
 import {
   ApplicationCreateFailedError,
@@ -37,9 +42,8 @@ const findUserApplicationByUserId = async (
 
 const findAllUserApplications = async (
   userId: ApplicationRow['userId'],
-): Promise<ApplicationSelect[]> => {
-  const applications = await applicationRepo.findApplicationByUserId(userId);
-  return applications.filter((application) => !application.isDeleted).map(serializeAuditDates);
+): Promise<ApplicationSummary[]> => {
+  return await applicationRepo.listAllApplicationSummaryByUserId(userId);
 };
 
 const createUserApplication = async (

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createApplicationRow } from '../../helpers/factories';
 import { applicationService } from '../../../src/modules/application/service.application';
+import { JobStatus } from '@app/constants';
 
 const { applicationRepoMock } = vi.hoisted(() => ({
   applicationRepoMock: {
@@ -8,6 +9,7 @@ const { applicationRepoMock } = vi.hoisted(() => ({
     deleteApplication: vi.fn(),
     findApplicationById: vi.fn(),
     findApplicationByUserId: vi.fn(),
+    listAllApplicationSummaryByUserId: vi.fn(),
     updateApplication: vi.fn(),
   },
 }));
@@ -48,16 +50,40 @@ describe('modules/application/service.application', () => {
   });
 
   describe('findAllUserApplications', () => {
-    it('should filter out soft-deleted applications', async () => {
-      const active = createApplicationRow({ id: 'active-application-id', isDeleted: false });
-      const deleted = createApplicationRow({ id: 'deleted-application-id', isDeleted: true });
+    it('should return summaries from the repository', async () => {
+      const application = createApplicationRow({ id: 'active-application-id' });
 
-      applicationRepoMock.findApplicationByUserId.mockResolvedValue([active, deleted]);
+      applicationRepoMock.listAllApplicationSummaryByUserId.mockResolvedValue([
+        {
+          company: {
+            abn: undefined,
+            jobDescription: 'Platform role',
+            name: 'Acme',
+            website: undefined,
+          },
+          createdAt: application.createdAt,
+          id: application.id,
+          notes: application.notes,
+          role: application.role,
+          status: application.status,
+          updatedAt: application.updatedAt,
+        },
+      ]);
 
-      const result = await applicationService.findAllUserApplications(active.userId);
+      const result = await applicationService.findAllUserApplications(application.userId);
 
       expect(result).toHaveLength(1);
       expect(result[0]?.id).toBe('active-application-id');
+    });
+
+    it('should return an empty array when repository returns no applications', async () => {
+      const userId = '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51';
+
+      applicationRepoMock.listAllApplicationSummaryByUserId.mockResolvedValue([]);
+
+      const result = await applicationService.findAllUserApplications(userId);
+
+      expect(result).toEqual([]);
     });
   });
 
@@ -70,7 +96,7 @@ describe('modules/application/service.application', () => {
           companyId: 'f8c46e63-faee-4031-bd5f-4f91da4f3a5f',
           notes: 'Initial note',
           role: 'Software Engineer',
-          status: 'entered',
+          status: JobStatus.ENTERED,
           url: 'https://example.com/jobs/1',
           userId: '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51',
         }),
