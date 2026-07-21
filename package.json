@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@manypkg/cli": "^0.25.1",
     "@types/bun": "^1.3.13",
-    "bun-types": "^1.3.13",
+    "bun-types": "^1.3.14",
+    "concurrently": "^9.2.1",
     "eslint": "^10.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.3",
-    "typescript-eslint": "^8.46.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.46.2"
   },
   "$schema": "https://json.schemastore.org/package",
   "lint-staged": {
@@ -24,27 +26,42 @@
   "scripts": {
     "deploy:prod": "docker compose -f docker/docker-compose-prod.yml -f docker/docker-compose-db.prod.yml -f docker/docker-compose-redis.prod.yml up -d",
     "tear:down": "docker compose -f docker/docker-compose-prod.yml -f docker/docker-compose-db.prod.yml -f docker/docker-compose-redis.prod.yml down -v --remove-orphans",
-    "start": "bun run dev:infra:up && (bun run dev:api & bun run dev:ui & wait)",
-    "init": "cp .env.example .env && bun i && bun run dev:db:init && bun run --filter '@app/redis' infra:up && bun run dev:api && bun run dev:ui",
-    "reset": "bun run dev:db:reset && bun run --filter '@app/redis' infra:reset && bun run --filter '@app/redis' infra:up && bun run dev:api && bun run dev:ui",
+    "start": "bun run dev:full",
+    "dev": "concurrently -k --names api,ui --prefix-colors cyan,magenta \"bun run dev:api\" \"bun run dev:ui\"",
+    "dev:full": "bun run dev:infra:up && bun run dev",
+    "setup": "cp -n .env.example .env && bun install && bun run dev:db:init && bun run --filter '@app/redis' infra:up",
+    "init": "bun run setup",
+    "reset": "bun run dev:db:reset && bun run --filter '@app/redis' infra:reset && bun run --filter '@app/redis' infra:up",
     "stop": "bun run --filter '@app/api' down && bun run --filter '@app/ui' down && bun run --filter '@app/db' infra:down && bun run --filter '@app/redis' infra:down",
-    "test": "bun run --filter '@app/api' test",
-    "dev:infra:up": "docker-compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml up -d --remove-orphans && bun run --filter '@app/db' wait:15 && bun run --filter '@app/db' db:migrate && bun run --filter '@app/db' db:seed",
+    "test": "bun run --filter '@app/*' test",
+    "infra:up": "docker compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml up -d --remove-orphans",
+    "infra:down": "docker compose -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml down --remove-orphans",
+    "infra:reset": "docker compose -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml down -v --remove-orphans",
+    "dev:infra:up": "bun run infra:up && bun run --filter '@app/db' wait:15 && bun run --filter '@app/db' db:migrate && bun run --filter '@app/db' db:seed",
     "dev:ui": "bun run --filter '@app/ui' dev",
     "dev:db:init": "bun run --filter '@app/db' init",
     "dev:db:reset": "bun run --filter '@app/db' hot:reset",
     "dev:db": "bun run --filter '@app/db' hot:reset",
     "dev:api": "bun run --filter '@app/api' dev",
+    "check:packages": "manypkg check",
+    "fix:packages": "manypkg fix",
+    "check": "bun run format:check && bun run typecheck && bun run lint && bun run --filter '@app/api' test",
     "typecheck": "bun run --filter '@app/*' typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "bun run --filter '@app/*' lint",
     "prepare": "husky"
   },
+  "manypkg": {
+    "workspaceProtocol": "require"
+  },
   "type": "module",
   "workspaces": [
     "apps/*",
     "services/*",
     "packages/*"
-  ]
+  ],
+  "overrides": {
+    "vite": "7.3.2"
+  }
 }

@@ -10,9 +10,9 @@
   "scripts": {
     "init": "bun run infra:up && bun run db:generate && bun run db:migrate && bun run db:seed",
     "hot:reset": "bun run infra:reset && bun run infra:up && bun run wait:15 && bun run db:migrate && bun run db:seed",
-    "infra:up": "docker-compose -f ../../docker/docker-compose-db.dev.yml up -d",
-    "infra:down": "docker-compose -f ../../docker/docker-compose-db.dev.yml down",
-    "infra:reset": "docker-compose -f ../../docker/docker-compose-db.dev.yml down -v",
+    "infra:up": "docker compose -f ../../docker/docker-compose-db.dev.yml up -d",
+    "infra:down": "docker compose -f ../../docker/docker-compose-db.dev.yml down",
+    "infra:reset": "docker compose -f ../../docker/docker-compose-db.dev.yml down -v",
     "db:generate": "bun --env-file=../../.env drizzle-kit generate",
     "db:migrate": "bun --env-file=../../.env src/scripts/apply-migrations.ts",
     "db:migrate:kit": "bun --env-file=../../.env drizzle-kit migrate",

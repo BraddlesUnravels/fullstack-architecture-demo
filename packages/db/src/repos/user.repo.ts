@@ -39,3 +39,18 @@ export const deleteUser = async (id: UserRow['id']): Promise<DeleteResponse> => 
     .returning();
   return { success: row[0]?.isDeleted ?? false };
 };
+
+export const userSummary = async (): Promise<NullToUndefined<Partial<UserRow>>[]> => {
+  const row = await appDb
+    .select({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      createdAt: user.createdAt,
+      lastLoginAt: user.lastLoginAt,
+    })
+    .from(user)
+    .where(eq(user.isDeleted, false));
+
+  return stripNulls(row) ?? [];
+};

@@ -1,67 +1,106 @@
 import { component$, Slot } from '@builder.io/qwik';
 import type {
+  ClassList,
   InputHTMLAttributes,
   QRL,
   TextareaHTMLAttributes,
-  FormHTMLAttributes,
+  HTMLAttributes,
+  JSXOutput,
 } from '@builder.io/qwik';
-// import { HiEyeSlashSolid, HiEyeOutline } from '@qwikest/icons/heroicons';
 
-interface FormFieldProps extends FormHTMLAttributes<HTMLFormElement> {
+interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
+  class?: ClassList;
+  id?: string;
+  name?: string;
   label?: string;
   required?: boolean;
-  error?: boolean;
-  hint?: boolean;
-  message?: string;
+  errorMessage?: string;
+  hintMessage?: string;
 }
 
 export const FormField = component$<FormFieldProps>(
-  ({ label, required = false, error, hint, message }) => (
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text">
-          {label}
-          {required && <span class="text-error ml-1">*</span>}
-        </span>
-      </label>
-      {/* inputs are wrrapped in this slot */}
-      <Slot />
+  ({ id, label, required = false, errorMessage, hintMessage, class: className, ...rest }) => {
+    const message = errorMessage ?? hintMessage;
+    const messageId = id && message ? `${id}-message` : undefined;
 
-      {error && (
-        <label class="label">
-          <span class="label-text-alt text-error">{message}</span>
-        </label>
-      )}
+    return (
+      <div {...rest} class={['form-control', className]}>
+        {label && (
+          <label class="label" for={id}>
+            <span class="label-text">
+              {label}
 
-      {hint && (
-        <label class="label">
-          <span class="label-text-alt text-base/70">{message}</span>
-        </label>
-      )}
-    </div>
-  ),
+              {required && (
+                <span class="ml-1 text-error" aria-hidden="true">
+                  *
+                </span>
+              )}
+            </span>
+          </label>
+        )}
+
+        <Slot />
+
+        {message && (
+          <p
+            id={messageId}
+            class={['label-text-alt mt-1', errorMessage ? 'text-error' : 'text-base-content/70']}
+          >
+            {message}
+          </p>
+        )}
+      </div>
+    );
+  },
 );
 
-interface TextInputProps<T> extends InputHTMLAttributes<HTMLInputElement> {
-  value?: string;
-  className?: string;
-  placeholder?: string;
-  type?: 'text' | 'email' | 'password';
-  required?: boolean;
-  returnInput$?: QRL<(v: T) => void>;
+interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'class' | 'onInput$'> {
+  containerClass?: string;
+  inputClass?: string;
+  icon?: JSXOutput;
+  iconPosition?: 'start' | 'end';
+  iconClass?: string;
+  error?: boolean;
+  returnInput$?: QRL<(event: InputEvent) => void>;
 }
 
-export const TextInput = component$<TextInputProps<InputEvent>>(
-  ({ value, placeholder, className, type = 'text', required = false, returnInput$, ...rest }) => (
-    <input
-      {...rest}
-      type={type}
-      class={className ?? 'input input-primary min-w-full'}
-      placeholder={placeholder}
-      value={value}
-      required={required}
-      onInput$={returnInput$}
-    />
+export const TextInput = component$<TextInputProps>(
+  ({
+    containerClass,
+    inputClass,
+    icon,
+    iconPosition = 'start',
+    iconClass,
+    error = false,
+    returnInput$,
+    type = 'text',
+    ...inputProps
+  }) => (
+    <div
+      class={[
+        ['input input-bordered outline-none rounded-lg', containerClass],
+        'border-white/10 bg-white/3 text-slate-200',
+        error ? 'border-error focus-within:border-error' : 'focus-within:border-primary',
+      ]}
+    >
+      {icon && iconPosition === 'start' && (
+        <span
+          class={['flex h-full shrink-0 items-stretch text-slate-400', iconClass]}
+          aria-hidden="true"
+        >
+          {icon}
+        </span>
+      )}
+      <input {...inputProps} type={type} class={inputClass} onInput$={returnInput$} />
+      {icon && iconPosition === 'end' && (
+        <span
+          class={['flex h-full shrink-0 items-stretch text-slate-400', iconClass]}
+          aria-hidden="true"
+        >
+          {icon}
+        </span>
+      )}
+    </div>
   ),
 );
 
@@ -84,7 +123,3 @@ export const TextArea = component$<TextareaProps<InputEvent>>(
     />
   ),
 );
-
-export const PasswordInput = component$<TextInputProps<InputEvent>>(() => {
-  return <TextInput />;
-});

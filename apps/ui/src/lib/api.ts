@@ -6,4 +6,7 @@ const nodeApiUrl = typeof process !== 'undefined' ? process.env.API_URL : undefi
 const serverApiUrl = nodeApiUrl || import.meta.env.API_URL || DEFAULT_API_URL;
 const apiBaseUrl = import.meta.env.SSR ? serverApiUrl : '/api';
 
-export const api = treaty<App>(apiBaseUrl);
+export const api = (sid?: string) =>
+  treaty<App>(apiBaseUrl, {
+    headers: sid ? { cookie: `sid=${sid}` } : undefined,
+  });
