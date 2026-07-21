@@ -25,7 +25,13 @@ const formatCellValue = (value: unknown): string => {
 
   if (value instanceof Date) return value.toISOString();
 
-  if (typeof value === 'object') return JSON.stringify(value);
+  if (typeof value === 'object') {
+    try {
+      return JSON.stringify(value);
+    } catch {
+      return '';
+    }
+  }
 
   return '';
 };
