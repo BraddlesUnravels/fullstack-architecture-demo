@@ -43,14 +43,3 @@ export class ApplicationDeleteFailedError extends ApiError {
     this.name = 'ApplicationDeleteFailedError';
   }
 }
-
-export class NoApplicationsFoundForUser extends ApiError {
-  constructor(message = 'No applications found for user') {
-    super({
-      status: 404,
-      code: 'NO_APPLICATIONS_FOUND_FOR_USER',
-      message,
-    });
-    this.name = 'NoApplicationsFoundForUser';
-  }
-}

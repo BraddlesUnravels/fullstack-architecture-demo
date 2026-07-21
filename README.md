@@ -118,10 +118,12 @@ bun run dev:ui
 - API health: `http://localhost:3000/health/`
 - UI: `http://localhost:5173`
 
-One-command option to bring up infra + API + UI:
+One-command options:
 
 ```bash
-bun run start
+bun run setup    # first-time local bootstrap
+bun run dev      # run API + UI together
+bun run dev:full # infra + migrations/seed + API + UI
 ```
 
 ## API routes currently available
@@ -190,12 +192,19 @@ All workspaces load environment variables from the repository root `.env` file.
 Run from repository root:
 
 ```bash
-bun run start
-bun run stop
+bun run setup
+bun run dev
+bun run dev:full
 bun run dev:infra:up
+bun run infra:down
+bun run infra:reset
+bun run stop
 bun run dev:api
 bun run dev:ui
 bun run dev:db
+bun run check
+bun run check:packages
+bun run fix:packages
 ```
 
 `bun run dev:db` performs a local DB reset (`infra:reset`), then migrates and reseeds.

@@ -121,7 +121,14 @@ export const ImplementDataTable = component$<RuntimeDataTableProps>(
                       const value = column.accessor
                         ? column.accessor(row)
                         : getValueByPath(row, column.key);
-                      return <td key={column.key}>{formatCellValue(value)}</td>;
+                      return (
+                        <td
+                          key={column.key}
+                          class={[alignmentClass(column.align), column.cellClass]}
+                        >
+                          {formatCellValue(value)}
+                        </td>
+                      );
                     })}
 
                     {hasActions && (

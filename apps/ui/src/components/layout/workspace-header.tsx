@@ -37,7 +37,6 @@ export default component$<HeaderProps>(({ name, onAddApplication$, onSearchAppli
           icon={<InSearch />}
           iconPosition="start"
           returnInput$={onSearchApplication$}
-          onInput$={onSearchApplication$}
         />
       </FormField>
 

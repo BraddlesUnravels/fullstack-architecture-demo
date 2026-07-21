@@ -12,9 +12,9 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@app/types": "workspace:*",
+    "@app/db": "workspace:*",
     "@app/schemas": "workspace:*",
-    "@app/db": "workspace:*"
+    "@app/types": "workspace:*"
   },
   "paths": {
     "@app/types/*": "../types/src/*",

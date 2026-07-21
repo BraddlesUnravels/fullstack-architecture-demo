@@ -43,7 +43,9 @@ const findUserApplicationByUserId = async (
 const findAllUserApplications = async (
   userId: ApplicationRow['userId'],
 ): Promise<ApplicationSummary[]> => {
-  return await applicationRepo.listAllApplicationSummaryByUserId(userId);
+  const applications = await applicationRepo.listAllApplicationSummaryByUserId(userId);
+
+  return applications.map((application) => serializeAuditDates(application));
 };
 
 const createUserApplication = async (

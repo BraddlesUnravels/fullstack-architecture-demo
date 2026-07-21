@@ -2,8 +2,23 @@ import { and, eq, desc } from 'drizzle-orm';
 import { appDb } from '../../src';
 import { application, company } from '../schema';
 import type { ApplicationRow, InsertApplicationRow, UpdateApplicationRow } from '../types';
-import type { DeleteResponse, NullToUndefined, ApplicationSummaryList } from '@app/types';
+import type { DeleteResponse, NullToUndefined } from '@app/types';
 import { stripNulls } from '../helpers';
+
+export type ApplicationSummaryDbRow = NullToUndefined<{
+  id: ApplicationRow['id'];
+  role: ApplicationRow['role'];
+  status: ApplicationRow['status'];
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  company: {
+    name: string;
+    website?: string;
+    jobDescription?: string;
+    abn?: string;
+  };
+}>;
 
 export const findApplicationById = async (
   id: ApplicationRow['id'],
@@ -44,7 +59,7 @@ export const deleteApplication = async (id: ApplicationRow['id']): Promise<Delet
 
 export const listAllApplicationSummaryByUserId = async (
   userId: ApplicationRow['userId'],
-): Promise<ApplicationSummaryList> => {
+): Promise<ApplicationSummaryDbRow[]> => {
   const row = await appDb
     .select({
       id: application.id,
