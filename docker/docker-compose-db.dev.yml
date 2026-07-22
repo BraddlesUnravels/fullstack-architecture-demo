@@ -4,10 +4,14 @@ services:
     container_name: app_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app_db
+      POSTGRES_USER: ${ADMIN_DB_USER:-admin}
+      POSTGRES_PASSWORD: ${ADMIN_DB_PASSWORD:-change-me-admin-password}
+      POSTGRES_DB: ${POSTGRES_DB:-app_db}
+      MIGRATOR_DB_USER: ${MIGRATOR_DB_USER:-db_migrator}
+      MIGRATOR_DB_PASSWORD: ${MIGRATOR_DB_PASSWORD:-change-me-migrator-password}
+      APP_DB_USER: ${APP_DB_USER:-app_user}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-change-me-app-password}
     ports:
       - '5432:5432'
     volumes:
-      - ./scripts/db-setup.sql:/docker-entrypoint-initdb.d/db-setup.sql
+      - ./scripts:/docker-entrypoint-initdb.d

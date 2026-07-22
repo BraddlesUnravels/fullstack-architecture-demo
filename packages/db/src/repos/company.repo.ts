@@ -9,7 +9,11 @@ import { stripNulls } from '../helpers';
 export async function findCompanyById(
   id: CompanyRow['id'],
 ): Promise<NullToUndefined<CompanyRow>[]> {
-  const rows = await appDb.select().from(company).where(eq(company.id, id)).limit(1);
+  const rows = await appDb
+    .select()
+    .from(company)
+    .where(eq(company.id, id))
+    .limit(1);
   return stripNulls(rows) ?? [];
 }
 
@@ -24,11 +28,17 @@ export async function updateCompany(
   id: CompanyRow['id'],
   data: UpdateCompanyRow,
 ): Promise<NullToUndefined<CompanyRow>[]> {
-  const rows = await appDb.update(company).set(data).where(eq(company.id, id)).returning();
+  const rows = await appDb
+    .update(company)
+    .set(data)
+    .where(eq(company.id, id))
+    .returning();
   return stripNulls(rows) ?? [];
 }
 
-export async function deleteCompany(id: CompanyRow['id']): Promise<DeleteResponse> {
+export async function deleteCompany(
+  id: CompanyRow['id'],
+): Promise<DeleteResponse> {
   const rows = await appDb
     .update(company)
     .set({ isDeleted: true })

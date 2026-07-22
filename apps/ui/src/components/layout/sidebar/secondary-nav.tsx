@@ -12,7 +12,8 @@ export default component$(() => {
   const location = useLocation();
 
   const isActive = (href: string) =>
-    location.url.pathname === href || location.url.pathname.startsWith(`${href}/`);
+    location.url.pathname === href ||
+    location.url.pathname.startsWith(`${href}/`);
 
   return (
     <div class="w-full shrink-0 mb-2">
@@ -42,7 +43,9 @@ export default component$(() => {
                 <span
                   class={[
                     'grid py-0 h-[var(--nav-icon)] w-[var(--nav-icon)] shrink-0 place-items-center text-lg transition',
-                    active ? 'text-cyan-300' : 'text-slate-300 group-hover:text-cyan-200',
+                    active
+                      ? 'text-cyan-300'
+                      : 'text-slate-300 group-hover:text-cyan-200',
                   ]}
                 >
                   <item.icon class="h-[var(--nav-icon)] w-[var(--nav-icon)]" />

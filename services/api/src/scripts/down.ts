@@ -22,9 +22,12 @@ const stopApi = async () => {
       return;
     }
 
-    throw new Error(`Failed to stop process on port ${apiEnv.port}: ${toErrorMessage(err)}`, {
-      cause: err,
-    });
+    throw new Error(
+      `Failed to stop process on port ${apiEnv.port}: ${toErrorMessage(err)}`,
+      {
+        cause: err,
+      },
+    );
   }
 
   console.log(`[api] Stopped process on port ${apiEnv.port}`);

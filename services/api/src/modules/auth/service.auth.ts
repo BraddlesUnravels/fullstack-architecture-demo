@@ -1,7 +1,11 @@
 import { credentialRepo, userRepo } from '@app/db';
 import { createSession, deleteSession } from '@app/redis';
 import type { LoggedOut, LoginInput } from '@app/types';
-import { hashSessionToken, isPasswordMatch, createSessionToken } from '../../services';
+import {
+  hashSessionToken,
+  isPasswordMatch,
+  createSessionToken,
+} from '../../services';
 import { UserNotFoundError } from '../user/errors.user';
 import { InvalidCredentialsError, NoCredentialsSetError } from './errors.auth';
 import type { CookieJar } from '../../types';
@@ -12,11 +16,14 @@ const { TTL_SECONDS, COOKIE_NAME } = API_CONSTANTS.cookie;
 
 const login = async ({ email, password }: LoginInput): Promise<LoggedIn> => {
   const [user] = await userRepo.findUserByEmail(email);
-  if (!user) throw new UserNotFoundError('No user exists with the provided email');
+  if (!user)
+    throw new UserNotFoundError('No user exists with the provided email');
 
   const [credentials] = await credentialRepo.findCredentialByUserId(user.id);
   if (!credentials)
-    throw new NoCredentialsSetError('No credentials set for the user with the provided email');
+    throw new NoCredentialsSetError(
+      'No credentials set for the user with the provided email',
+    );
 
   const isMatch = await isPasswordMatch(password, credentials.hash);
   if (!isMatch) throw new InvalidCredentialsError();

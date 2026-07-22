@@ -37,7 +37,8 @@ const APPLICATION_NOTES = [
   'Referral from network',
 ] as const;
 
-const normalizeEmailPart = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
+const normalizeEmailPart = (value: string) =>
+  value.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 const createUserTier = () => {
   const randomWeight = faker.number.int({ min: 1, max: 100 });
@@ -48,11 +49,16 @@ const createUserTier = () => {
   return UserTier.ADMIN;
 };
 
-export const createUsers = (count: number, createdBy: string): InsertUserRow[] => {
+export const createUsers = (
+  count: number,
+  createdBy: string,
+): InsertUserRow[] => {
   return Array.from({ length: count }, (_, index) => {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
-    const emailPrefix = normalizeEmailPart(`${firstName}.${lastName}.${index + 1}`);
+    const emailPrefix = normalizeEmailPart(
+      `${firstName}.${lastName}.${index + 1}`,
+    );
 
     return {
       email: `${emailPrefix}@example.com`,
@@ -68,7 +74,10 @@ export const createUsers = (count: number, createdBy: string): InsertUserRow[] =
   });
 };
 
-export const createCompanies = (count: number, createdBy: string): InsertCompanyRow[] => {
+export const createCompanies = (
+  count: number,
+  createdBy: string,
+): InsertCompanyRow[] => {
   return Array.from({ length: count }, (_, index) => {
     const companyName = faker.company.name();
     const domain = `${normalizeEmailPart(faker.internet.domainWord())}-${index + 1}.example.com`;
@@ -76,7 +85,8 @@ export const createCompanies = (count: number, createdBy: string): InsertCompany
     return {
       name: companyName,
       website: `https://${domain}`,
-      abn: index % 3 === 0 ? `53${String(index + 1).padStart(9, '0')}` : undefined,
+      abn:
+        index % 3 === 0 ? `53${String(index + 1).padStart(9, '0')}` : undefined,
       jobDescription: faker.datatype.boolean({ probability: 0.8 })
         ? faker.company.catchPhrase()
         : undefined,
@@ -107,15 +117,24 @@ export const createApplications = (options: {
   const { userIds, companyIds, maxApplicationsPerUser, createdBy } = options;
 
   for (const userId of userIds) {
-    const totalApplications = faker.number.int({ min: 1, max: maxApplicationsPerUser });
+    const totalApplications = faker.number.int({
+      min: 1,
+      max: maxApplicationsPerUser,
+    });
 
-    for (let applicationIndex = 0; applicationIndex < totalApplications; applicationIndex += 1) {
+    for (
+      let applicationIndex = 0;
+      applicationIndex < totalApplications;
+      applicationIndex += 1
+    ) {
       applications.push({
         userId,
         companyId: faker.helpers.arrayElement(companyIds),
         role: faker.helpers.arrayElement(APPLICATION_ROLES),
         status: faker.helpers.arrayElement(APPLICATION_STATUSES),
-        url: faker.datatype.boolean({ probability: 0.75 }) ? faker.internet.url() : undefined,
+        url: faker.datatype.boolean({ probability: 0.75 })
+          ? faker.internet.url()
+          : undefined,
         notes: faker.datatype.boolean({ probability: 0.7 })
           ? faker.helpers.arrayElement(APPLICATION_NOTES)
           : undefined,

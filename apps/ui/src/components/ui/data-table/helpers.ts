@@ -1,5 +1,8 @@
 import type { DataTableColumn } from './types';
-const getValueByPath = (row: Record<string, unknown>, path: string): unknown => {
+const getValueByPath = (
+  row: Record<string, unknown>,
+  path: string,
+): unknown => {
   const keys = path.split('.');
   let current: unknown = row;
 
@@ -17,7 +20,8 @@ const formatCellValue = (value: unknown): string => {
 
   if (typeof value === 'string') return value;
 
-  if (typeof value === 'number' || typeof value === 'bigint') return value.toString();
+  if (typeof value === 'number' || typeof value === 'bigint')
+    return value.toString();
 
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
 
@@ -36,7 +40,9 @@ const formatCellValue = (value: unknown): string => {
   return '';
 };
 
-const alignmentClass = (alignment: DataTableColumn<object>['align']): string | undefined => {
+const alignmentClass = (
+  alignment: DataTableColumn<object>['align'],
+): string | undefined => {
   switch (alignment) {
     case 'center':
       return 'text-center';

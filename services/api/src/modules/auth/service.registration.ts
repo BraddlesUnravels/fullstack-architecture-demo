@@ -62,13 +62,18 @@ const register = async ({ email }: Register): Promise<Registration> => {
 
   const { encodedId, hashedId } = handleRegistrationId();
 
-  await createPendingRegistration(hashedId, email, REGISTRATION_LINK_TTL_SECONDS);
+  await createPendingRegistration(
+    hashedId,
+    email,
+    REGISTRATION_LINK_TTL_SECONDS,
+  );
 
   await emailService.sendConfirmEmail(email, createVerificationUrl(encodedId));
 
   return {
     email,
-    message: 'Registration started. Please check your email to verify your account.',
+    message:
+      'Registration started. Please check your email to verify your account.',
   };
 };
 
@@ -109,12 +114,17 @@ const completeRegistration = async ({
   password,
   confirmPassword,
 }: CompleteRegistration): Promise<CompletedRegistration> => {
-  if (password !== confirmPassword) throw new PasswordConfirmationMismatchError();
+  if (password !== confirmPassword)
+    throw new PasswordConfirmationMismatchError();
 
   const [user] = await userRepo.findUserById(userId);
-  if (!user) throw new UserNotFoundError('No user exists for the verified registration');
+  if (!user)
+    throw new UserNotFoundError('No user exists for the verified registration');
 
-  const [updatedUser] = await userRepo.updateUser(user.id, { firstName, lastName });
+  const [updatedUser] = await userRepo.updateUser(user.id, {
+    firstName,
+    lastName,
+  });
   if (!updatedUser || !updatedUser.firstName)
     throw new UserCreationFailedError('Failed to complete registration');
 
@@ -125,7 +135,11 @@ const completeRegistration = async ({
   });
   if (!createdCredential) throw new CredentialCreationFailedError();
 
-  await emailService.sendAccountCreated(updatedUser.email, updatedUser.firstName, DEFAULT_APP_LINK);
+  await emailService.sendAccountCreated(
+    updatedUser.email,
+    updatedUser.firstName,
+    DEFAULT_APP_LINK,
+  );
 
   return {
     success: true,

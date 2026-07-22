@@ -45,7 +45,9 @@ type SessionRecordLike = {
   lastSeenAt: string;
 };
 
-export const createUserRow = (overrides: Partial<UserRowLike> = {}): UserRowLike => {
+export const createUserRow = (
+  overrides: Partial<UserRowLike> = {},
+): UserRowLike => {
   const now = new Date('2026-01-01T10:00:00.000Z');
 
   return {

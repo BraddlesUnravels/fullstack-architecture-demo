@@ -51,7 +51,9 @@ describe('modules/auth/service.auth', () => {
       const credentials = createCredentialRow({ userId: user.id });
 
       userRepoMock.findUserByEmail.mockResolvedValue([user]);
-      credentialRepoMock.findCredentialByUserId.mockResolvedValue([credentials]);
+      credentialRepoMock.findCredentialByUserId.mockResolvedValue([
+        credentials,
+      ]);
       isPasswordMatchMock.mockResolvedValue(true);
       createSessionTokenMock.mockReturnValue('session-token');
       hashSessionTokenMock.mockReturnValue('hashed-session-token');
@@ -94,7 +96,9 @@ describe('modules/auth/service.auth', () => {
           email: user.email,
           password: 'password-1234',
         }),
-      ).rejects.toThrow('No credentials set for the user with the provided email');
+      ).rejects.toThrow(
+        'No credentials set for the user with the provided email',
+      );
     });
 
     it('should throw an error when password does not match', async () => {
@@ -102,7 +106,9 @@ describe('modules/auth/service.auth', () => {
       const credentials = createCredentialRow({ userId: user.id });
 
       userRepoMock.findUserByEmail.mockResolvedValue([user]);
-      credentialRepoMock.findCredentialByUserId.mockResolvedValue([credentials]);
+      credentialRepoMock.findCredentialByUserId.mockResolvedValue([
+        credentials,
+      ]);
       isPasswordMatchMock.mockResolvedValue(false);
 
       await expect(

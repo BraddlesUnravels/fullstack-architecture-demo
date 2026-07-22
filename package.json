@@ -16,8 +16,7 @@
   },
   "$schema": "https://json.schemastore.org/package",
   "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "prettier --write",
+    "*.{ts,tsx}": [
       "eslint --fix --max-warnings=0"
     ],
     "*.{md,css,tailwindcss,json,yml,yaml}": "prettier --write"
@@ -37,7 +36,7 @@
     "infra:up": "docker compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml up -d --remove-orphans",
     "infra:down": "docker compose -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml down --remove-orphans",
     "infra:reset": "docker compose -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml down -v --remove-orphans",
-    "dev:infra:up": "bun run infra:up && bun run --filter '@app/db' wait:15 && bun run --filter '@app/db' db:migrate && bun run --filter '@app/db' db:seed",
+    "dev:infra:up": "bun run infra:up && bun run --filter '@app/db' wait:15 && bun run --filter '@app/db' db:migrate && bun run --filter '@app/db' db:grant && bun run --filter '@app/db' db:seed",
     "dev:ui": "bun run --filter '@app/ui' dev",
     "dev:db:init": "bun run --filter '@app/db' init",
     "dev:db:reset": "bun run --filter '@app/db' hot:reset",

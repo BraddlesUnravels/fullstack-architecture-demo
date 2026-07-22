@@ -50,7 +50,8 @@ describe('config/index', () => {
 
   it('should use runtime API_HOST, PORT, and CORS_ORIGIN env values', async () => {
     process.env.API_HOST = 'local-api-host';
-    process.env.CORS_ORIGIN = 'https://one.example.com, https://two.example.com';
+    process.env.CORS_ORIGIN =
+      'https://one.example.com, https://two.example.com';
     process.env.PORT = '4010';
 
     const { apiEnv } = await importConfig();

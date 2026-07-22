@@ -2,9 +2,11 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Pool } from 'pg';
-import { getConnectionString } from '../helpers';
+import { getMigratorDbConnectionString } from '../helpers';
 
-const MIGRATIONS_DIR = fileURLToPath(new URL('../../migrations', import.meta.url));
+const MIGRATIONS_DIR = fileURLToPath(
+  new URL('../../migrations', import.meta.url),
+);
 const MIGRATIONS_TABLE = '__app_migrations';
 
 const getMigrationFiles = () => {
@@ -12,7 +14,8 @@ const getMigrationFiles = () => {
     .filter((entry) => entry.endsWith('.sql'))
     .sort((a, b) => a.localeCompare(b));
 
-  if (migrationFiles.length === 0) throw new Error('No SQL migration files found');
+  if (migrationFiles.length === 0)
+    throw new Error('No SQL migration files found');
 
   return migrationFiles;
 };
@@ -57,7 +60,7 @@ const baselineMigrations = async (pool: Pool, migrationFiles: string[]) => {
 };
 
 const applyMigrations = async () => {
-  const pool = new Pool(getConnectionString());
+  const pool = new Pool(getMigratorDbConnectionString());
 
   try {
     await ensureMigrationsTable(pool);
@@ -67,7 +70,9 @@ const applyMigrations = async () => {
 
     if (appliedMigrations.size === 0 && (await hasExistingSchema(pool))) {
       await baselineMigrations(pool, migrationFiles);
-      console.log('✅ Existing schema detected; migration history baseline created');
+      console.log(
+        '✅ Existing schema detected; migration history baseline created',
+      );
       return;
     }
     const pendingMigrations = migrationFiles.filter((migrationFile) => {
@@ -86,7 +91,10 @@ const applyMigrations = async () => {
       if (!migrationSql.trim()) continue;
       await pool.query('BEGIN');
       await pool.query(migrationSql);
-      await pool.query(`INSERT INTO ${MIGRATIONS_TABLE} (filename) VALUES ($1)`, [migrationFile]);
+      await pool.query(
+        `INSERT INTO ${MIGRATIONS_TABLE} (filename) VALUES ($1)`,
+        [migrationFile],
+      );
       await pool.query('COMMIT');
       console.log(`✅ Applied migration ${migrationFile}`);
     }
