@@ -68,7 +68,7 @@ describe('modules/auth/service.registration', () => {
       );
       expect(emailServiceMock.sendConfirmEmail).toHaveBeenCalledWith(
         'new-user@example.com',
-        expect.stringContaining('/auth/'),
+        expect.stringContaining('/verify/'),
       );
       expect(result).toEqual({
         email: 'new-user@example.com',

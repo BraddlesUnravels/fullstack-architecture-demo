@@ -1,7 +1,3 @@
-/* *
- * This is the root ts configuration for this monorepo.
- * It is used by all packages in the monorepo, and can be extended by each package as needed.
- */
 {
   "compilerOptions": {
     "target": "ESNext",

@@ -88,12 +88,16 @@ export const getDatabaseName = () => {
 
 export const getDatabaseHost = (role: DbRole) => {
   if (role === 'app')
-    return pickDefinedValue([process.env.APP_DB_HOST, process.env.POSTGRES_HOST]) ||
-      DEFAULT_DB_HOST;
+    return (
+      pickDefinedValue([process.env.APP_DB_HOST, process.env.POSTGRES_HOST]) ||
+      DEFAULT_DB_HOST
+    );
 
   return (
-    pickDefinedValue([process.env.MIGRATOR_DB_HOST, process.env.POSTGRES_HOST]) ||
-    DEFAULT_DB_HOST
+    pickDefinedValue([
+      process.env.MIGRATOR_DB_HOST,
+      process.env.POSTGRES_HOST,
+    ]) || DEFAULT_DB_HOST
   );
 };
 

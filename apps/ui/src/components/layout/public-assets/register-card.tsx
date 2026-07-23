@@ -18,6 +18,8 @@ export default component$<LoginCardProps>(
       <div class="w-full max-w-md rounded-2xl bg-linear-to-b from-transparent via-green-300/60 to-transparent p-px shadow-2xl shadow-black/30">
         <Form
           action={registerAction}
+          preventdefault:submit
+          aria-label="Please enter your email in the form below to register"
           class="rounded-[calc(1rem-1px)] bg-[#16232d] p-8 backdrop-blur-xl"
         >
           <div class="">
