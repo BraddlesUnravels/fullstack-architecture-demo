@@ -68,11 +68,12 @@ describe('modules/auth/service.registration', () => {
       );
       expect(emailServiceMock.sendConfirmEmail).toHaveBeenCalledWith(
         'new-user@example.com',
-        expect.stringContaining('/auth/'),
+        expect.stringContaining('/verify/'),
       );
       expect(result).toEqual({
         email: 'new-user@example.com',
-        message: 'Registration started. Please check your email to verify your account.',
+        message:
+          'Registration started. Please check your email to verify your account.',
       });
     });
 
@@ -82,7 +83,9 @@ describe('modules/auth/service.registration', () => {
         registrationService.register({
           email: 'existing@example.com',
         }),
-      ).rejects.toThrow('If this email can be registered, we’ll send a verification code.');
+      ).rejects.toThrow(
+        'If this email can be registered, we’ll send a verification code.',
+      );
     });
   });
 
@@ -179,9 +182,9 @@ describe('modules/auth/service.registration', () => {
     it('should throw an error when user cannot be found', async () => {
       userRepoMock.findUserById.mockResolvedValue([]);
 
-      await expect(registrationService.completeRegistration(input)).rejects.toThrow(
-        'No user exists for the verified registration',
-      );
+      await expect(
+        registrationService.completeRegistration(input),
+      ).rejects.toThrow('No user exists for the verified registration');
     });
 
     it('should throw an error when user profile update fails', async () => {
@@ -190,9 +193,9 @@ describe('modules/auth/service.registration', () => {
       userRepoMock.findUserById.mockResolvedValue([user]);
       userRepoMock.updateUser.mockResolvedValue([]);
 
-      await expect(registrationService.completeRegistration(input)).rejects.toThrow(
-        'Failed to complete registration',
-      );
+      await expect(
+        registrationService.completeRegistration(input),
+      ).rejects.toThrow('Failed to complete registration');
     });
 
     it('should throw an error when credential creation fails', async () => {
@@ -207,9 +210,9 @@ describe('modules/auth/service.registration', () => {
       hashNewPasswordMock.mockResolvedValue('hashed-password');
       credentialRepoMock.createCredential.mockResolvedValue([]);
 
-      await expect(registrationService.completeRegistration(input)).rejects.toThrow(
-        'Failed to create user credentials',
-      );
+      await expect(
+        registrationService.completeRegistration(input),
+      ).rejects.toThrow('Failed to create user credentials');
     });
 
     it('should complete registration when user and credentials are updated', async () => {
@@ -233,7 +236,8 @@ describe('modules/auth/service.registration', () => {
       emailServiceMock.sendAccountCreated.mockResolvedValue(undefined);
 
       const result = await registrationService.completeRegistration(input);
-      const expectedAppLink = process.env.CORS_ORIGIN || 'http://localhost:5173';
+      const expectedAppLink =
+        process.env.CORS_ORIGIN || 'http://localhost:5173';
 
       expect(hashNewPasswordMock).toHaveBeenCalledWith('password-1234');
       expect(credentialRepoMock.createCredential).toHaveBeenCalledWith({

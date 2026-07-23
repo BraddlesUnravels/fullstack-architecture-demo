@@ -43,7 +43,8 @@ const findUserApplicationByUserId = async (
 const findAllUserApplications = async (
   userId: ApplicationRow['userId'],
 ): Promise<ApplicationSummary[]> => {
-  const applications = await applicationRepo.listAllApplicationSummaryByUserId(userId);
+  const applications =
+    await applicationRepo.listAllApplicationSummaryByUserId(userId);
 
   return applications.map((application) => serializeAuditDates(application));
 };
@@ -52,7 +53,10 @@ const createUserApplication = async (
   userId: ApplicationRow['userId'],
   data: ApplicationInsert,
 ): Promise<ApplicationSelect> => {
-  const [application] = await applicationRepo.createApplication({ ...data, userId });
+  const [application] = await applicationRepo.createApplication({
+    ...data,
+    userId,
+  });
 
   if (!application) throw new ApplicationCreateFailedError();
 
@@ -77,7 +81,8 @@ const updateUserApplication = async (
 
   const [application] = await applicationRepo.updateApplication(id, data);
 
-  if (!application || application.isDeleted) throw new ApplicationUpdateFailedError();
+  if (!application || application.isDeleted)
+    throw new ApplicationUpdateFailedError();
 
   return serializeAuditDates(application);
 };

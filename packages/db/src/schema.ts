@@ -1,9 +1,18 @@
 import { relations, sql } from 'drizzle-orm';
-import { boolean, index, pgTable, timestamp, uuid, integer } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  index,
+  pgTable,
+  timestamp,
+  uuid,
+  integer,
+} from 'drizzle-orm/pg-core';
 import { JobStatus, UserTier } from '@app/constants';
 
 export const auditColumns = {
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 
   createdBy: uuid('created_by'),
 
@@ -56,7 +65,9 @@ export const credential = pgTable(
       .references(() => user.id, { onDelete: 'cascade' }),
     hash: t.text('hash').notNull(),
     valid: t.boolean('valid').default(true).notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
     invalidatedAt: timestamp('invalidated_at', { withTimezone: true }),
   }),
   (t) => [index('idx_credentials_user_id').on(t.userId)],

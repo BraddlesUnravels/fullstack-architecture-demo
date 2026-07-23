@@ -31,11 +31,13 @@ describe('plugins/error-handler.plugin', () => {
   });
 
   it('should map validation failures to a 422 response', async () => {
-    const app = new Elysia().use(errorHandlerPlugin).post('/validation', ({ body }) => body, {
-      body: t.Object({
-        id: t.Number(),
-      }),
-    });
+    const app = new Elysia()
+      .use(errorHandlerPlugin)
+      .post('/validation', ({ body }) => body, {
+        body: t.Object({
+          id: t.Number(),
+        }),
+      });
 
     const response = await app.handle(
       createRequest('/validation', {
@@ -54,9 +56,11 @@ describe('plugins/error-handler.plugin', () => {
   });
 
   it('should map unknown errors to a 500 response payload', async () => {
-    const app = new Elysia().use(errorHandlerPlugin).get('/unknown-error', () => {
-      throw new Error('Boom');
-    });
+    const app = new Elysia()
+      .use(errorHandlerPlugin)
+      .get('/unknown-error', () => {
+        throw new Error('Boom');
+      });
 
     const response = await app.handle(createRequest('/unknown-error'));
     const body = (await response.json()) as { code: string; message: string };

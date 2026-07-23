@@ -1,4 +1,4 @@
-import { component$, useSignal, $ } from '@builder.io/qwik';
+import { component$, useSignal, $, useTask$ } from '@builder.io/qwik';
 import { routeAction$ } from '@builder.io/qwik-city';
 import { registerAction, loginAction } from '../lib/actions';
 import {
@@ -8,7 +8,9 @@ import {
   RegistrationCard,
 } from '../components/layout/public-assets';
 
-export const useLoginAction = routeAction$(async (form, event) => await loginAction(form, event));
+export const useLoginAction = routeAction$(
+  async (form, event) => await loginAction(form, event),
+);
 export const useRegisterAction = routeAction$(
   async (form, event) => await registerAction(form, event),
 );
@@ -20,6 +22,11 @@ export default component$(() => {
   const loginAction = useLoginAction();
   const registerAction = useRegisterAction();
   const authMode = useSignal<'register' | 'login'>('register');
+
+  useTask$(({ track }) => {
+    track(() => registerAction.value);
+    console.log('registerAction.status', registerAction.value);
+  });
 
   const showLogin = $(() => {
     authMode.value = 'login';
@@ -34,7 +41,10 @@ export default component$(() => {
       id="public-layout"
       class="grid min-h-full min-w-full grid-cols-1 overflow-hidden bg-[#101923] text-slate-100 lg:grid-cols-[40%_65%] xl:grid-cols-[30%_70%]"
     >
-      <section id="left-wrapper" class="relative flex flex-col items-center justify-center">
+      <section
+        id="left-wrapper"
+        class="relative flex flex-col items-center justify-center"
+      >
         <div class="absolute inset-y-0 right-0 hidden w-px bg-linear-to-b from-transparent via-green-300/60 to-transparent lg:block" />
 
         <div class="relative z-10 grid w-full h-full overflow-hidden items-center pl-3 pr-3">
@@ -47,7 +57,10 @@ export default component$(() => {
                 : 'translate-x-[-110%] opacity-0 pointer-events-none',
             ]}
           >
-            <RegistrationCard registerAction={registerAction} onShowLogin$={showLogin} />
+            <RegistrationCard
+              registerAction={registerAction}
+              onShowLogin$={showLogin}
+            />
           </div>
 
           <div
@@ -59,7 +72,10 @@ export default component$(() => {
                 : 'translate-x-[110%] opacity-0 pointer-events-none',
             ]}
           >
-            <LoginCard loginAction={loginAction} onShowRegister$={showRegister} />
+            <LoginCard
+              loginAction={loginAction}
+              onShowRegister$={showRegister}
+            />
           </div>
         </div>
       </section>

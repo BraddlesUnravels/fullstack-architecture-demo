@@ -2,13 +2,18 @@ import { component$ } from '@builder.io/qwik';
 import { ProjectScope } from '../public-assets';
 
 export default component$(() => (
-  <section id="intro-section" class="display flex-row w-full justify-items-center">
+  <section
+    id="intro-section"
+    class="display flex-row w-full justify-items-center"
+  >
     <div id="inner-wrap">
-      <h1 class="text-4xl font-bold tracking-tight text-white">Full-Stack Architecture Demo</h1>
+      <h1 class="text-4xl font-bold tracking-tight text-white">
+        Full-Stack Architecture Demo
+      </h1>
 
       <p class="mt-5 text-lg leading-8 text-slate-300">
-        A focused demo showing auth flows, API boundaries, relational modelling, seeded data, shared
-        contracts, and testable full-stack structure.
+        A focused demo showing auth flows, API boundaries, relational modelling,
+        seeded data, shared contracts, and testable full-stack structure.
       </p>
 
       <div id="cards" class="mt-8 grid grid-cols-4 gap-3">

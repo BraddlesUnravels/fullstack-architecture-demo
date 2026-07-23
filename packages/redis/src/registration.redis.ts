@@ -21,11 +21,16 @@ const savePendingRegistrationRecord = async (
   const pendingByEmailKey = redisKeys.pendingRegistrationByEmail(record.email);
   const existingRegistrationId = await client.get(pendingByEmailKey);
 
-  if (existingRegistrationId && existingRegistrationId !== record.registrationId) {
+  if (
+    existingRegistrationId &&
+    existingRegistrationId !== record.registrationId
+  ) {
     await client.del(redisKeys.pendingRegistration(existingRegistrationId));
   }
 
-  const pendingRegistrationKey = redisKeys.pendingRegistration(record.registrationId);
+  const pendingRegistrationKey = redisKeys.pendingRegistration(
+    record.registrationId,
+  );
   const payload = JSON.stringify(record);
 
   await client
@@ -53,7 +58,9 @@ export const readPendingRegistration = async (
   registrationId: string,
 ): Promise<PendingRegistrationRecord | undefined> => {
   const client = await getRegistrationRedisClient();
-  const payload = await client.get(redisKeys.pendingRegistration(registrationId));
+  const payload = await client.get(
+    redisKeys.pendingRegistration(registrationId),
+  );
 
   return parsePendingRegistrationRecord(payload);
 };

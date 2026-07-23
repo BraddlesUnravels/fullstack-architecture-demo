@@ -16,8 +16,7 @@
   },
   "$schema": "https://json.schemastore.org/package",
   "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "prettier --write",
+    "*.{ts,tsx}": [
       "eslint --fix --max-warnings=0"
     ],
     "*.{md,css,tailwindcss,json,yml,yaml}": "prettier --write"
@@ -28,20 +27,15 @@
     "tear:down": "docker compose -f docker/docker-compose-prod.yml -f docker/docker-compose-db.prod.yml -f docker/docker-compose-redis.prod.yml down -v --remove-orphans",
     "start": "bun run dev:full",
     "dev": "concurrently -k --names api,ui --prefix-colors cyan,magenta \"bun run dev:api\" \"bun run dev:ui\"",
-    "dev:full": "bun run dev:infra:up && bun run dev",
-    "setup": "cp -n .env.example .env && bun install && bun run dev:db:init && bun run --filter '@app/redis' infra:up",
-    "init": "bun run setup",
-    "reset": "bun run dev:db:reset && bun run --filter '@app/redis' infra:reset && bun run --filter '@app/redis' infra:up",
-    "stop": "bun run --filter '@app/api' down && bun run --filter '@app/ui' down && bun run --filter '@app/db' infra:down && bun run --filter '@app/redis' infra:down",
+    "dev:full": "bun run infra:up && bun run dev",
+    "setup": "cp -n .env.example .env && bun install && bun run infra:up",
+    "reset": "bun run infra:reset && bun run infra:up",
+    "stop": "bun run --filter '@app/api' down && bun run --filter '@app/ui' down && bun run infra:down",
     "test": "bun run --filter '@app/*' test",
-    "infra:up": "docker compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml up -d --remove-orphans",
-    "infra:down": "docker compose -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml down --remove-orphans",
-    "infra:reset": "docker compose -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml down -v --remove-orphans",
-    "dev:infra:up": "bun run infra:up && bun run --filter '@app/db' wait:15 && bun run --filter '@app/db' db:migrate && bun run --filter '@app/db' db:seed",
+    "infra:up": "docker compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml pull && docker compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml up -d --build --remove-orphans && bun run --filter '@app/db' wait:15 && bun run --filter '@app/db' db:migrate && bun run --filter '@app/db' db:grant && bun run --filter '@app/db' db:seed",
+    "infra:down": "docker compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml down --remove-orphans",
+    "infra:reset": "docker compose --env-file=.env -f docker/docker-compose-db.dev.yml -f docker/docker-compose-redis.dev.yml down -v --remove-orphans",
     "dev:ui": "bun run --filter '@app/ui' dev",
-    "dev:db:init": "bun run --filter '@app/db' init",
-    "dev:db:reset": "bun run --filter '@app/db' hot:reset",
-    "dev:db": "bun run --filter '@app/db' hot:reset",
     "dev:api": "bun run --filter '@app/api' dev",
     "check:packages": "manypkg check",
     "fix:packages": "manypkg fix",

@@ -23,7 +23,10 @@ const errorHandle = ({ code, error, status, logger }: ErrorParams) => {
   }
 
   if (code === 'VALIDATION') {
-    log.warn({ code, error: isError ? error.message : error }, 'Validation error occurred');
+    log.warn(
+      { code, error: isError ? error.message : error },
+      'Validation error occurred',
+    );
     return status(422, {
       code: 'VALIDATION_ERROR',
       message: isError ? error.message : 'Validation error',

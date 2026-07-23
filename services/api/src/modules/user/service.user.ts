@@ -55,7 +55,10 @@ const createUser = async (data: UserInsert): Promise<UserSelect> => {
   return serializeAuditDates(newUser);
 };
 
-const updateUser = async (id: string, data: UserUpdate): Promise<UserSelect> => {
+const updateUser = async (
+  id: string,
+  data: UserUpdate,
+): Promise<UserSelect> => {
   const [updatedUser] = await userRepo.updateUser(id, toUpdateUserRow(data));
 
   if (!updatedUser) throw new UserUpdateFailedError();

@@ -1,7 +1,11 @@
 import { API_CONSTANTS } from './api-constants';
 export { API_CONSTANTS };
 
-const { DEFAULT_HOST, DEFAULT_PORT, CORS_ORIGIN: DEFAULT_CORS_ORIGIN } = API_CONSTANTS.env;
+const {
+  DEFAULT_HOST,
+  DEFAULT_PORT,
+  CORS_ORIGIN: DEFAULT_CORS_ORIGIN,
+} = API_CONSTANTS.env;
 
 const parsePort = (value?: string): number => {
   if (!value) return DEFAULT_PORT;
@@ -38,7 +42,9 @@ export type ApiEnv = {
 
 const host = process.env.API_HOST ?? DEFAULT_HOST;
 const port = parsePort(process.env.PORT);
-const corsOrigin = parseCorsOrigin(process.env.CORS_ORIGIN ?? DEFAULT_CORS_ORIGIN);
+const corsOrigin = parseCorsOrigin(
+  process.env.CORS_ORIGIN ?? DEFAULT_CORS_ORIGIN,
+);
 
 export const apiEnv: ApiEnv = {
   host,

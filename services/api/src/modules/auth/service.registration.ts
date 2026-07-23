@@ -25,9 +25,7 @@ import type {
 } from '@app/types';
 
 const REGISTRATION_LINK_TTL_SECONDS = 60 * 15;
-const DEFAULT_APP_LINK = process.env.CORS_ORIGIN || 'http://localhost:5173';
-const DEFAULT_API_URL = 'http://localhost:4000';
-const API_URL = process.env.API_URL || DEFAULT_API_URL;
+const DEFAULT_APP_LINK = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
 const createRegistrationId = (): string => {
   return randomBytes(32).toString('hex');
@@ -42,7 +40,11 @@ const encodeRegistrationId = (registrationId: string): string => {
 };
 
 const createVerificationUrl = (encodedId: string): string => {
-  return `${API_URL}/auth/${encodedId}`;
+  const appLink = DEFAULT_APP_LINK.endsWith('/')
+    ? DEFAULT_APP_LINK.slice(0, -1)
+    : DEFAULT_APP_LINK;
+
+  return `${appLink}/verify/${encodedId}`;
 };
 
 const handleRegistrationId = () => {
@@ -54,21 +56,27 @@ const handleRegistrationId = () => {
 
 // Provides default response for email conflict as when it has been successful to mitigate user enumeration attacks.
 const register = async ({ email }: Register): Promise<Registration> => {
-  const [existingUser] = await userRepo.findUserByEmail(email);
-  if (existingUser)
+  console.log('registering email', email);
+  const existingUser = await userRepo.findUserByEmail(email);
+  if (existingUser.length > 0)
     throw new EmailConflictError(
       'If this email can be registered, we’ll send a verification code.',
     );
 
   const { encodedId, hashedId } = handleRegistrationId();
 
-  await createPendingRegistration(hashedId, email, REGISTRATION_LINK_TTL_SECONDS);
+  await createPendingRegistration(
+    hashedId,
+    email,
+    REGISTRATION_LINK_TTL_SECONDS,
+  );
 
   await emailService.sendConfirmEmail(email, createVerificationUrl(encodedId));
 
   return {
     email,
-    message: 'Registration started. Please check your email to verify your account.',
+    message:
+      'Registration started. Please check your email to verify your account.',
   };
 };
 
@@ -109,12 +117,17 @@ const completeRegistration = async ({
   password,
   confirmPassword,
 }: CompleteRegistration): Promise<CompletedRegistration> => {
-  if (password !== confirmPassword) throw new PasswordConfirmationMismatchError();
+  if (password !== confirmPassword)
+    throw new PasswordConfirmationMismatchError();
 
   const [user] = await userRepo.findUserById(userId);
-  if (!user) throw new UserNotFoundError('No user exists for the verified registration');
+  if (!user)
+    throw new UserNotFoundError('No user exists for the verified registration');
 
-  const [updatedUser] = await userRepo.updateUser(user.id, { firstName, lastName });
+  const [updatedUser] = await userRepo.updateUser(user.id, {
+    firstName,
+    lastName,
+  });
   if (!updatedUser || !updatedUser.firstName)
     throw new UserCreationFailedError('Failed to complete registration');
 
@@ -125,7 +138,11 @@ const completeRegistration = async ({
   });
   if (!createdCredential) throw new CredentialCreationFailedError();
 
-  await emailService.sendAccountCreated(updatedUser.email, updatedUser.firstName, DEFAULT_APP_LINK);
+  await emailService.sendAccountCreated(
+    updatedUser.email,
+    updatedUser.firstName,
+    DEFAULT_APP_LINK,
+  );
 
   return {
     success: true,

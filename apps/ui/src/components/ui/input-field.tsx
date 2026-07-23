@@ -19,7 +19,15 @@ interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const FormField = component$<FormFieldProps>(
-  ({ id, label, required = false, errorMessage, hintMessage, class: className, ...rest }) => {
+  ({
+    id,
+    label,
+    required = false,
+    errorMessage,
+    hintMessage,
+    class: className,
+    ...rest
+  }) => {
     const message = errorMessage ?? hintMessage;
     const messageId = id && message ? `${id}-message` : undefined;
 
@@ -44,7 +52,10 @@ export const FormField = component$<FormFieldProps>(
         {message && (
           <p
             id={messageId}
-            class={['label-text-alt mt-1', errorMessage ? 'text-error' : 'text-base-content/70']}
+            class={[
+              'label-text-alt mt-1',
+              errorMessage ? 'text-error' : 'text-base-content/70',
+            ]}
           >
             {message}
           </p>
@@ -54,7 +65,10 @@ export const FormField = component$<FormFieldProps>(
   },
 );
 
-interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'class' | 'onInput$'> {
+interface TextInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'class' | 'onInput$'
+> {
   containerClass?: string;
   inputClass?: string;
   icon?: JSXOutput;
@@ -80,21 +94,34 @@ export const TextInput = component$<TextInputProps>(
       class={[
         ['input input-bordered outline-none rounded-lg', containerClass],
         'border-white/10 bg-white/3 text-slate-200',
-        error ? 'border-error focus-within:border-error' : 'focus-within:border-primary',
+        error
+          ? 'border-error focus-within:border-error'
+          : 'focus-within:border-primary',
       ]}
     >
       {icon && iconPosition === 'start' && (
         <span
-          class={['flex h-full shrink-0 items-stretch text-slate-400', iconClass]}
+          class={[
+            'flex h-full shrink-0 items-stretch text-slate-400',
+            iconClass,
+          ]}
           aria-hidden="true"
         >
           {icon}
         </span>
       )}
-      <input {...inputProps} type={type} class={inputClass} onInput$={returnInput$} />
+      <input
+        {...inputProps}
+        type={type}
+        class={inputClass}
+        onInput$={returnInput$}
+      />
       {icon && iconPosition === 'end' && (
         <span
-          class={['flex h-full shrink-0 items-stretch text-slate-400', iconClass]}
+          class={[
+            'flex h-full shrink-0 items-stretch text-slate-400',
+            iconClass,
+          ]}
           aria-hidden="true"
         >
           {icon}

@@ -3,11 +3,17 @@ services:
     image: postgres:16-alpine
     container_name: app_db
     restart: unless-stopped
+    env_file:
+      - ../.env
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: app_db
+      POSTGRES_USER: ${DB_ADMIN_USER}
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MIGRATOR_DB_USER: ${MIGRATOR_DB_USER}
+      MIGRATOR_DB_PASSWORD: ${MIGRATOR_DB_PASSWORD}
+      APP_DB_USER: ${APP_DB_USER}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD}
     ports:
       - '5432:5432'
     volumes:
-      - ./scripts/db-setup.sql:/docker-entrypoint-initdb.d/db-setup.sql
+      - ./scripts:/docker-entrypoint-initdb.d

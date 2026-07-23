@@ -9,7 +9,10 @@ export * from './error-response';
 export * from './auth';
 
 export const getByEmail = v.strictObject({
-  email: v.message(v.pipe(v.string(), v.email()), 'The email address of the user'),
+  email: v.message(
+    v.pipe(v.string(), v.email()),
+    'The email address of the user',
+  ),
 });
 
 export const getById = v.strictObject({

@@ -70,7 +70,9 @@ describe('modules/application/service.application', () => {
         },
       ]);
 
-      const result = await applicationService.findAllUserApplications(application.userId);
+      const result = await applicationService.findAllUserApplications(
+        application.userId,
+      );
 
       expect(result).toHaveLength(1);
       expect(result[0]?.id).toBe('active-application-id');
@@ -79,7 +81,9 @@ describe('modules/application/service.application', () => {
     it('should return an empty array when repository returns no applications', async () => {
       const userId = '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51';
 
-      applicationRepoMock.listAllApplicationSummaryByUserId.mockResolvedValue([]);
+      applicationRepoMock.listAllApplicationSummaryByUserId.mockResolvedValue(
+        [],
+      );
 
       const result = await applicationService.findAllUserApplications(userId);
 
@@ -92,14 +96,17 @@ describe('modules/application/service.application', () => {
       applicationRepoMock.createApplication.mockResolvedValue([]);
 
       await expect(
-        applicationService.createUserApplication('6f4eff7c-6e9f-4223-a52f-4d45ecf95e51', {
-          companyId: 'f8c46e63-faee-4031-bd5f-4f91da4f3a5f',
-          notes: 'Initial note',
-          role: 'Software Engineer',
-          status: JobStatus.ENTERED,
-          url: 'https://example.com/jobs/1',
-          userId: '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51',
-        }),
+        applicationService.createUserApplication(
+          '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51',
+          {
+            companyId: 'f8c46e63-faee-4031-bd5f-4f91da4f3a5f',
+            notes: 'Initial note',
+            role: 'Software Engineer',
+            status: JobStatus.ENTERED,
+            url: 'https://example.com/jobs/1',
+            userId: '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51',
+          },
+        ),
       ).rejects.toThrow('Failed to create application');
     });
   });
@@ -118,7 +125,9 @@ describe('modules/application/service.application', () => {
           application.id,
           { notes: 'Updated note' },
         ),
-      ).rejects.toThrow('Application is already deleted or does not belong to the user');
+      ).rejects.toThrow(
+        'Application is already deleted or does not belong to the user',
+      );
     });
 
     it('should return updated application when record belongs to the user', async () => {
@@ -131,9 +140,13 @@ describe('modules/application/service.application', () => {
       applicationRepoMock.findApplicationById.mockResolvedValue([existing]);
       applicationRepoMock.updateApplication.mockResolvedValue([updated]);
 
-      const result = await applicationService.updateUserApplication(existing.userId, existing.id, {
-        notes: 'Updated note',
-      });
+      const result = await applicationService.updateUserApplication(
+        existing.userId,
+        existing.id,
+        {
+          notes: 'Updated note',
+        },
+      );
 
       expect(result.notes).toBe('Updated note');
       expect(result.updatedAt).toBe(updated.updatedAt.toISOString());
@@ -149,8 +162,13 @@ describe('modules/application/service.application', () => {
       applicationRepoMock.findApplicationById.mockResolvedValue([application]);
 
       await expect(
-        applicationService.deleteApplicationForUser(application.userId, application.id),
-      ).rejects.toThrow('Application is already deleted or does not belong to the user');
+        applicationService.deleteApplicationForUser(
+          application.userId,
+          application.id,
+        ),
+      ).rejects.toThrow(
+        'Application is already deleted or does not belong to the user',
+      );
     });
   });
 });

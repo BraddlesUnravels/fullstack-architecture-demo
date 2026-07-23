@@ -46,9 +46,11 @@ export const ImplementDataTable = component$<RuntimeDataTableProps>(
     const hasActions = Boolean(onEditRow$ || onDeleteRow$);
 
     const allRowsSelected =
-      rows.length > 0 && rows.every((row) => selectedIds.has(row[rowKey] as TableRowId));
+      rows.length > 0 &&
+      rows.every((row) => selectedIds.has(row[rowKey] as TableRowId));
 
-    const tableColumnCount = columns.length + (selectable ? 1 : 0) + (hasActions ? 1 : 0);
+    const tableColumnCount =
+      columns.length + (selectable ? 1 : 0) + (hasActions ? 1 : 0);
 
     return (
       <div class="overflow-x-auto">
@@ -89,7 +91,10 @@ export const ImplementDataTable = component$<RuntimeDataTableProps>(
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={tableColumnCount} class="py-8 text-center text-base-content/60">
+                <td
+                  colSpan={tableColumnCount}
+                  class="py-8 text-center text-base-content/60"
+                >
                   {emptyMessage}
                 </td>
               </tr>
@@ -112,7 +117,9 @@ export const ImplementDataTable = component$<RuntimeDataTableProps>(
                           class="checkbox checkbox-sm"
                           aria-label={`Select row ${rowId}`}
                           checked={rowSelected}
-                          onChange$={(_, input) => onRowSelectionChange$?.(rowId, input.checked)}
+                          onChange$={(_, input) =>
+                            onRowSelectionChange$?.(rowId, input.checked)
+                          }
                         />
                       </th>
                     )}
@@ -124,7 +131,10 @@ export const ImplementDataTable = component$<RuntimeDataTableProps>(
                       return (
                         <td
                           key={column.key}
-                          class={[alignmentClass(column.align), column.cellClass]}
+                          class={[
+                            alignmentClass(column.align),
+                            column.cellClass,
+                          ]}
                         >
                           {formatCellValue(value)}
                         </td>

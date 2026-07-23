@@ -1,9 +1,9 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import * as schema from './schema';
-import { getConnectionString } from './helpers';
 import { Pool } from 'pg';
+import * as schema from './schema';
+import { getAppDbConnectionString } from './helpers';
 export * from './schema';
 export * from './repos';
 
-const pool = new Pool(getConnectionString());
+const pool = new Pool(getAppDbConnectionString());
 export const appDb = drizzle(pool, { schema });
