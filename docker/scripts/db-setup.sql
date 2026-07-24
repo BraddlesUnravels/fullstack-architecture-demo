@@ -1,7 +1,6 @@
 DO $$
 BEGIN
-  EXECUTE format('GRANT ALL PRIVILEGES ON DATABASE %I TO %I', current_database(), current_user);
+  EXECUTE format('REVOKE ALL ON DATABASE %I FROM PUBLIC', current_database());
 END $$;
-
--- app_user permissions are granted after tables exist
--- run scripts/db-permissions.sql after migrations
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM PUBLIC;

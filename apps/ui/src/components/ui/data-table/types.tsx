@@ -3,10 +3,20 @@ import type { QRL } from '@builder.io/qwik';
 type TableRowId = string | number;
 
 type StringKey<T> = Extract<keyof T, string>;
-type PrimitiveValue = string | number | boolean | bigint | symbol | null | undefined | Date;
+type PrimitiveValue =
+  | string
+  | number
+  | boolean
+  | bigint
+  | symbol
+  | null
+  | undefined
+  | Date;
 
 type NestedKey<T extends object> = {
-  [K in StringKey<T>]: NonNullable<T[K]> extends PrimitiveValue | readonly unknown[]
+  [K in StringKey<T>]: NonNullable<T[K]> extends
+    | PrimitiveValue
+    | readonly unknown[]
     ? K
     : NonNullable<T[K]> extends object
       ? K | `${K}.${NestedKey<NonNullable<T[K]>>}`
@@ -48,4 +58,11 @@ interface DataTableProps<T extends object> {
   emptyMessage?: string;
 }
 
-export { DataTableProps, DataTableColumn, NestedKey, RowIdKey, StringKey, TableRowId };
+export {
+  DataTableProps,
+  DataTableColumn,
+  NestedKey,
+  RowIdKey,
+  StringKey,
+  TableRowId,
+};

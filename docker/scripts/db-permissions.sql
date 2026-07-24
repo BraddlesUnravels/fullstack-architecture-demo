@@ -1,0 +1,3 @@
+-- This file is intentionally documentation-oriented for manual SQL execution.
+-- Runtime automation of app_user grants happens in:
+-- packages/db/src/scripts/grant-app-permissions.ts

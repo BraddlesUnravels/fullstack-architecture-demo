@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { createHash, randomBytes } from 'node:crypto';
-import { JwtVerificationError, SessionCreateFailedError } from '../../modules/auth/errors.auth';
+import {
+  JwtVerificationError,
+  SessionCreateFailedError,
+} from '../../modules/auth/errors.auth';
 import type { CookieJar } from '../../types';
 import { API_CONSTANTS } from '../../config';
 
@@ -8,7 +11,10 @@ const API_URL = process.env.API_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 const { COOKIE_NAME, TTL_SECONDS } = API_CONSTANTS.cookie;
 
-export const isPasswordMatch = async (password: string, hash: string): Promise<boolean> => {
+export const isPasswordMatch = async (
+  password: string,
+  hash: string,
+): Promise<boolean> => {
   return Bun.password.verify(password, hash);
 };
 
@@ -19,9 +25,13 @@ export const hashNewPassword = async (password: string): Promise<string> => {
 };
 
 export const genJwtUrl = (userId: string) => {
-  const token = jwt.sign({ userId, purpose: 'email-verification' }, JWT_SECRET!, {
-    expiresIn: '1d',
-  });
+  const token = jwt.sign(
+    { userId, purpose: 'email-verification' },
+    JWT_SECRET!,
+    {
+      expiresIn: '1d',
+    },
+  );
   return `${API_URL}/auth/verify-email?token=${token}`;
 };
 
@@ -34,7 +44,8 @@ export const jwtVerify = (token: string) => {
   }
 };
 
-export const createSessionToken = (): string => randomBytes(32).toString('base64url');
+export const createSessionToken = (): string =>
+  randomBytes(32).toString('base64url');
 
 export const hashSessionToken = (token: string): string =>
   createHash('sha256').update(token).digest('hex');

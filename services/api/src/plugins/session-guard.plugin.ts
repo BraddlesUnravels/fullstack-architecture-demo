@@ -1,6 +1,9 @@
 import { Elysia, type Cookie } from 'elysia';
 import { readSession } from '@app/redis';
-import { SessionNotFoundError, SessionExpiredError } from '../modules/auth/errors.auth';
+import {
+  SessionNotFoundError,
+  SessionExpiredError,
+} from '../modules/auth/errors.auth';
 import { API_CONSTANTS } from '../config';
 import { hashSessionToken } from '../services/auth/security.service';
 
@@ -30,7 +33,8 @@ export const sessionGuard = new Elysia({ name: 'session-auth' }).resolve(
     const hashed = hashSessionToken(value);
     const session = await readSession(hashed);
 
-    if (!session || timeOutCheck(session.lastSeenAt)) throw new SessionExpiredError();
+    if (!session || timeOutCheck(session.lastSeenAt))
+      throw new SessionExpiredError();
 
     // TODO: implement RBAC via `session.tier` compaired to a map of paths an dtier values.
 

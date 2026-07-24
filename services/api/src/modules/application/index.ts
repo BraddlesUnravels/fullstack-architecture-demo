@@ -4,12 +4,16 @@ import { ApplicationResponse } from './response.application';
 import { applicationService } from './service.application';
 import { sessionGuard } from '../../plugins/session-guard.plugin';
 
-export const applications = new Elysia({ name: 'applications', prefix: '/applications' })
+export const applications = new Elysia({
+  name: 'applications',
+  prefix: '/applications',
+})
   .use(sessionGuard)
   // TODO: implement a get all aplications to be used by admins
   .get(
     '/',
-    async ({ session }) => await applicationService.findAllUserApplications(session.userId),
+    async ({ session }) =>
+      await applicationService.findAllUserApplications(session.userId),
     {
       response: ApplicationResponse.list,
     },
@@ -17,7 +21,10 @@ export const applications = new Elysia({ name: 'applications', prefix: '/applica
   .get(
     '/:id',
     async ({ params, session }) =>
-      await applicationService.findUserApplicationById(session.userId, params.id),
+      await applicationService.findUserApplicationById(
+        session.userId,
+        params.id,
+      ),
     {
       params: ApplicationModel.getById,
       response: ApplicationResponse.readOne,
@@ -35,7 +42,11 @@ export const applications = new Elysia({ name: 'applications', prefix: '/applica
   .patch(
     '/:id',
     async ({ session, params, body }) =>
-      await applicationService.updateUserApplication(session.userId, params.id, body),
+      await applicationService.updateUserApplication(
+        session.userId,
+        params.id,
+        body,
+      ),
     {
       params: ApplicationModel.getById,
       body: ApplicationModel.update,

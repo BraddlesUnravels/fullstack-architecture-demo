@@ -1,7 +1,10 @@
 import * as v from 'valibot';
 
 export const login = v.strictObject({
-  email: v.message(v.pipe(v.string(), v.email()), 'The email address of the user'),
+  email: v.message(
+    v.pipe(v.string(), v.email()),
+    'The email address of the user',
+  ),
   password: v.message(
     v.pipe(v.string(), v.minLength(8), v.maxLength(500)),
     'The password must be at least 8 characters long',
@@ -9,7 +12,10 @@ export const login = v.strictObject({
 });
 
 export const register = v.strictObject({
-  email: v.message(v.pipe(v.string(), v.email()), 'The email address of the user'),
+  email: v.message(
+    v.pipe(v.string(), v.email()),
+    'The email address of the user',
+  ),
 });
 
 export const registration = v.strictObject({
@@ -17,7 +23,10 @@ export const registration = v.strictObject({
   message: v.string(),
 });
 export const verifyEmail = v.strictObject({
-  id: v.message(v.pipe(v.string(), v.minLength(1)), 'Registration ID is required'),
+  id: v.message(
+    v.pipe(v.string(), v.minLength(1)),
+    'Registration ID is required',
+  ),
 });
 
 export const verifiedEmail = v.strictObject({

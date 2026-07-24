@@ -6,7 +6,10 @@ const healthResponseSchema = t.Object({
   timestamp: t.String({ format: 'date-time' }),
 });
 
-export const healthRoutes = new Elysia({ name: 'health-routes', prefix: '/health' }).get(
+export const healthRoutes = new Elysia({
+  name: 'health-routes',
+  prefix: '/health',
+}).get(
   '/',
   () => ({
     service: 'job-application-tracker-api' as const,

@@ -40,7 +40,10 @@ const confirmEmail = (tokenUrl: string): { subject: string; html: string } => ({
     `,
 });
 
-const accCreated = (name: string, appLink: string): { subject: string; html: string } => ({
+const accCreated = (
+  name: string,
+  appLink: string,
+): { subject: string; html: string } => ({
   subject: 'Your StackChatr account has been created',
   html: `
       <!DOCTYPE html>

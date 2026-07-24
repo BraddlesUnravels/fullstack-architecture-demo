@@ -41,8 +41,12 @@ export const applicationSummarySchema = v.strictObject({
   role: v.string(),
   status: applicationStatusSchema,
   notes: v.exactOptional(v.union([v.string(), v.undefined()])),
-  createdAt: v.exactOptional(v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()])),
-  updatedAt: v.exactOptional(v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()])),
+  createdAt: v.exactOptional(
+    v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()]),
+  ),
+  updatedAt: v.exactOptional(
+    v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()]),
+  ),
   company: v.strictObject({
     name: v.string(),
     website: v.exactOptional(v.union([v.string(), v.undefined()])),

@@ -15,7 +15,12 @@ export const emailService = {
       ...template.accCreated(name, appLink),
     });
   },
-  sendResetPassword: (email: string, name: string, tokenUrl: string, expiry: string) => {
+  sendResetPassword: (
+    email: string,
+    name: string,
+    tokenUrl: string,
+    expiry: string,
+  ) => {
     return transport.sendMail({
       to: email,
       ...template.resetPassword(name, tokenUrl, expiry),

@@ -3,8 +3,13 @@ import { faker } from '@faker-js/faker';
 import { Pool } from 'pg';
 import { securityUtils } from '@app/utils';
 import * as schema from '../schema';
-import { getConnectionString } from '../helpers';
-import { createApplications, createCompanies, createCredentials, createUsers } from './data';
+import { getMigratorDbConnectionString } from '../helpers';
+import {
+  createApplications,
+  createCompanies,
+  createCredentials,
+  createUsers,
+} from './data';
 import type { CompanyRow, UserRow } from '../types';
 
 type SeedMode = 'deterministic' | 'random';
@@ -68,7 +73,10 @@ const parseArgs = (args: string[]): SeedOptions => {
     }
 
     if (key === 'max-applications-per-user') {
-      options.maxApplicationsPerUser = parseInteger('max-applications-per-user', value);
+      options.maxApplicationsPerUser = parseInteger(
+        'max-applications-per-user',
+        value,
+      );
       continue;
     }
 
@@ -101,7 +109,7 @@ const parseArgs = (args: string[]): SeedOptions => {
   return options;
 };
 
-const connection = getConnectionString();
+const connection = getMigratorDbConnectionString();
 console.log('🔧 Setting up database connection...');
 
 const pool = new Pool(connection);
@@ -121,7 +129,10 @@ const insertUsersInBatches = async (
 
   for (let index = 0; index < userRows.length; index += batchSize) {
     const batch = userRows.slice(index, index + batchSize);
-    const insertedBatch = await db.insert(schema.user).values(batch).returning();
+    const insertedBatch = await db
+      .insert(schema.user)
+      .values(batch)
+      .returning();
     insertedUsers.push(...insertedBatch);
   }
 
@@ -136,7 +147,10 @@ const insertCompaniesInBatches = async (
 
   for (let index = 0; index < companyRows.length; index += batchSize) {
     const batch = companyRows.slice(index, index + batchSize);
-    const insertedBatch = await db.insert(schema.company).values(batch).returning();
+    const insertedBatch = await db
+      .insert(schema.company)
+      .values(batch)
+      .returning();
     insertedCompanies.push(...insertedBatch);
   }
 
@@ -170,7 +184,10 @@ const seed = async () => {
 
   const passwordHash = await securityUtils.hashNewPassword(SEED_PASSWORD);
   const users = createUsers(options.userCount, SEED_CREATED_BY_USER_ID);
-  const companies = createCompanies(options.companyCount, SEED_CREATED_BY_USER_ID);
+  const companies = createCompanies(
+    options.companyCount,
+    SEED_CREATED_BY_USER_ID,
+  );
 
   console.log(
     `🌱 Seeding with users=${options.userCount}, companies=${options.companyCount}, maxApplicationsPerUser=${options.maxApplicationsPerUser}, batchSize=${options.batchSize}, mode=${options.mode}, truncate=${options.truncate}`,
@@ -185,7 +202,10 @@ const seed = async () => {
   const insertedUsers = await insertUsersInBatches(users, options.batchSize);
 
   console.log('🏢 Inserting companies...');
-  const insertedCompanies = await insertCompaniesInBatches(companies, options.batchSize);
+  const insertedCompanies = await insertCompaniesInBatches(
+    companies,
+    options.batchSize,
+  );
 
   const credentialRows = createCredentials(
     insertedUsers.map(({ id }) => id),

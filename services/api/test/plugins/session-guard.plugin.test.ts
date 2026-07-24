@@ -90,7 +90,10 @@ describe('plugins/session-guard.plugin', () => {
     );
 
     const response = await app.handle(createRequest('sid=valid-token'));
-    const body = (await response.json()) as { success: boolean; userId: string };
+    const body = (await response.json()) as {
+      success: boolean;
+      userId: string;
+    };
 
     expect(response.status).toBe(200);
     expect(body).toEqual({

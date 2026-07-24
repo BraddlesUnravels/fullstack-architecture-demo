@@ -48,7 +48,9 @@ describe('modules/user/service.user', () => {
 
   describe('findUserById', () => {
     it('should throw an error when user is soft deleted', async () => {
-      userRepoMock.findUserById.mockResolvedValue([createUserRow({ isDeleted: true })]);
+      userRepoMock.findUserById.mockResolvedValue([
+        createUserRow({ isDeleted: true }),
+      ]);
 
       await expect(
         userService.findUserById({
@@ -120,9 +122,9 @@ describe('modules/user/service.user', () => {
     it('should throw an error when delete operation fails', async () => {
       userRepoMock.deleteUser.mockResolvedValue({ success: false });
 
-      await expect(userService.deleteUser('6f4eff7c-6e9f-4223-a52f-4d45ecf95e51')).rejects.toThrow(
-        'Failed to delete user',
-      );
+      await expect(
+        userService.deleteUser('6f4eff7c-6e9f-4223-a52f-4d45ecf95e51'),
+      ).rejects.toThrow('Failed to delete user');
     });
   });
 });

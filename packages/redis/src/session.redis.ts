@@ -3,7 +3,9 @@ import type { SessionRecord } from '@app/types';
 import { getSessionRedisClient } from './client.redis';
 import { redisKeys } from './keys.redis';
 
-const parseSessionRecord = (value: string | null): SessionRecord | undefined => {
+const parseSessionRecord = (
+  value: string | null,
+): SessionRecord | undefined => {
   if (!value) return undefined;
 
   const parsed = JSON.parse(value) as SessionRecord;
@@ -26,21 +28,33 @@ export const createSession = async (
     lastSeenAt: new Date().toISOString(),
   };
 
-  await client.set(redisKeys.sessionByTokenHash(sessionTokenHash), JSON.stringify(payload), {
-    EX: ttlSeconds,
-  });
+  await client.set(
+    redisKeys.sessionByTokenHash(sessionTokenHash),
+    JSON.stringify(payload),
+    {
+      EX: ttlSeconds,
+    },
+  );
 };
 
-export const readSession = async (sessionTokenHash: string): Promise<SessionRecord | undefined> => {
+export const readSession = async (
+  sessionTokenHash: string,
+): Promise<SessionRecord | undefined> => {
   const client = await getSessionRedisClient();
-  const payload = await client.get(redisKeys.sessionByTokenHash(sessionTokenHash));
+  const payload = await client.get(
+    redisKeys.sessionByTokenHash(sessionTokenHash),
+  );
 
   return parseSessionRecord(payload);
 };
 
-export const deleteSession = async (sessionTokenHash: string): Promise<boolean> => {
+export const deleteSession = async (
+  sessionTokenHash: string,
+): Promise<boolean> => {
   const client = await getSessionRedisClient();
-  const deleteCount = await client.del(redisKeys.sessionByTokenHash(sessionTokenHash));
+  const deleteCount = await client.del(
+    redisKeys.sessionByTokenHash(sessionTokenHash),
+  );
 
   return deleteCount > 0;
 };

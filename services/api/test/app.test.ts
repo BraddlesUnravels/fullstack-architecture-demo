@@ -87,7 +87,8 @@ vi.mock('../src/services', () => ({
 const createRequest = (path: string, init?: RequestInit): Request =>
   new Request(`http://localhost${path}`, init);
 
-const parseBody = async <T>(response: Response): Promise<T> => (await response.json()) as T;
+const parseBody = async <T>(response: Response): Promise<T> =>
+  (await response.json()) as T;
 
 describe('app', () => {
   beforeEach(() => {
@@ -146,7 +147,8 @@ describe('app', () => {
     expect(response.status).toBe(200);
     expect(body).toEqual({
       email: 'new-user@example.com',
-      message: 'Registration started. Please check your email to verify your account.',
+      message:
+        'Registration started. Please check your email to verify your account.',
     });
   });
 
@@ -262,7 +264,11 @@ describe('app', () => {
         method: 'POST',
       }),
     );
-    const body = await parseBody<{ success: boolean; token: string; exp: Date | string }>(response);
+    const body = await parseBody<{
+      success: boolean;
+      token: string;
+      exp: Date | string;
+    }>(response);
 
     expect(response.status).toBe(200);
     expect(setSessionCookieMock).toHaveBeenCalledTimes(1);

@@ -26,11 +26,15 @@ export const users = new Elysia({ name: 'users', prefix: '/users' })
       response: UserResponse.create,
     },
   )
-  .patch('/:id', async ({ params, body }) => await userService.updateUser(params.id, body), {
-    params: UserModel.getById,
-    body: UserModel.update,
-    response: UserResponse.mutate,
-  })
+  .patch(
+    '/:id',
+    async ({ params, body }) => await userService.updateUser(params.id, body),
+    {
+      params: UserModel.getById,
+      body: UserModel.update,
+      response: UserResponse.mutate,
+    },
+  )
   .delete(
     '/:id',
     async ({ params, status }) => {
