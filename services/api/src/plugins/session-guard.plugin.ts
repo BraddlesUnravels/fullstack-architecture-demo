@@ -30,8 +30,8 @@ export const sessionGuard = new Elysia({ name: 'session-auth' }).resolve(
   { as: 'scoped' },
   async ({ cookie }) => {
     const value = extractValueFromCookie(cookie[COOKIE_NAME]);
-    const hashed = hashSessionToken(value);
-    const session = await readSession(hashed);
+    const { hash } = hashSessionToken(value);
+    const session = await readSession(hash);
 
     if (!session || timeOutCheck(session.lastSeenAt))
       throw new SessionExpiredError();

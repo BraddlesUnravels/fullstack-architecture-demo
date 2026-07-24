@@ -3,14 +3,19 @@ import { createUserRow } from '../../helpers/factories';
 import { registrationService } from '../../../src/modules/auth/service.registration';
 
 const {
+  createSessionMock,
+  createSessionTokenMock,
   consumePendingRegistrationMock,
   createPendingRegistrationMock,
   credentialRepoMock,
   emailServiceMock,
+  hashSessionTokenMock,
   hashNewPasswordMock,
   readPendingRegistrationMock,
   userRepoMock,
 } = vi.hoisted(() => ({
+  createSessionMock: vi.fn(),
+  createSessionTokenMock: vi.fn(),
   consumePendingRegistrationMock: vi.fn(),
   createPendingRegistrationMock: vi.fn(),
   credentialRepoMock: {
@@ -20,6 +25,7 @@ const {
     sendAccountCreated: vi.fn(),
     sendConfirmEmail: vi.fn(),
   },
+  hashSessionTokenMock: vi.fn(),
   hashNewPasswordMock: vi.fn(),
   readPendingRegistrationMock: vi.fn(),
   userRepoMock: {
@@ -36,13 +42,16 @@ vi.mock('@app/db', () => ({
 }));
 
 vi.mock('@app/redis', () => ({
+  createSession: createSessionMock,
   consumePendingRegistration: consumePendingRegistrationMock,
   createPendingRegistration: createPendingRegistrationMock,
   readPendingRegistration: readPendingRegistrationMock,
 }));
 
 vi.mock('../../../src/services', () => ({
+  createSessionToken: createSessionTokenMock,
   emailService: emailServiceMock,
+  hashSessionToken: hashSessionTokenMock,
   hashNewPassword: hashNewPasswordMock,
 }));
 
@@ -234,10 +243,16 @@ describe('modules/auth/service.registration', () => {
         },
       ]);
       emailServiceMock.sendAccountCreated.mockResolvedValue(undefined);
+      createSessionTokenMock.mockReturnValue('raw-session-token');
+      hashSessionTokenMock.mockReturnValue({
+        hash: 'hashed-session-token',
+        token: 'raw-session-token',
+      });
+      createSessionMock.mockResolvedValue(undefined);
 
       const result = await registrationService.completeRegistration(input);
       const expectedAppLink =
-        process.env.CORS_ORIGIN || 'http://localhost:5173';
+        process.env.CORS_ORIGIN || 'http://localhost:3000';
 
       expect(hashNewPasswordMock).toHaveBeenCalledWith('password-1234');
       expect(credentialRepoMock.createCredential).toHaveBeenCalledWith({
@@ -249,9 +264,16 @@ describe('modules/auth/service.registration', () => {
         'Pat',
         expectedAppLink,
       );
+      expect(createSessionMock).toHaveBeenCalledWith(
+        'hashed-session-token',
+        input.userId,
+        updatedUser.tier,
+        28800,
+      );
       expect(result).toEqual({
-        message: 'Registration complete. You can now log in.',
+        exp: expect.any(Number),
         success: true,
+        token: 'raw-session-token',
       });
     });
   });

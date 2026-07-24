@@ -1,6 +1,6 @@
 import { component$, type QRL } from '@builder.io/qwik';
 import { InSearch } from '@qwikest/icons/iconoir';
-import { FormField, TextInput } from '../ui/input-field';
+import { FormField, TextInput, Button } from '../ui';
 
 type HeaderProps = {
   name: string;
@@ -34,21 +34,16 @@ export default component$<HeaderProps>(
             id="header-search"
             name="header-search"
             type="search"
-            containerClass="flex w-full min-w-0 items-center gap-3 h-11"
-            inputClass=""
             placeholder="Search applications..."
-            icon={<InSearch />}
+            icon={<InSearch font-size="1.5rem" />}
             iconPosition="start"
+            iconClass="pt-2.3 pb-1.7 px-2 py-2 text-slate-400"
             returnInput$={onSearchApplication$}
           />
         </FormField>
-
-        <button
-          class="btn h-10.5 border-0 bg-cyan-400 text-slate-950 hover:bg-cyan-300"
-          onClick$={onAddApplication$}
-        >
-          + Add Application
-        </button>
+        <div class="w-full sm:w-48">
+          <Button onClick$={onAddApplication$}>+ Add Application</Button>
+        </div>
       </div>
     </header>
   ),

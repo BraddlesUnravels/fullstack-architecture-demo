@@ -1,5 +1,6 @@
 import type * as v from 'valibot';
 import type {
+  userSummarySchema,
   userSelectSchema,
   userInsertSchema,
   userUpdateSchema,
@@ -9,3 +10,6 @@ import type { NullToUndefined } from '@app/types';
 export type UserSelect = NullToUndefined<v.InferInput<typeof userSelectSchema>>;
 export type UserInsert = v.InferInput<typeof userInsertSchema>;
 export type UserUpdate = v.InferInput<typeof userUpdateSchema>;
+export type UserSummary = NullToUndefined<
+  v.InferInput<typeof userSummarySchema>
+>;

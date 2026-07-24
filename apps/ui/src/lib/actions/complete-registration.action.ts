@@ -7,30 +7,32 @@ export const completeRegistration = async (
   e: RequestEventAction,
 ) => {
   const { fail, redirect, cookie } = e;
-  const userId = cookie.get('sid')?.value;
+  const userId = cookie.get('vid')?.value;
   if (!userId)
     throw redirect(
       303,
       '/?error=Verification session expired. Please verify your email again.',
     );
+
+  cookie.delete('vid', { path: '/' });
+
   const payload: CompleteRegistration = {
     ...(form as CompleteRegistration),
     userId,
   };
 
-  const { error, status } = await api().auth.patch(payload);
+  const { data, error, status } = await api().auth.patch(payload);
 
-  if (status !== 200 || error) {
+  if (status !== 200 || error)
     return fail(status ?? 500, {
       message: error?.value?.message || 'Failed to complete registration',
     });
-  }
 
-  cookie.set('sid', '', {
+  cookie.set('sid', data.token, {
     httpOnly: true,
     path: '/',
     sameSite: 'lax',
-    expires: new Date(Date.now() * 1000),
+    expires: new Date(Date.now() + 8 * 60 * 60 * 1000), // 8 hours
   });
 
   throw redirect(303, '/app');

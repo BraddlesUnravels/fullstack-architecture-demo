@@ -1,11 +1,5 @@
 import { loadApplicationSummaries } from './load-user-applications';
-import {
-  verifyRegistrationToken,
-  loadVerifiedRegistrationUser,
-} from './verification-loader';
+import { verifyRegistrationToken } from './verification-loader';
+import { loadName } from './header-name-loader';
 
-export {
-  loadApplicationSummaries,
-  verifyRegistrationToken,
-  loadVerifiedRegistrationUser,
-};
+export { loadApplicationSummaries, verifyRegistrationToken, loadName };

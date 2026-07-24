@@ -47,8 +47,10 @@ export const jwtVerify = (token: string) => {
 export const createSessionToken = (): string =>
   randomBytes(32).toString('base64url');
 
-export const hashSessionToken = (token: string): string =>
-  createHash('sha256').update(token).digest('hex');
+export const hashSessionToken = (token: string) => {
+  const hash = createHash('sha256').update(token).digest('hex');
+  return { token, hash };
+};
 
 export const setSessionCookie = (cookie: CookieJar, sessionToken: string) => {
   const sessionCookie = cookie[COOKIE_NAME];
@@ -63,4 +65,10 @@ export const setSessionCookie = (cookie: CookieJar, sessionToken: string) => {
     secure: process.env.NODE_ENV === 'production',
     maxAge: TTL_SECONDS,
   });
+};
+
+export const createUserSession = (cookie: CookieJar) => {
+  const { hash } = hashSessionToken(createSessionToken());
+
+  return setSessionCookie(cookie, hash);
 };

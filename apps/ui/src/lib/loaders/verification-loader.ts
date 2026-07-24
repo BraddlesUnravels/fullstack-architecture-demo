@@ -25,20 +25,3 @@ export const verifyRegistrationToken = async (
 
   throw redirect(303, '/verify/complete');
 };
-
-export const loadVerifiedRegistrationUser = (
-  e: RequestEventLoader,
-): { userId: string } => {
-  const { redirect } = e;
-  const userId = e.cookie.get('vid')?.value;
-
-  if (!userId)
-    throw redirect(
-      303,
-      '/?error=Verification session expired. Please verify your email again.',
-    );
-  e.cookie.delete('vid', { path: '/' });
-  return {
-    userId,
-  };
-};

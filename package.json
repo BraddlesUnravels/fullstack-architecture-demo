@@ -39,7 +39,7 @@
     "dev:api": "bun run --filter '@app/api' dev",
     "check:packages": "manypkg check",
     "fix:packages": "manypkg fix",
-    "check": "bun run format:check && bun run typecheck && bun run lint && bun run --filter '@app/api' test",
+    "check": "bun run format && bun run typecheck && bun run lint && bun run --filter '@app/api' test",
     "typecheck": "bun run --filter '@app/*' typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

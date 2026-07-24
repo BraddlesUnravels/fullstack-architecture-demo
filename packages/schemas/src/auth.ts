@@ -57,7 +57,8 @@ export const completeRegistration = v.strictObject({
 
 export const completedRegistration = v.strictObject({
   success: v.boolean(),
-  message: v.string(),
+  token: v.string(),
+  exp: v.number(),
 });
 
 export const logout = v.strictObject({});

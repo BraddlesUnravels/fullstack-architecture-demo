@@ -4,7 +4,7 @@ const DEFAULT_DB_HOST = 'localhost';
 const DEFAULT_DB_NAME = 'app_db';
 const DEFAULT_DB_PORT = 5432;
 
-type DbRole = 'app' | 'migrator';
+type DbRole = 'app_user' | 'db_migrator';
 
 export const stripNulls = <T>(value: T): NullToUndefined<T> => {
   if (value === null) return undefined as NullToUndefined<T>;
@@ -28,6 +28,22 @@ export const stripNulls = <T>(value: T): NullToUndefined<T> => {
   }
 
   return value as NullToUndefined<T>;
+};
+
+const getAdminDbUser = () => {
+  return getRequiredValue('admin database user', [
+    process.env.DB_ADMIN_USER,
+    process.env.ADMIN_DB_USER,
+    process.env.POSTGRES_USER,
+  ]);
+};
+
+const getAdminDbPassword = () => {
+  return getRequiredValue('admin database user password', [
+    process.env.DB_ADMIN_PASSWORD,
+    process.env.ADMIN_DB_PASSWORD,
+    process.env.POSTGRES_PASSWORD,
+  ]);
 };
 
 const parsePort = (value?: string) => {
@@ -55,7 +71,7 @@ const getRequiredValue = (name: string, values: (string | undefined)[]) => {
 };
 
 const getRoleDbUser = (role: DbRole) => {
-  if (role === 'app') {
+  if (role === 'app_user') {
     return getRequiredValue('application database user', [
       process.env.APP_DB_USER,
       process.env.POSTGRES_USER,
@@ -69,7 +85,7 @@ const getRoleDbUser = (role: DbRole) => {
 };
 
 const getRoleDbPassword = (role: DbRole) => {
-  if (role === 'app') {
+  if (role === 'app_user') {
     return getRequiredValue('application database user password', [
       process.env.APP_DB_PASSWORD,
       process.env.POSTGRES_PASSWORD,
@@ -87,7 +103,7 @@ export const getDatabaseName = () => {
 };
 
 export const getDatabaseHost = (role: DbRole) => {
-  if (role === 'app')
+  if (role === 'app_user')
     return (
       pickDefinedValue([process.env.APP_DB_HOST, process.env.POSTGRES_HOST]) ||
       DEFAULT_DB_HOST
@@ -102,7 +118,7 @@ export const getDatabaseHost = (role: DbRole) => {
 };
 
 export const getDatabasePort = (role: DbRole) => {
-  if (role === 'app')
+  if (role === 'app_user')
     return parsePort(
       pickDefinedValue([process.env.APP_DB_PORT, process.env.POSTGRES_PORT]),
     );
@@ -125,27 +141,43 @@ const getDatabaseConfig = (role: DbRole) => {
 };
 
 export const getAppDbConnectionString = () => {
-  return getDatabaseConfig('app');
+  return getDatabaseConfig('app_user');
 };
 
 export const getMigratorDbConnectionString = () => {
-  return getDatabaseConfig('migrator');
+  return getDatabaseConfig('db_migrator');
 };
 
 export const getAppDbUser = () => {
-  return getRoleDbUser('app');
+  return getRoleDbUser('app_user');
 };
 
 export const getMigratorDbUser = () => {
-  return getRoleDbUser('migrator');
+  return getRoleDbUser('db_migrator');
+};
+
+export const getAdminDbConnectionString = () => {
+  const user = getAdminDbUser();
+  const password = getAdminDbPassword();
+  const database = getDatabaseName();
+  const host =
+    pickDefinedValue([process.env.DB_ADMIN_HOST, process.env.POSTGRES_HOST]) ||
+    DEFAULT_DB_HOST;
+  const port = parsePort(
+    pickDefinedValue([process.env.DB_ADMIN_PORT, process.env.POSTGRES_PORT]),
+  );
+
+  return {
+    connectionString: `postgresql://${user}:${password}@${host}:${port}/${database}`,
+  };
 };
 
 export const getDrizzleMigratorDbCredentials = () => {
-  const user = getRoleDbUser('migrator');
-  const password = getRoleDbPassword('migrator');
+  const user = getRoleDbUser('db_migrator');
+  const password = getRoleDbPassword('db_migrator');
   const database = getDatabaseName();
-  const host = getDatabaseHost('migrator');
-  const port = getDatabasePort('migrator');
+  const host = getDatabaseHost('db_migrator');
+  const port = getDatabasePort('db_migrator');
 
   return {
     host,
