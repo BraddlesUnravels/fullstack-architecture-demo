@@ -36,3 +36,13 @@ export const userUpdateSchema = v.strictObject({
     v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()]),
   ),
 });
+
+export const userSummarySchema = v.strictObject({
+  id: v.pipe(v.string(), v.uuid()),
+  email: v.pipe(v.string(), v.email()),
+  firstName: v.exactOptional(v.union([v.string(), v.undefined()])),
+  lastName: v.exactOptional(v.union([v.string(), v.undefined()])),
+  lastLoginAt: v.exactOptional(
+    v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()]),
+  ),
+});

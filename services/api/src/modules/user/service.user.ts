@@ -11,6 +11,7 @@ import {
 import type {
   GetByEmail,
   GetById,
+  UserSummary,
   UserInsert,
   UserUpdate,
   UserSelect,
@@ -36,7 +37,7 @@ const findUserByEmail = async ({ email }: GetByEmail): Promise<UserSelect> => {
   return serializeAuditDates(user);
 };
 
-const findUserById = async ({ id }: GetById): Promise<UserSelect> => {
+const findUserById = async ({ id }: GetById): Promise<UserSummary> => {
   const [user] = await userRepo.findUserById(id);
 
   if (!user || user.isDeleted)

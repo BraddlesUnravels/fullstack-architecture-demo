@@ -7,6 +7,12 @@ const readUserResponse = {
   500: apiErrorResponseSchema,
 } as const;
 
+const UserSummaryResponse = {
+  200: UserModel.summary,
+  404: apiErrorResponseSchema,
+  500: apiErrorResponseSchema,
+} as const;
+
 const createUserResponse = {
   201: UserModel.select,
   409: apiErrorResponseSchema,
@@ -27,6 +33,7 @@ const deleteUserResponse = {
 } as const;
 
 export const UserResponse = {
+  summary: UserSummaryResponse,
   read: readUserResponse,
   create: createUserResponse,
   mutate: mutateUserResponse,

@@ -1,11 +1,10 @@
 import { component$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
 import type { NavItem } from 'src/lib';
-import { InSettings, InProfileCircle } from '@qwikest/icons/iconoir';
+import { InProfileCircle } from '@qwikest/icons/iconoir';
 
 const secondaryNav: NavItem[] = [
-  { label: 'Settings', href: '/settings', icon: InSettings },
-  { label: 'Profile', href: '/profile', icon: InProfileCircle },
+  { label: 'Profile', href: '/app/profile', icon: InProfileCircle },
 ];
 
 export default component$(() => {

@@ -56,7 +56,10 @@ describe('modules/auth/service.auth', () => {
       ]);
       isPasswordMatchMock.mockResolvedValue(true);
       createSessionTokenMock.mockReturnValue('session-token');
-      hashSessionTokenMock.mockReturnValue('hashed-session-token');
+      hashSessionTokenMock.mockReturnValue({
+        hash: 'hashed-session-token',
+        token: 'session-token',
+      });
       createSessionMock.mockResolvedValue(undefined);
 
       const result = await authService.login({
@@ -124,7 +127,10 @@ describe('modules/auth/service.auth', () => {
     it('should delete redis session and remove cookie when session token exists', async () => {
       const removeCookieMock = vi.fn();
 
-      hashSessionTokenMock.mockReturnValue('hashed-session-token');
+      hashSessionTokenMock.mockReturnValue({
+        hash: 'hashed-session-token',
+        token: 'raw-session-token',
+      });
       deleteSessionMock.mockResolvedValue(true);
 
       const result = await authService.logout({

@@ -42,7 +42,16 @@ export const auth = new Elysia({ prefix: '/auth' })
   )
   .patch(
     '/',
-    async ({ body }) => await registrationService.completeRegistration(body),
+    async ({ body, cookie }) => {
+      const { success, token, exp } =
+        await registrationService.completeRegistration(body);
+      setSessionCookie(cookie, token);
+      return {
+        success,
+        token,
+        exp,
+      };
+    },
     {
       body: AuthModel.completeRegistration,
       response: completeRegistrationResponse,

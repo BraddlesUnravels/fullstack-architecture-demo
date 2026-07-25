@@ -1,18 +1,16 @@
 import { component$, Slot } from '@builder.io/qwik';
-import type { RequestHandler } from '@builder.io/qwik-city';
+import { routeLoader$ } from '@builder.io/qwik-city';
+import { loadName } from '../../lib/loaders/header-name-loader';
 import AppLayout from '../../components/layout/layout.protected';
 import WorkspaceHeader from '../../components/layout/workspace-header';
 
-export const onRequest: RequestHandler = (event) => {
+const useNameLoader = routeLoader$(async (event) => {
   const sid = event.cookie.get('sid')?.value;
-
-  // TODO: uncomment bottom line when no longer building the protected layouts
-  // if (!sid) throw new Error(`/?redirectTo=${encodeURIComponent(event.url.pathname)}`);
-
-  event.sharedMap.set('sid', sid);
-};
+  return await loadName(sid);
+});
 
 export default component$(() => {
+  const loaded = useNameLoader();
   return (
     <AppLayout>
       <section
@@ -20,7 +18,7 @@ export default component$(() => {
         class="relative flex h-full min-h-0 w-full flex-col overflow-hidden"
       >
         <WorkspaceHeader
-          name="Placeholder"
+          name={loaded.value?.name ?? ''}
           onAddApplication$={() => console.log('Add Application')}
           onSearchApplication$={(v) => console.log('searching', v)}
         />

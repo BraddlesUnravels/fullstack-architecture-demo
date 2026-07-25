@@ -2,9 +2,9 @@ import { credentialRepo, userRepo } from '@app/db';
 import { createSession, deleteSession } from '@app/redis';
 import type { LoggedOut, LoginInput } from '@app/types';
 import {
+  createSessionToken,
   hashSessionToken,
   isPasswordMatch,
-  createSessionToken,
 } from '../../services';
 import { UserNotFoundError } from '../user/errors.user';
 import { InvalidCredentialsError, NoCredentialsSetError } from './errors.auth';
@@ -28,10 +28,9 @@ const login = async ({ email, password }: LoginInput): Promise<LoggedIn> => {
   const isMatch = await isPasswordMatch(password, credentials.hash);
   if (!isMatch) throw new InvalidCredentialsError();
 
-  const token = createSessionToken();
-  const sessionTokenHash = hashSessionToken(token);
+  const { token, hash } = hashSessionToken(createSessionToken());
 
-  await createSession(sessionTokenHash, user.id, user.tier, TTL_SECONDS);
+  await createSession(hash, user.id, user.tier, TTL_SECONDS);
 
   const exp = Math.floor(Date.now() / 1000) + TTL_SECONDS;
 
@@ -47,7 +46,7 @@ const logout = async (cookie: CookieJar): Promise<LoggedOut> => {
 
   const token = typeof session?.value === 'string' ? session?.value : undefined;
 
-  if (token) await deleteSession(hashSessionToken(token));
+  if (token) await deleteSession(hashSessionToken(token).hash);
 
   session?.remove();
 

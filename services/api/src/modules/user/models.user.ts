@@ -10,6 +10,7 @@ import {
 export const UserModel = {
   getByEmail,
   getById,
+  summary: userSelectSchema,
   create: userInsertSchema,
   update: userUpdateSchema,
   select: userSelectSchema,

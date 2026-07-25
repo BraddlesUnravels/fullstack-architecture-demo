@@ -2,18 +2,14 @@ import { component$ } from '@builder.io/qwik';
 import { useLocation } from '@builder.io/qwik-city';
 import type { NavItem } from '../../../lib';
 import {
-  InJournalPage,
-  In3DBridge,
   InActivity,
   InMultiplePages,
-  InCalendar,
+  InLargeSuitcase,
 } from '@qwikest/icons/iconoir';
 
 const primaryNav: NavItem[] = [
   { label: 'Applications', href: '/app/applications', icon: InMultiplePages },
-  { label: 'Pipeline', href: '/app/pipeline', icon: In3DBridge },
-  { label: 'Calendar', href: '/app/calendar', icon: InCalendar },
-  { label: 'Notes', href: '/app/notes', icon: InJournalPage },
+  { label: 'Interviews', href: '/app/interviews', icon: InLargeSuitcase },
   { label: 'Analytics', href: '/app/analytics', icon: InActivity },
 ];
 

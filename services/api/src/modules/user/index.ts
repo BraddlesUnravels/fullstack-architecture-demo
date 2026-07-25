@@ -6,12 +6,17 @@ import { sessionGuard } from '../../plugins/session-guard.plugin';
 
 export const users = new Elysia({ name: 'users', prefix: '/users' })
   .use(sessionGuard)
-  .get('/', async ({ query }) => userService.findUserByEmail(query), {
-    query: UserModel.getByEmail,
-    response: UserResponse.read,
-  })
-  .get('/:id', async ({ params }) => userService.findUserById(params), {
-    params: UserModel.getById,
+  .get(
+    '/',
+    async ({ session }) =>
+      await userService.findUserById({ id: session.userId }),
+    {
+      session: UserModel.summary,
+      response: UserResponse,
+    },
+  )
+  .get('/:email', async ({ params }) => userService.findUserByEmail(params), {
+    params: UserModel.getByEmail,
     response: UserResponse.read,
   })
   .post(

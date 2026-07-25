@@ -10,7 +10,7 @@ export const loginAction = async (
   const formData = form as LoginInput;
   const { data, error, status } = await api().auth.post(formData);
 
-  if (status !== 200 || !data) {
+  if (status !== 200 || error) {
     return fail(status ?? 500, {
       ...error,
     });

@@ -154,9 +154,7 @@ describe('app', () => {
 
   it('should return unauthorized response for protected user route without session cookie', async () => {
     const app = createApp({ corsOrigin: true });
-    const user = createUserRow();
-
-    const response = await app.handle(createRequest(`/users/${user.id}`));
+    const response = await app.handle(createRequest('/users/'));
     const body = await parseBody<{ code: string; message: string }>(response);
 
     expect(response.status).toBe(404);
@@ -169,8 +167,10 @@ describe('app', () => {
   it('should return protected user payload with a valid session cookie', async () => {
     const app = createApp({ corsOrigin: true });
     const user = createUserRow();
-
-    hashSessionTokenMock.mockReturnValue('hashed-session-token');
+    hashSessionTokenMock.mockReturnValue({
+      hash: 'hashed-session-token',
+      token: 'raw-session-token',
+    });
     readSessionMock.mockResolvedValue(
       createSessionRecord({
         userId: user.id,
@@ -179,7 +179,7 @@ describe('app', () => {
     userRepoMock.findUserById.mockResolvedValue([user]);
 
     const response = await app.handle(
-      createRequest(`/users/${user.id}`, {
+      createRequest('/users/', {
         headers: {
           cookie: 'sid=raw-session-token',
         },
@@ -198,7 +198,10 @@ describe('app', () => {
       userId: user.id,
     });
 
-    hashSessionTokenMock.mockReturnValue('hashed-session-token');
+    hashSessionTokenMock.mockReturnValue({
+      hash: 'hashed-session-token',
+      token: 'raw-session-token',
+    });
     readSessionMock.mockResolvedValue(
       createSessionRecord({
         userId: user.id,
@@ -249,7 +252,10 @@ describe('app', () => {
     credentialRepoMock.findCredentialByUserId.mockResolvedValue([credentials]);
     isPasswordMatchMock.mockResolvedValue(true);
     createSessionTokenMock.mockReturnValue('raw-session-token');
-    hashSessionTokenMock.mockReturnValue('hashed-session-token');
+    hashSessionTokenMock.mockReturnValue({
+      hash: 'hashed-session-token',
+      token: 'raw-session-token',
+    });
     createSessionMock.mockResolvedValue(undefined);
 
     const response = await app.handle(

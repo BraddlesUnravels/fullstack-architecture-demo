@@ -1,9 +1,15 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { emailService } from '../../services';
-import { hashNewPassword } from '../../services';
+import {
+  hashNewPassword,
+  hashSessionToken,
+  createSessionToken,
+} from '../../services';
 import { credentialRepo, userRepo } from '@app/db';
 import { UserNotFoundError } from '../user/errors.user';
+import { API_CONSTANTS } from '../../config';
 import {
+  createSession,
   consumePendingRegistration,
   createPendingRegistration,
   readPendingRegistration,
@@ -17,12 +23,14 @@ import {
 } from './errors.auth';
 import type {
   CompleteRegistration,
-  CompletedRegistration,
+  LoggedIn,
   Register,
   Registration,
   VerifiedEmail,
   VerifyEmail,
 } from '@app/types';
+
+const { TTL_SECONDS } = API_CONSTANTS.cookie;
 
 const REGISTRATION_LINK_TTL_SECONDS = 60 * 15;
 const DEFAULT_APP_LINK = process.env.CORS_ORIGIN || 'http://localhost:3000';
@@ -56,7 +64,6 @@ const handleRegistrationId = () => {
 
 // Provides default response for email conflict as when it has been successful to mitigate user enumeration attacks.
 const register = async ({ email }: Register): Promise<Registration> => {
-  console.log('registering email', email);
   const existingUser = await userRepo.findUserByEmail(email);
   if (existingUser.length > 0)
     throw new EmailConflictError(
@@ -116,7 +123,7 @@ const completeRegistration = async ({
   lastName,
   password,
   confirmPassword,
-}: CompleteRegistration): Promise<CompletedRegistration> => {
+}: CompleteRegistration): Promise<LoggedIn> => {
   if (password !== confirmPassword)
     throw new PasswordConfirmationMismatchError();
 
@@ -144,9 +151,22 @@ const completeRegistration = async ({
     DEFAULT_APP_LINK,
   );
 
+  const { token, hash: sessionTokenHash } =
+    hashSessionToken(createSessionToken());
+
+  await createSession(
+    sessionTokenHash,
+    updatedUser.id,
+    updatedUser.tier,
+    TTL_SECONDS,
+  );
+
+  const exp = Math.floor(Date.now() / 1000) + TTL_SECONDS;
+
   return {
     success: true,
-    message: 'Registration complete. You can now log in.',
+    token,
+    exp,
   };
 };
 
