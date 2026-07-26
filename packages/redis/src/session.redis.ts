@@ -1,4 +1,4 @@
-import type { UserTier } from '@app/constants';
+import type { UserTier } from '@app/types';
 import type { SessionRecord } from '@app/types';
 import { getSessionRedisClient } from './client.redis';
 import { redisKeys } from './keys.redis';

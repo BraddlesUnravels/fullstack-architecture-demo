@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 import { auditColumns } from './audit';
-import { UserTier } from '@app/constants';
+import { UserTier } from '@app/types';
 
 export const userSelectSchema = v.strictObject({
   id: v.pipe(v.string(), v.uuid()),

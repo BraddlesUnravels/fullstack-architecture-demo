@@ -1,53 +1,44 @@
-// import * as v from 'valibot';
-// import { validateInput } from './validation';
-import { ErrorDefaults } from '@app/constants';
-import type {
-  UiProblemKind,
-  // EdenError,
-  // UiProblem,
-  FailureStatus,
-} from '../types';
-// import type { ApiErrorStatus, ApiErrorCodes } from '../types/api-error-code';
-// import { apiErrorResponseSchema } from '@app/schemas';
+import * as v from 'valibot';
+import {
+  normaliseStatus,
+  kindFromStatus,
+  titleFromStatus,
+  isRetryableStatus,
+} from './helpers';
+import { apiErrorResponseSchema } from '@app/schemas';
+import { ErrorDefaults } from '@app/types';
+import { isFailureStatus } from '@app/utils';
+import type { EdenError, UiProblem } from '../types';
 
-const isFailureStatus = (status: number): status is FailureStatus =>
-  Object.hasOwn(ErrorDefaults, status);
+/*
+ * Import { validateInput } from ../validation.ts
+ * Is deliberately not used it's intended for form input.
+ * It flattens validation issues into field and form errors.
+ */
 
-export const normaliseStatus = (status: number): FailureStatus =>
-  isFailureStatus(status) ? status : 500;
+export const mapApiError = (error: EdenError): UiProblem => {
+  // Uses isFailureStatus directly to avoid normalising the status to 500
+  const isSupported = isFailureStatus(error.status);
+  // If the status is not supported, its normalised to 500
+  const status = normaliseStatus(error.status);
+  const fallback = ErrorDefaults[status];
 
-export const kindFromStatus = (status: FailureStatus): UiProblemKind => {
-  switch (status) {
-    case 400:
-    case 422:
-      return 'validation';
-    case 404:
-    case 410:
-      return 'not-found';
-    case 429:
-    case 502:
-    case 503:
-    case 504:
-      return 'unavailable';
-    case 401:
-      return 'unauthenticated';
-    case 403:
-      return 'forbidden';
-    case 409:
-      return 'conflict';
-    default:
-      return 'unexpected';
-  }
+  const validated = v.safeParse(apiErrorResponseSchema, error.value);
+
+  const response =
+    isSupported && validated?.success ? validated.output : fallback;
+
+  const requestId = validated?.success
+    ? validated?.output?.requestId
+    : undefined;
+
+  return {
+    code: response.code,
+    kind: kindFromStatus(status),
+    status,
+    title: titleFromStatus(status),
+    message: response.message,
+    retryable: isRetryableStatus(status),
+    ...(requestId === undefined ? {} : { requestId }),
+  };
 };
-
-// const defaultUiProblem = (status: FailureStatus): Omit<UiProblem, 'status', 'kind'> => {
-//   const defaults = ErrorDefaults[status]
-
-//   switch
-// }
-
-// export const mapApiError = (error: EdenError, response: Response): UiProblem => {
-//   const status = normaliseStatus(response.status);
-//   const kind = kindFromStatus(status);
-//   const fallBack = ErrorDefaults[status as ApiErrorStatus] ?? ErrorDefaults[500];
-// }

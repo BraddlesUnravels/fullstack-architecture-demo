@@ -1,4 +1,4 @@
-export const ErrorDefaults = {
+const ErrorDefaults = {
   400: {
     code: 'BAD_REQUEST',
     status: 400,
@@ -60,3 +60,16 @@ export const ErrorDefaults = {
     message: 'Gateway timeout',
   },
 } as const;
+
+type FailureStatus = keyof typeof ErrorDefaults;
+
+type ErrorDefault = (typeof ErrorDefaults)[FailureStatus];
+
+type DefaultErrorCode = ErrorDefault['code'];
+
+export {
+  ErrorDefaults,
+  type DefaultErrorCode,
+  type ErrorDefault,
+  type FailureStatus,
+};

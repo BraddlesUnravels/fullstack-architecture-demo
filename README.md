@@ -1,4 +1,4 @@
-# Job Application Tracker — Full-Stack Architecture Demo
+# Full-Stack Architecture Demo
 
 This repository is a focused technical demo, not a complete SaaS product.
 

@@ -31,5 +31,5 @@ export const pushUiError = (store: StoreShape, error: UiError) =>
 
 export const removeUiError = (store: StoreShape, id: string) => {
   const idx = store.errors.findIndex((e) => e.id === id);
-  if (idx > 0) store.errors.splice(idx, 1);
+  if (idx >= 0) store.errors.splice(idx, 1);
 };
