@@ -6,6 +6,7 @@ export * from './application';
 export * from './auth';
 export * from './credential';
 export * from './redis';
+export * from './api-error-code';
 
 export type GetById = {
   id: string;
@@ -46,3 +47,8 @@ export type NullToUndefined<T> = T extends Date
       : T extends object
         ? { [K in keyof T]: NullToUndefined<T[K]> }
         : T;
+
+export type EdenError = {
+  status: number;
+  value: unknown;
+};

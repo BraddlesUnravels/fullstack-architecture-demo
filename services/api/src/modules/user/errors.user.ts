@@ -1,4 +1,4 @@
-import { ApiError } from '../../errors';
+import { ApiError } from '@app/types';
 
 export class UserNotFoundError extends ApiError {
   constructor(message = 'User not found') {

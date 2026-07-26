@@ -4,13 +4,13 @@ import {
   component$,
   useErrorBoundary,
   useStore,
-  useTask$,
+  // useTask$,
 } from '@builder.io/qwik';
-import { useErrorStore, pushUiError, removeUiError } from './error-store';
-import { mapErrorToUi } from './error-mapper';
-import { normalizeError } from './errors';
-import { logError } from './error-logger';
-import { BordedCard } from 'src/components/ui';
+import { useErrorStore, /*pushUiError,*/ removeUiError } from './error-store';
+// import { mapErrorToUi } from './map-api-error';
+// import { normalizeError } from './errors';
+// import { logError } from '../logger/error-logger';
+import { BordedCard } from '../../components/ui';
 
 type Props = {
   boundaryName?: string;
@@ -26,32 +26,32 @@ export const TopLevelErrorBoundary = component$((props: Props) => {
     lastHandledMessage: '',
   });
 
-  const handleBoundaryError = (err: unknown) => {
-    const appErr = normalizeError(err);
+  // const handleBoundaryError = $((err: unknown) => {
+  //   const appErr = normalizeError(err);
 
-    logError(appErr, {
-      boundary: props.boundaryName ?? 'TopLevelErrorBoundary',
-    });
+  //   logError(appErr, {
+  //     boundary: props.boundaryName ?? 'TopLevelErrorBoundary',
+  //   });
 
-    const ui = mapErrorToUi(appErr);
-    ui.transient = false;
+  //   const ui = appErr;
+  //   ui.transient = false;
 
-    local.lastErrorId = ui.id;
-    local.lastHandledMessage = appErr.message;
+  //   local.lastErrorId = ui.id;
+  //   local.lastHandledMessage = appErr.message;
 
-    pushUiError(errorStore, ui);
-  };
+  //   pushUiError(errorStore, ui);
+  // });
 
-  useTask$(({ track }) => {
-    const err = track(() => errorBoundary.error as unknown);
+  // useTask$(({ track }) => {
+  //   const err = track(() => errorBoundary.error as unknown);
 
-    if (!err) return;
+  //   if (!err) return;
 
-    const appErr = normalizeError(err);
-    if (appErr.message === local.lastHandledMessage) return;
+  //   const appErr = normalizeError(err);
+  //   if (appErr.message === local.lastHandledMessage) return;
 
-    handleBoundaryError(err);
-  });
+  //   handleBoundaryError(err);
+  // });
 
   const onDismiss$ = $(() => {
     if (!local.lastErrorId) return;

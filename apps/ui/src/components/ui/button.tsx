@@ -10,7 +10,7 @@ const buttonSizes = {
 
 type ButtonSize = keyof typeof buttonSizes;
 
-const buttonDefaultStyles = [
+export const buttonDefaultStyles = [
   'flex w-full h-full shrink-0 cursor-pointer',
   'items-center justify-center border-0 border-l border-white/10',
   'bg-linear-to-r from-teal-400 to-cyan-400 text-sm font-semibold',

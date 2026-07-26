@@ -18,11 +18,10 @@ const timeOutCheck = (lastSeenAt?: string): boolean => {
 };
 
 // throws `SessionNotFoundError()` if it cannot find a token value
-const extractValueFromCookie = (cookie?: Cookie<unknown>): string => {
-  const token = typeof cookie?.value === 'string' ? cookie.value : undefined;
-  if (!token) throw new SessionNotFoundError();
-  return token;
-};
+const extractValueFromCookie = (
+  cookie?: Cookie<unknown>,
+): string | undefined =>
+  typeof cookie?.value === 'string' ? cookie.value : undefined;
 
 // if redis session expired due to TTL default (>8hrs)
 // inactivity timeout occurs if now - lastseen exceeds default (>4hrs)
@@ -30,6 +29,8 @@ export const sessionGuard = new Elysia({ name: 'session-auth' }).resolve(
   { as: 'scoped' },
   async ({ cookie }) => {
     const value = extractValueFromCookie(cookie[COOKIE_NAME]);
+    if (!value) throw new SessionNotFoundError();
+
     const { hash } = hashSessionToken(value);
     const session = await readSession(hash);
 

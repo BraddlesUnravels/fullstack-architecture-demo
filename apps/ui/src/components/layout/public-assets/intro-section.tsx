@@ -4,9 +4,9 @@ import { ProjectScope } from '../public-assets';
 export default component$(() => (
   <section
     id="intro-section"
-    class="display flex-row w-full justify-items-center"
+    class="col-span-1 grid-cols-1 items-center gap-4 pt-4 md:grid-cols-2"
   >
-    <div id="inner-wrap">
+    <div id="inner-wrap" class="mx-auto max-w-7xl px-4 lg:px-8">
       <h1 class="text-4xl font-bold tracking-tight text-white">
         Full-Stack Architecture Demo
       </h1>
@@ -16,7 +16,7 @@ export default component$(() => (
         seeded data, shared contracts, and testable full-stack structure.
       </p>
 
-      <div id="cards" class="mt-8 grid grid-cols-4 gap-3">
+      <div id="cards" class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
         <div class="rounded-2xl border border-white/10 bg-white/6 p-4 backdrop-blur">
           <p class="text-sm text-slate-400">Auth</p>
           <p class="mt-1 font-semibold text-white">Protected routes</p>

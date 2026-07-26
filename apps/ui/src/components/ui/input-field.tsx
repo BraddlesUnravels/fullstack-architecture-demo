@@ -8,7 +8,7 @@ import type {
   JSXOutput,
 } from '@builder.io/qwik';
 import { HiEyeSlashSolid, HiEyeOutline } from '@qwikest/icons/heroicons';
-import type { RegistrationStore } from '../../routes';
+import type { RegistrationStore } from '../../routes/login';
 
 interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
   class?: ClassList;
@@ -82,7 +82,7 @@ interface TextInputProps extends Omit<
 
 const textInputDefaultSyles = {
   inputClass:
-    'h-10.5 min-w-0 flex-1 border-0 bg-transparent text-sm leading-none text-slate-100 placeholder:text-slate-500 outline-none',
+    'h-10.5 min-w-0 flex-1 border-0 bg-transparent px-4 text-sm leading-none text-slate-100 placeholder:text-slate-500 outline-none',
   containerClass: 'flex h-10.5 min-w-0 flex-1 border-0 bg-transparent p-0',
 };
 
@@ -223,15 +223,15 @@ export const RegisterEmailInput = component$<RegisterEmailInputProps>(
             <button
               type="submit"
               disabled={registerAction.isRunning}
-              class="flex h-full w-20 shrink-0 cursor-pointer items-center justify-center border-0 border-l border-white/10 bg-linear-to-r from-teal-400 to-cyan-400 text-sm font-semibold leading-none text-slate-950 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
+              class="flex h-10.5 w-20 shrink-0 cursor-pointer items-center justify-center border-0 border-l border-white/10 bg-linear-to-r from-teal-400 to-cyan-400 text-sm font-semibold leading-none text-slate-950 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Join
             </button>
           }
           iconPosition="end"
           iconClass="h-full"
-          inputClass="h-full min-w-0 flex-1 border-0 bg-transparent px-4 text-sm leading-none text-slate-100 placeholder:text-slate-500 outline-none"
-          containerClass="flex h-full min-w-0 flex-1 border-0 bg-transparent p-0"
+          inputClass="h-10.5 min-w-0 flex-1 border-0 bg-transparent px-4 text-sm leading-none text-slate-100 placeholder:text-slate-500 outline-none"
+          containerClass="flex h-10.5 min-w-0 flex-1 border-0 bg-transparent p-0"
           type="email"
           placeholder="Please enter your email"
           autocomplete="email"

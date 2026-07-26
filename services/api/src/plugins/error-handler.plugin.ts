@@ -1,6 +1,6 @@
 import { Elysia } from 'elysia';
 import type { Context } from 'elysia';
-import { ApiError } from '../errors';
+import { ApiError } from '@app/types';
 import type { Logger } from 'pino';
 import { baseLogger } from '../utils/logger';
 

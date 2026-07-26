@@ -1,8 +1,7 @@
-import { ErrorDefaults } from './defaults';
-import type { ApiErrorCode } from './api-error-code';
+import { ErrorDefaults } from '@app/constants';
 
 /**
- * AppError is a custom error class that extends the built-in Error class.
+ * ApiError is a custom error class that extends the built-in Error class.
  * It includes additional properties such as status and code to provide more context about the error.
  * * 400 Bad Request: The request was invalid or cannot be served.
  * * 401 Unauthorized: The request requires user authentication.
@@ -13,7 +12,54 @@ import type { ApiErrorCode } from './api-error-code';
  * * 422 Unprocessable Entity: The request was well-formed but was unable to be followed due to semantic errors.
  * * 500 Internal Server Error: An unexpected condition was encountered on the server.
  */
-export type ApiErrorStatus = 400 | 401 | 403 | 404 | 409 | 410 | 422 | 500;
+
+export type ApiErrorCode =
+  | 'BAD_REQUEST'
+  | 'UNAUTHORIZED'
+  | 'FORBIDDEN'
+  | 'NOT_FOUND'
+  | 'CONFLICT'
+  | 'GONE'
+  | 'UNPROCESSABLE_ENTITY'
+  | 'INTERNAL_SERVER_ERROR'
+  | 'BAD_GATEWAY'
+  | 'GATEWAY_TIMEOUT'
+  | 'SERVICE_UNAVAILABLE'
+  | 'TOO_MANY_REQUESTS'
+  | 'AUTH_INVALID_CREDENTIALS'
+  | 'AUTH_NO_CREDENTIALS'
+  | 'AUTH_CREDENTIAL_CREATE_FAILED'
+  | 'AUTH_PASSWORD_CONFIRMATION_MISMATCH'
+  | 'AUTH_SESSION_NOT_FOUND'
+  | 'AUTH_SESSION_CREATE_FAILED'
+  | 'AUTH_EMAIL_CONFLICT'
+  | 'AUTH_USER_CREATION_FAILED'
+  | 'AUTH_SESSION_EXPIRED'
+  | 'AUTH_REGISTRATION_LINK_EXPIRED'
+  | 'JWT_VERIFICATION_FAILED'
+  | 'USER_NOT_FOUND'
+  | 'USER_EMAIL_CONFLICT'
+  | 'USER_CREATION_FAILED'
+  | 'USER_UPDATE_FAILED'
+  | 'USER_DELETE_FAILED'
+  | 'APPLICATION_NOT_FOUND'
+  | 'APPLICATION_CREATION_FAILED'
+  | 'APPLICATION_UPDATE_FAILED'
+  | 'APPLICATION_DELETE_FAILED';
+
+export type ApiErrorStatus =
+  | 400
+  | 401
+  | 403
+  | 404
+  | 409
+  | 410
+  | 422
+  | 429
+  | 500
+  | 502
+  | 503
+  | 504;
 
 export type ApiErrorDefaults = Record<
   ApiErrorStatus,
@@ -55,3 +101,9 @@ export class ApiError extends Error {
     };
   }
 }
+
+export type FailureStatus = keyof typeof ErrorDefaults;
+
+export type ErrorDefault = (typeof ErrorDefaults)[FailureStatus];
+
+export type DefaultErrorCode = ErrorDefault['code'];

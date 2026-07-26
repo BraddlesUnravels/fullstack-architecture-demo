@@ -1,4 +1,4 @@
-import { ApiError } from '../../errors';
+import { ApiError } from '@app/types';
 
 export class ApplicationNotFoundError extends ApiError {
   constructor(message = 'Application not found') {

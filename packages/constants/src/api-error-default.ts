@@ -1,5 +1,3 @@
-import type { ApiErrorCodes } from '../errors';
-
 export const ErrorDefaults = {
   400: {
     code: 'BAD_REQUEST',
@@ -36,9 +34,29 @@ export const ErrorDefaults = {
     status: 422,
     message: 'Unprocessable entity',
   },
+  429: {
+    code: 'TOO_MANY_REQUESTS',
+    status: 429,
+    message: 'Too many requests',
+  },
   500: {
     code: 'INTERNAL_SERVER_ERROR',
     status: 500,
     message: 'Internal server error',
   },
-} as const satisfies ApiErrorCodes;
+  502: {
+    code: 'BAD_GATEWAY',
+    status: 502,
+    message: 'Bad gateway',
+  },
+  503: {
+    code: 'SERVICE_UNAVAILABLE',
+    status: 503,
+    message: 'Service unavailable',
+  },
+  504: {
+    code: 'GATEWAY_TIMEOUT',
+    status: 504,
+    message: 'Gateway timeout',
+  },
+} as const;

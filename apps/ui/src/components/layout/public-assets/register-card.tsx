@@ -1,7 +1,7 @@
 import { component$, type QRL } from '@builder.io/qwik';
 import { Form } from '@builder.io/qwik-city';
 import { RegisterEmailInput, BordedCard } from '../../ui';
-import type { RegistrationStore } from '../../../routes';
+import type { RegistrationStore } from '../../../routes/login';
 
 type LoginCardProps = {
   registerAction: RegistrationStore;
@@ -14,6 +14,7 @@ export default component$<LoginCardProps>(
       <Form
         action={registerAction}
         preventdefault:submit
+        class="flex flex-col gap-5"
         aria-label="Please enter your email in the form below to register"
       >
         <div class="">

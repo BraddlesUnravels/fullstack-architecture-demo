@@ -1,88 +1,36 @@
-import { component$, useSignal, $ } from '@builder.io/qwik';
-import { routeAction$ } from '@builder.io/qwik-city';
-import { registerAction, loginAction } from '../lib/actions';
-import {
-  PublicGradient,
-  IntroSection,
-  LoginCard,
-  RegistrationCard,
-} from '../components/layout/public-assets';
-
-export const useLoginAction = routeAction$(
-  async (form, event) => await loginAction(form, event),
-);
-export const useRegisterAction = routeAction$(
-  async (form, event) => await registerAction(form, event),
-);
-
-export type LoginActionStore = ReturnType<typeof useLoginAction>;
-export type RegistrationStore = ReturnType<typeof useRegisterAction>;
+import { component$ } from '@builder.io/qwik';
+import { Link } from '@builder.io/qwik-city';
+import { PublicLayout, IntroSection } from '../components/layout/public-assets';
+import { buttonDefaultStyles } from '../components/ui/button';
 
 export default component$(() => {
-  const loginAction = useLoginAction();
-  const registerAction = useRegisterAction();
-  const authMode = useSignal<'register' | 'login'>('register');
-
-  const showLogin = $(() => {
-    authMode.value = 'login';
-  });
-
-  const showRegister = $(() => {
-    authMode.value = 'register';
-  });
-
   return (
-    <div
-      id="public-layout"
-      class="grid min-h-full min-w-full grid-cols-1 overflow-hidden bg-[#101923] text-slate-100 lg:grid-cols-[40%_65%] xl:grid-cols-[30%_70%]"
-    >
-      <section
-        id="left-wrapper"
-        class="relative flex flex-col items-center justify-center"
+    <PublicLayout gradient colClasses="grid-row-2">
+      <header
+        id="public-header"
+        class="col-span-1 flex flex-row justify-end gap-3 p-3 max-h-[7svh] md:flex-row md:items-start md:justify-between"
       >
-        <div class="absolute inset-y-0 right-0 hidden w-px bg-linear-to-b from-transparent via-green-300/60 to-transparent lg:block" />
-
-        <div class="relative z-10 grid w-full h-full overflow-hidden items-center pl-3 pr-3">
-          <div
-            aria-hidden={authMode.value !== 'register'}
-            class={[
-              'col-start-1 row-start-1 transition duration-500 ease-out',
-              authMode.value === 'register'
-                ? 'translate-x-0 opacity-100'
-                : 'translate-x-[-110%] opacity-0 pointer-events-none',
-            ]}
-          >
-            <RegistrationCard
-              registerAction={registerAction}
-              onShowLogin$={showLogin}
-            />
-          </div>
-
-          <div
-            aria-hidden={authMode.value !== 'login'}
-            class={[
-              'col-start-1 row-start-1 transition duration-500 ease-out',
-              authMode.value === 'login'
-                ? 'translate-x-0 opacity-100'
-                : 'translate-x-[110%] opacity-0 pointer-events-none',
-            ]}
-          >
-            <LoginCard
-              loginAction={loginAction}
-              onShowRegister$={showRegister}
-            />
-          </div>
+        <div class="hidden flex-col items-center justify-center min-w-0 md:flex">
+          Welcome to the Full-Stack Demo
         </div>
-      </section>
-
-      <section
-        id="right-wrapper"
-        class="relative flex flex-col items-center justify-center min-w-full p-4"
+        <div>
+          <Link
+            href="/login"
+            class={[
+              buttonDefaultStyles,
+              'text-sm font-semibold px-4 py-2 rounded-lg max-w-[10rem]',
+            ]}
+          >
+            Register or Login
+          </Link>
+        </div>
+      </header>
+      <div
+        id="public-content"
+        class="col-span-1 grid min-h-[calc(100svh-7svh)] items-center"
       >
-        <PublicGradient />
-
         <IntroSection />
-      </section>
-    </div>
+      </div>
+    </PublicLayout>
   );
 });

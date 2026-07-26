@@ -1,0 +1,25 @@
+ M .husky/pre-commit
+ M apps/ui/src/lib/actions/application-summary.action.ts
+ M apps/ui/src/lib/actions/complete-registration.action.ts
+ M apps/ui/src/lib/actions/login.action.ts
+ M apps/ui/src/lib/actions/register.action.ts
+D  apps/ui/src/lib/api.ts
+ A apps/ui/src/lib/api/api.ts
+D  apps/ui/src/lib/errors/error-mapper.ts
+ A apps/ui/src/lib/errors/index.ts
+ A apps/ui/src/lib/errors/map-api-error.ts
+ M apps/ui/src/lib/errors/top-level-error-boundary.tsx
+ A apps/ui/src/lib/errors/validation.ts
+ M apps/ui/src/lib/index.ts
+ M apps/ui/src/lib/loaders/header-name-loader.ts
+ M apps/ui/src/lib/loaders/load-user-applications.ts
+ M apps/ui/src/lib/loaders/verification-loader.ts
+ A apps/ui/src/lib/session/session-cookie.ts
+D  apps/ui/src/lib/types.ts
+ A apps/ui/src/lib/types/eden-errors.ts
+ A apps/ui/src/lib/types/index.ts
+ A apps/ui/src/lib/types/session-cookie.ts
+ A apps/ui/src/lib/types/ui-problem.ts
+D  apps/ui/src/routes/app/plugin@errors.ts
+ A apps/ui/src/routes/plugin@errors.ts
+?? current-status.txt

@@ -1,4 +1,4 @@
-import { api } from '../api';
+import { api } from '../api/api';
 
 export const loadName = async (sid?: string) => {
   const { data, error, status } = await api(sid).users.get();

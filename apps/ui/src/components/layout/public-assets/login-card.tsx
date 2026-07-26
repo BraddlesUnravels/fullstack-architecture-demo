@@ -10,7 +10,7 @@ import {
   BordedCard,
 } from '../../ui';
 
-import type { LoginActionStore } from '../../../routes';
+import type { LoginActionStore } from '../../../routes/login';
 
 type LoginFormProps = {
   loginAction: LoginActionStore;

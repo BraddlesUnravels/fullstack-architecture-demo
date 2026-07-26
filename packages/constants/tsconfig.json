@@ -4,8 +4,7 @@
     "baseUrl": ".",
     "paths": {
       "@app/types/*": ["../types/src/*"],
-      "@app/schemas/*": ["../schemas/src/*"],
-      "@app/constants/*": ["../constants/src/*"]
+      "@app/schemas/*": ["../schemas/src/*"]
     }
   },
   "include": ["src"]

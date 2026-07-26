@@ -37,10 +37,10 @@ describe('plugins/session-guard.plugin', () => {
     const response = await app.handle(createRequest());
     const body = (await response.json()) as { code: string; message: string };
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
     expect(body).toEqual({
       code: 'AUTH_SESSION_NOT_FOUND',
-      message: 'Session not found',
+      message: 'Session not found, authentication required',
     });
   });
 

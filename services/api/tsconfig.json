@@ -12,6 +12,10 @@
       "@app/constants/*": ["../../packages/constants/src/*"]
     }
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "../../packages/constants/src/api-error-code.ts",
+    "../../packages/constants/src/index.ts"
+  ],
   "exclude": ["test"]
 }
