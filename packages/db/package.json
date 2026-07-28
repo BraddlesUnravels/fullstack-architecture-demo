@@ -23,7 +23,6 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@app/constants": "workspace:*",
     "@app/schemas": "workspace:*",
     "@app/types": "workspace:*",
     "@app/utils": "workspace:*",

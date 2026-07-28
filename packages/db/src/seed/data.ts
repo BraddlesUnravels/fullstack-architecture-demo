@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { JobStatus, UserTier } from '@app/constants';
+import { JobStatus, UserTier } from '@app/types';
 import type {
   InsertApplicationRow,
   InsertCompanyRow,

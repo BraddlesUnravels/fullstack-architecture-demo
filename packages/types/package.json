@@ -12,12 +12,10 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@app/constants": "workspace:*",
     "@app/schemas": "workspace:*",
     "valibot": "^1.4.2"
   },
   "paths": {
-    "@app/schemas/*": "../schemas/src/*",
-    "@app/constants": "../constants/src/index.ts"
+    "@app/schemas/*": "../schemas/src/*"
   }
 }

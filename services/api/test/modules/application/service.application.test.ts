@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createApplicationRow } from '../../helpers/factories';
 import { applicationService } from '../../../src/modules/application/service.application';
-import { JobStatus } from '@app/constants';
+import { JobStatus } from '@app/types';
 
 const { applicationRepoMock } = vi.hoisted(() => ({
   applicationRepoMock: {

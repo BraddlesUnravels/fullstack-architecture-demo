@@ -5,6 +5,7 @@ import type { IconProps } from '@qwikest/icons';
 export * from './ui-problem';
 export * from './eden-errors';
 export * from './session-cookie';
+export * from './runtime-error';
 
 export type NavItem = {
   label: string;

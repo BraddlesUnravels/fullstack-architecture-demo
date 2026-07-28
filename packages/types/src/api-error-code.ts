@@ -1,4 +1,8 @@
-import { ErrorDefaults } from '@app/constants';
+import {
+  ErrorDefaults,
+  type DefaultErrorCode,
+  type FailureStatus,
+} from './constants';
 
 /**
  * ApiError is a custom error class that extends the built-in Error class.
@@ -14,18 +18,7 @@ import { ErrorDefaults } from '@app/constants';
  */
 
 export type ApiErrorCode =
-  | 'BAD_REQUEST'
-  | 'UNAUTHORIZED'
-  | 'FORBIDDEN'
-  | 'NOT_FOUND'
-  | 'CONFLICT'
-  | 'GONE'
-  | 'UNPROCESSABLE_ENTITY'
-  | 'INTERNAL_SERVER_ERROR'
-  | 'BAD_GATEWAY'
-  | 'GATEWAY_TIMEOUT'
-  | 'SERVICE_UNAVAILABLE'
-  | 'TOO_MANY_REQUESTS'
+  | DefaultErrorCode
   | 'AUTH_INVALID_CREDENTIALS'
   | 'AUTH_NO_CREDENTIALS'
   | 'AUTH_CREDENTIAL_CREATE_FAILED'
@@ -47,47 +40,35 @@ export type ApiErrorCode =
   | 'APPLICATION_UPDATE_FAILED'
   | 'APPLICATION_DELETE_FAILED';
 
-export type ApiErrorStatus =
-  | 400
-  | 401
-  | 403
-  | 404
-  | 409
-  | 410
-  | 422
-  | 429
-  | 500
-  | 502
-  | 503
-  | 504;
-
 export type ApiErrorDefaults = Record<
-  ApiErrorStatus,
+  FailureStatus,
   {
-    status: ApiErrorStatus;
+    status: FailureStatus;
     code: ApiErrorCode;
     message: string;
   }
 >;
 
 export type ApiErrorParams = {
-  status: ApiErrorStatus;
+  status: FailureStatus;
   code?: ApiErrorCode;
   message?: string;
   cause?: unknown;
 };
 
 export type ApiErrorCodes = {
-  [key in ApiErrorStatus]: ApiErrorParams;
+  [Status in FailureStatus]: ApiErrorParams;
 };
 
 export class ApiError extends Error {
-  public readonly status: ApiErrorStatus;
+  public readonly status: FailureStatus;
   public readonly code: ApiErrorCode;
 
   constructor({ status, code, message, cause }: ApiErrorParams) {
-    const defaults = ErrorDefaults[status] ?? ErrorDefaults[500];
+    const defaults = ErrorDefaults[status];
+
     super(message ?? defaults.message, { cause });
+
     this.name = 'ApiError';
     this.status = status;
     this.code = code ?? defaults.code;
@@ -101,9 +82,3 @@ export class ApiError extends Error {
     };
   }
 }
-
-export type FailureStatus = keyof typeof ErrorDefaults;
-
-export type ErrorDefault = (typeof ErrorDefaults)[FailureStatus];
-
-export type DefaultErrorCode = ErrorDefault['code'];

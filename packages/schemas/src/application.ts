@@ -1,5 +1,5 @@
 import * as v from 'valibot';
-import { JobStatus } from '@app/constants';
+import { JobStatus } from '@app/types';
 import { auditColumns } from './audit';
 
 const applicationStatusSchema = v.pipe(

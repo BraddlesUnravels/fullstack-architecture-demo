@@ -7,7 +7,7 @@ import {
   uuid,
   integer,
 } from 'drizzle-orm/pg-core';
-import { JobStatus, UserTier } from '@app/constants';
+import { JobStatus, UserTier } from '@app/types';
 
 export const auditColumns = {
   createdAt: timestamp('created_at', { withTimezone: true })

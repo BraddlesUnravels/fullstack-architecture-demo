@@ -4,102 +4,122 @@ import {
   component$,
   useErrorBoundary,
   useStore,
-  // useTask$,
+  useTask$,
 } from '@builder.io/qwik';
-import { useErrorStore, /*pushUiError,*/ removeUiError } from './error-store';
-// import { mapErrorToUi } from './map-api-error';
-// import { normalizeError } from './errors';
-// import { logError } from '../logger/error-logger';
 import { BordedCard } from '../../components/ui';
+import { logError } from '../logger';
+import type { RuntimeError } from '../types';
+import { pushUiError, useErrorStore } from './error-store';
+import { mapRuntimeErrorToUi } from './map-runtime-error';
+import { normalizeError } from './normalize-error';
 
-type Props = {
+type TopLevelErrorBoundaryProps = {
   boundaryName?: string;
-  retryCallback?: () => void;
 };
 
-export const TopLevelErrorBoundary = component$((props: Props) => {
-  const errorBoundary = useErrorBoundary();
-  const errorStore = useErrorStore();
+type LocalErrorState = {
+  lastErrorId: string;
+  lastHandledKey: string;
+};
 
-  const local = useStore({
-    lastErrorId: '',
-    lastHandledMessage: '',
-  });
+const createErrorKey = (error: RuntimeError): string =>
+  [error.name, error.message, error.code ?? '', error.stack ?? ''].join(':');
 
-  // const handleBoundaryError = $((err: unknown) => {
-  //   const appErr = normalizeError(err);
-
-  //   logError(appErr, {
-  //     boundary: props.boundaryName ?? 'TopLevelErrorBoundary',
-  //   });
-
-  //   const ui = appErr;
-  //   ui.transient = false;
-
-  //   local.lastErrorId = ui.id;
-  //   local.lastHandledMessage = appErr.message;
-
-  //   pushUiError(errorStore, ui);
-  // });
-
-  // useTask$(({ track }) => {
-  //   const err = track(() => errorBoundary.error as unknown);
-
-  //   if (!err) return;
-
-  //   const appErr = normalizeError(err);
-  //   if (appErr.message === local.lastHandledMessage) return;
-
-  //   handleBoundaryError(err);
-  // });
-
-  const onDismiss$ = $(() => {
-    if (!local.lastErrorId) return;
-
-    removeUiError(errorStore, local.lastErrorId);
-    local.lastErrorId = '';
-    local.lastHandledMessage = '';
-  });
-
-  const onRetry$ = $(() => {
-    if (typeof props.retryCallback !== 'function') return;
-
-    try {
-      props.retryCallback();
-    } catch {
-      // If retry callback throws, boundary will catch on next render cycle
-    }
-  });
-
-  const onCopyRef$ = $(() => {
-    const entry = errorStore.errors.find((e) => e.id === local.lastErrorId);
-    const ref = entry?.metadata?.reference ?? entry?.id;
-    if (
-      typeof ref !== 'string' &&
-      typeof ref !== 'number' &&
-      typeof ref !== 'bigint'
-    )
-      return;
-    if (!ref) return;
-
-    void navigator.clipboard?.writeText(String(ref));
-  });
-
-  if (errorBoundary?.error) {
-    return (
-      <BordedCard>
-        <div role="alert">
-          <h2>Something went wrong</h2>
-          <p>Please try again.</p>
-          <div>
-            <button onClick$={onRetry$}>Retry</button>
-            <button onClick$={onDismiss$}>Dismiss</button>
-            <button onClick$={onCopyRef$}>Copy reference</button>
-          </div>
-        </div>
-      </BordedCard>
-    );
+const getReference = (value: unknown): string | undefined => {
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'bigint'
+  ) {
+    return String(value);
   }
 
-  return <Slot />;
-});
+  return undefined;
+};
+
+export const TopLevelErrorBoundary = component$<TopLevelErrorBoundaryProps>(
+  ({ boundaryName }) => {
+    const errorBoundary = useErrorBoundary();
+    const errorStore = useErrorStore();
+
+    const local = useStore<LocalErrorState>({
+      lastErrorId: '',
+      lastHandledKey: '',
+    });
+
+    useTask$(({ track }) => {
+      const error = track((): unknown => errorBoundary.error as unknown);
+
+      const runtimeError = normalizeError(error);
+      const errorKey = createErrorKey(runtimeError);
+
+      if (errorKey === local.lastHandledKey) return;
+
+      const uiError = mapRuntimeErrorToUi(runtimeError);
+
+      logError(runtimeError, {
+        boundary: boundaryName ?? 'TopLevelErrorBoundary',
+      });
+
+      local.lastErrorId = uiError.id;
+      local.lastHandledKey = errorKey;
+
+      pushUiError(errorStore, uiError);
+    });
+
+    const activeError = errorStore.errors.find(
+      (error) => error.id === local.lastErrorId,
+    );
+
+    const reference = getReference(activeError?.metadata?.reference);
+
+    const onReload$ = $(() => {
+      window.location.reload();
+    });
+
+    const onCopyReference$ = $(async () => {
+      if (!reference || !navigator.clipboard) return;
+
+      try {
+        await navigator.clipboard.writeText(reference);
+      } catch {
+        // Clipboard access can be unavailable or denied.
+      }
+    });
+
+    if (errorBoundary.error) {
+      return (
+        <BordedCard>
+          <div role="alert">
+            <h2>{activeError?.title ?? 'Something went wrong'}</h2>
+
+            <p>
+              {activeError?.message ??
+                'An unexpected error occurred. Please reload the page and try again.'}
+            </p>
+
+            {reference && (
+              <p>
+                Reference: <code>{reference}</code>
+              </p>
+            )}
+
+            <div>
+              <button type="button" onClick$={onReload$}>
+                Reload page
+              </button>
+
+              {reference && (
+                <button type="button" onClick$={onCopyReference$}>
+                  Copy reference
+                </button>
+              )}
+            </div>
+          </div>
+        </BordedCard>
+      );
+    }
+
+    return <Slot />;
+  },
+);

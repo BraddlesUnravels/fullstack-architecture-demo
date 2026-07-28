@@ -8,14 +8,9 @@
       "@app/redis/*": ["../../packages/redis/src/*"],
       "@app/types/*": ["../../packages/types/src/*"],
       "@app/schemas/*": ["../../packages/schemas/src/*"],
-      "@app/utils/*": ["../../packages/utils/src/*"],
-      "@app/constants/*": ["../../packages/constants/src/*"]
+      "@app/utils/*": ["../../packages/utils/src/*"]
     }
   },
-  "include": [
-    "src",
-    "../../packages/constants/src/api-error-code.ts",
-    "../../packages/constants/src/index.ts"
-  ],
+  "include": ["src"],
   "exclude": ["test"]
 }

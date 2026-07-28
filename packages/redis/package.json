@@ -16,12 +16,10 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@app/constants": "workspace:*",
     "@app/types": "workspace:*",
     "redis": "^6.1.0"
   },
   "paths": {
-    "@app/types/*": "../types/src/*",
-    "@app/constants": "../constants/src/index.ts"
+    "@app/types/*": "../types/src/*"
   }
 }

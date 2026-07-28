@@ -7,7 +7,7 @@ import {
   createSessionRecord,
   createUserRow,
 } from './helpers/factories';
-import { UserTier } from '@app/constants';
+import { UserTier } from '@app/types';
 
 const {
   applicationRepoMock,

@@ -8,7 +8,6 @@
     "types": ["bun-types", "vite/client"],
     "paths": {
       "@app/api/*": ["../../services/api/src/*"],
-      "@app/contants/*": ["../../packages/constants/src/*"],
       "@app/types/*": ["../../packages/types/src/*"],
       "@app/schemas/*": ["../../packages/schemas/src/*"],
       "@app/utils/*": ["../../packages/utils/src/*"]
