@@ -1,4 +1,9 @@
-import { asNonEmptyString, normalizeCode, isRecord } from './helpers';
+import {
+  asNonEmptyString,
+  normalizeCode,
+  isRecord,
+  describeThrownValue,
+} from './helpers';
 import type { RuntimeError } from '../types';
 
 const handleErrorInstance = (error: unknown): RuntimeError | undefined => {
@@ -53,12 +58,12 @@ export const normalizeError = (error: unknown): RuntimeError => {
   if (error === null || error === undefined) {
     return {
       name: 'UnknownError',
-      message: 'Unknown error',
+      message: describeThrownValue(error),
     };
   }
 
   return {
     name: 'UnknownError',
-    message: JSON.stringify(error),
+    message: describeThrownValue(error),
   };
 };

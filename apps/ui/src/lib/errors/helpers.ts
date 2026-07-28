@@ -81,6 +81,11 @@ export const isRetryableStatus = (status: FailureStatus): boolean => {
 export const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+export const isArrayRecord = (
+  value: unknown,
+): value is Record<string, unknown>[] =>
+  Array.isArray(value) && value.every((item) => isRecord(item));
+
 export const asNonEmptyString = (value: unknown): string | undefined =>
   typeof value === 'string' && value.trim().length > 0 ? value : undefined;
 
@@ -92,4 +97,85 @@ export const normalizeCode = (value: unknown): string | undefined => {
   }
 
   return undefined;
+};
+
+type StringProperty = 'message' | 'name';
+
+export const getNonEmptyStringProperty = (
+  value: unknown,
+  property: StringProperty,
+): string | undefined => {
+  if (
+    value === null ||
+    (typeof value !== 'object' && typeof value !== 'function')
+  ) {
+    return undefined;
+  }
+
+  try {
+    return asNonEmptyString(Reflect.get(value, property));
+  } catch {
+    return undefined;
+  }
+};
+
+export const safelyConvertToString = (value: unknown): string => {
+  try {
+    return String(value);
+  } catch {
+    return '[Unprintable thrown value]';
+  }
+};
+
+export const describeThrownValue = (error: unknown): string => {
+  if (error === undefined) return 'undefined';
+  if (error === null) return 'null';
+
+  if (typeof error === 'string')
+    return asNonEmptyString(error) ?? '[Empty string]';
+
+  const directMessage = asNonEmptyString(error);
+  if (directMessage) return directMessage;
+
+  const objectMessage = getNonEmptyStringProperty(error, 'message');
+  if (objectMessage) return objectMessage;
+
+  if (error instanceof Error)
+    return getNonEmptyStringProperty(error, 'name') ?? 'Error';
+
+  if (Array.isArray(error)) {
+    const messages = error.map(
+      (item) =>
+        asNonEmptyString(item) ?? getNonEmptyStringProperty(item, 'message'),
+    );
+
+    if (
+      messages.length > 0 &&
+      messages.every((message): message is string => message !== undefined)
+    )
+      return messages.join('; ');
+  }
+
+  switch (typeof error) {
+    case 'number':
+    case 'bigint':
+    case 'boolean':
+    case 'symbol':
+      return safelyConvertToString(error);
+
+    case 'function': {
+      const name = getNonEmptyStringProperty(error, 'name');
+      return name ? `[Function ${name}]` : '[Function]';
+    }
+  }
+
+  try {
+    const serialized = JSON.stringify(error);
+
+    if (serialized !== undefined) return serialized;
+  } catch {
+    // Ignore serialization errors
+  }
+
+  return safelyConvertToString(error);
 };

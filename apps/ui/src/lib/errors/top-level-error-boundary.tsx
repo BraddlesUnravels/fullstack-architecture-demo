@@ -50,6 +50,8 @@ export const TopLevelErrorBoundary = component$<TopLevelErrorBoundaryProps>(
     useTask$(({ track }) => {
       const error = track((): unknown => errorBoundary.error as unknown);
 
+      if (error === undefined) return;
+
       const runtimeError = normalizeError(error);
       const errorKey = createErrorKey(runtimeError);
 
