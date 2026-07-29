@@ -1,9 +1,10 @@
 import type { JSXOutput } from '@builder.io/qwik';
 import type { IconProps } from '@qwikest/icons';
+import type { FieldErrors } from './ui-problem';
 
 // exports
 export * from './ui-problem';
-export * from './eden-errors';
+export * from './eden';
 export * from './session-cookie';
 export * from './runtime-error';
 
@@ -20,6 +21,6 @@ export type ValidationResult<T> =
     }
   | {
       success: false;
-      fieldErrors: Record<string, string>;
+      fieldErrors: FieldErrors<T>;
       formErrors: string[];
     };

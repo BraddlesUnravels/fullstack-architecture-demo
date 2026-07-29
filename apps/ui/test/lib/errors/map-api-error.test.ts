@@ -131,7 +131,7 @@ describe('mapApiError', () => {
     });
   });
 
-  it('should status defaults when the response body is invalid', () => {
+  it('should use status defaults when the response body is invalid', () => {
     const problem = mapApiError({
       status: 422,
       value: {
@@ -150,7 +150,7 @@ describe('mapApiError', () => {
     });
   });
 
-  it('should complete 500 fallback for unsupported statuses', () => {
+  it('should use status 500 fallback for unsupported statuses', () => {
     const problem = mapApiError({
       status: 418,
       value: {

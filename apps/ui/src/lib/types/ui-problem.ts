@@ -32,10 +32,16 @@ export type UiProblem = {
   requestId?: string;
 };
 
-export type ActionFailure = {
+export type FieldErrors<T> = Partial<Record<Extract<keyof T, string>, string>>;
+
+export type ActionFieldErrors<T> = Partial<
+  Record<Extract<keyof T, string> | 'api', string>
+>;
+
+export type ActionFailure<T> = {
   problem: UiProblem;
-  fieldErrors?: Record<string, string>;
-  formErrors?: string[];
+  fieldErrors: ActionFieldErrors<T>;
+  formErrors: string[];
 };
 
 export type { FailureStatus } from '@app/types';

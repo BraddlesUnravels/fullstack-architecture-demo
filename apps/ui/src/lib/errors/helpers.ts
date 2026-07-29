@@ -3,7 +3,7 @@ import type { UiProblemKind } from '../types';
 import type { FailureStatus } from '@app/types';
 
 // ApiError mapper helpers
-export const normaliseStatus = (status: number): FailureStatus =>
+export const normalizeStatus = (status: number): FailureStatus =>
   isFailureStatus(status) ? status : 500;
 
 export const kindFromStatus = (status: FailureStatus): UiProblemKind => {
@@ -133,9 +133,6 @@ export const describeThrownValue = (error: unknown): string => {
 
   if (typeof error === 'string')
     return asNonEmptyString(error) ?? '[Empty string]';
-
-  const directMessage = asNonEmptyString(error);
-  if (directMessage) return directMessage;
 
   const objectMessage = getNonEmptyStringProperty(error, 'message');
   if (objectMessage) return objectMessage;

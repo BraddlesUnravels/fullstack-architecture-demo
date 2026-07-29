@@ -8,7 +8,7 @@ import {
   isRecord,
   isRetryableStatus,
   kindFromStatus,
-  normaliseStatus,
+  normalizeStatus,
   normalizeCode,
   safelyConvertToString,
   titleFromStatus,
@@ -105,7 +105,7 @@ describe('API error mapper helpers', () => {
   it.each(statusCases)(
     'should map status $status consistently',
     ({ status, kind, title, retryable }) => {
-      expect(normaliseStatus(status)).toBe(status);
+      expect(normalizeStatus(status)).toBe(status);
       expect(kindFromStatus(status)).toBe(kind);
       expect(titleFromStatus(status)).toBe(title);
       expect(isRetryableStatus(status)).toBe(retryable);
@@ -113,9 +113,9 @@ describe('API error mapper helpers', () => {
   );
 
   it.each([200, 418, 501, -1, 400.5, Number.NaN, Infinity, -Infinity])(
-    'should normalises unsupported status %s to 500',
+    'should normalize unsupported status %s to 500',
     (status) => {
-      expect(normaliseStatus(status)).toBe(500);
+      expect(normalizeStatus(status)).toBe(500);
     },
   );
 });
@@ -205,7 +205,7 @@ describe('normalizeCode', () => {
     [0, '0'],
     [-1, '-1'],
     [400.5, '400.5'],
-  ] as const)('should normalise %s to %s', (value, expected) => {
+  ] as const)('should normalize %s to %s', (value, expected) => {
     expect(normalizeCode(value)).toBe(expected);
   });
 

@@ -63,7 +63,7 @@ describe('normalizeError', () => {
   });
 
   describe('record-like errors', () => {
-    it('should normalise all supported diagnostic properties', () => {
+    it('should normalize all supported diagnostic properties', () => {
       const cause = {
         code: 'DATABASE_FAILURE',
       };
@@ -131,14 +131,14 @@ describe('normalizeError', () => {
       [10n, '10'],
       [true, 'true'],
       [Symbol('failure'), 'Symbol(failure)'],
-    ] as const)('should normalise thrown value %s', (value, message) => {
+    ] as const)('should normalize thrown value %s', (value, message) => {
       expect(normalizeError(value)).toEqual({
         name: 'UnknownError',
         message,
       });
     });
 
-    it('should normalise an array of message-bearing values', () => {
+    it('should normalize an array of message-bearing values', () => {
       expect(
         normalizeError([
           new Error('First failure'),
@@ -152,7 +152,7 @@ describe('normalizeError', () => {
       });
     });
 
-    it('should normalise a named function without invoking it', () => {
+    it('should normalize a named function without invoking it', () => {
       let invoked = false;
 
       function thrownFunction() {
