@@ -22,6 +22,7 @@ export const registration = v.strictObject({
   email: v.pipe(v.string(), v.email()),
   message: v.string(),
 });
+
 export const verifyEmail = v.strictObject({
   id: v.message(
     v.pipe(v.string(), v.minLength(1)),

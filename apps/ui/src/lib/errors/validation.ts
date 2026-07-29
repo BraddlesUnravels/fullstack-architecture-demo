@@ -1,10 +1,21 @@
 import * as v from 'valibot';
-import type { ValidationResult, UiProblem } from '../types';
+import type { ValidationResult, UiProblem, FieldErrors } from '../types';
+
+const firstFieldMessages = <T>(
+  nested: Record<string, string[] | undefined> | undefined,
+): FieldErrors<T> =>
+  Object.fromEntries(
+    Object.entries(nested ?? {}).map(([path, messages]) => [
+      path,
+      messages?.[0] ?? 'Invalid value',
+    ]),
+  ) as FieldErrors<T>;
 
 export const validateInput = <TSchema extends v.GenericSchema>(
   schema: TSchema,
   input: unknown,
 ): ValidationResult<v.InferOutput<TSchema>> => {
+  // return early if the input is valid
   const result = v.safeParse(schema, input);
   if (result.success)
     return {
@@ -14,16 +25,9 @@ export const validateInput = <TSchema extends v.GenericSchema>(
 
   const flattened = v.flatten(result.issues);
 
-  const fieldErrors = Object.fromEntries(
-    Object.entries(flattened.nested ?? {}).map(([path, messages]) => [
-      path,
-      messages?.[0] ?? 'Invalid value',
-    ]),
-  );
-
   return {
     success: false,
-    fieldErrors,
+    fieldErrors: firstFieldMessages<v.InferOutput<TSchema>>(flattened.nested),
     formErrors: [...(flattened.root ?? []), ...(flattened.other ?? [])],
   };
 };
@@ -41,8 +45,7 @@ export const transportProblem = (): UiProblem => ({
   code: 'API_UNREACHABLE',
   kind: 'unavailable',
   status: 503,
-  title: 'Unable to reach the server',
-  message:
-    'Check your connection and try again. The service may be temporarily unavailable.',
+  title: 'Service temporarily unavailable',
+  message: 'The service is temporarily unavailable. Please try again shortly.',
   retryable: true,
 });

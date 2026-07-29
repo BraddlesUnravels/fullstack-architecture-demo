@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 import {
-  normaliseStatus,
+  normalizeStatus,
   kindFromStatus,
   titleFromStatus,
   isRetryableStatus,
@@ -17,10 +17,10 @@ import type { EdenError, UiProblem } from '../types';
  */
 
 export const mapApiError = (error: EdenError): UiProblem => {
-  // Uses isFailureStatus directly to avoid normalising the status to 500
+  // Uses isFailureStatus directly to avoid normalizing the status to 500
   const isSupported = isFailureStatus(error.status);
-  // If the status is not supported, its normalised to 500
-  const status = normaliseStatus(error.status);
+  // If the status is not supported, its normalized to 500
+  const status = normalizeStatus(error.status);
   const fallback = ErrorDefaults[status];
 
   const validated = v.safeParse(apiErrorResponseSchema, error.value);

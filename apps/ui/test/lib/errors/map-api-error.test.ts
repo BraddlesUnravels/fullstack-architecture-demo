@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ErrorDefaults, type FailureStatus } from '@app/types';
 import { isFailureStatus } from '@app/utils';
-import { mapApiError } from '../../src/lib/errors/map-api-error';
+import { mapApiError } from '../../../src/lib/errors/map-api-error';
 
 const supportedStatuses = [
   400, 401, 403, 404, 409, 410, 422, 429, 500, 502, 503, 504,
@@ -89,7 +89,7 @@ describe('isFailureStatus', () => {
     }
   });
 
-  it('rejects unsupported and non-numeric values', () => {
+  it('should reject unsupported and non-numeric values', () => {
     const unsupportedValues: unknown[] = [
       200,
       418,
@@ -110,7 +110,7 @@ describe('isFailureStatus', () => {
 });
 
 describe('mapApiError', () => {
-  it('preserves a validated API error response', () => {
+  it('should preserve a validated API error response', () => {
     const problem = mapApiError({
       status: 409,
       value: {
@@ -131,7 +131,7 @@ describe('mapApiError', () => {
     });
   });
 
-  it('uses status defaults when the response body is invalid', () => {
+  it('should use status defaults when the response body is invalid', () => {
     const problem = mapApiError({
       status: 422,
       value: {
@@ -150,7 +150,7 @@ describe('mapApiError', () => {
     });
   });
 
-  it('uses the complete 500 fallback for unsupported statuses', () => {
+  it('should use status 500 fallback for unsupported statuses', () => {
     const problem = mapApiError({
       status: 418,
       value: {
@@ -172,7 +172,7 @@ describe('mapApiError', () => {
   });
 
   for (const testCase of statusCases) {
-    it(`maps status ${testCase.status} consistently`, () => {
+    it(`should map status ${testCase.status} consistently`, () => {
       const fallback = ErrorDefaults[testCase.status];
 
       const problem = mapApiError({
