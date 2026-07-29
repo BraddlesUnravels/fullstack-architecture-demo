@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ApiError } from '../../src/errors';
+import { ApiError } from '@app/types';
 import { errorHandlerPlugin } from '../../src/plugins/error-handler.plugin';
 
 const createRequest = (path: string, init?: RequestInit): Request =>

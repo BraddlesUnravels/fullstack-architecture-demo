@@ -6,6 +6,8 @@ export * from './application';
 export * from './auth';
 export * from './credential';
 export * from './redis';
+export * from './api-error-code';
+export * from './constants';
 
 export type GetById = {
   id: string;

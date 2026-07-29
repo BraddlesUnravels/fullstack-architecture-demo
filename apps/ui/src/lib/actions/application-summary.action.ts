@@ -1,4 +1,4 @@
-import { api } from '../api';
+import { api } from '../api/api';
 
 export const applicationSummaries = async (sid?: string) => {
   const { data, error, status } = await api(sid).applications.get();

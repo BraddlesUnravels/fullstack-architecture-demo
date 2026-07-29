@@ -24,19 +24,16 @@ export const CardBlur = component$<CardProps>(
 export const BordedCard = component$(() => (
   <div
     id="card-wrap"
-    class="flex min-w-full justify-center"
+    class="flex w-full justify-center"
     aria-label="Please enter your login details in the form below"
   >
     <div
       id="card-background"
-      class={[
-        'w-full max-w-md rounded-2xl bg-linear-to-b from-transparent',
-        'via-green-300/60 to-transparent p-px shadow-2xl shadow-black/30',
-      ].join(' ')}
+      class="w-full max-w-md rounded-2xl bg-linear-to-b from-transparent via-green-300/60 to-transparent p-px shadow-2xl shadow-black/30"
     >
       <div
         id="card-body"
-        class="rounded-[calc(1rem-1px)] bg-[#16232d] p-4 backdrop-blur-xl"
+        class="rounded-[calc(1rem-1px)] bg-[#16232d] p-6 backdrop-blur-xl"
       >
         <Slot />
       </div>

@@ -7,7 +7,7 @@ import {
   createSessionRecord,
   createUserRow,
 } from './helpers/factories';
-import { UserTier } from '@app/constants';
+import { UserTier } from '@app/types';
 
 const {
   applicationRepoMock,
@@ -84,6 +84,8 @@ vi.mock('../src/services', () => ({
   setSessionCookie: setSessionCookieMock,
 }));
 
+const TEST_ORIGIN = ['http://localhost:4000'];
+
 const createRequest = (path: string, init?: RequestInit): Request =>
   new Request(`http://localhost${path}`, init);
 
@@ -96,7 +98,7 @@ describe('app', () => {
   });
 
   it('should return health payload from GET /health/', async () => {
-    const app = createApp({ corsOrigin: true });
+    const app = createApp({ corsOrigin: TEST_ORIGIN });
 
     const response = await app.handle(createRequest('/health/'));
     const body = await parseBody<{
@@ -112,7 +114,7 @@ describe('app', () => {
   });
 
   it('should return fallback 404 payload for unknown routes', async () => {
-    const app = createApp({ corsOrigin: true });
+    const app = createApp({ corsOrigin: TEST_ORIGIN });
 
     const response = await app.handle(createRequest('/missing-route'));
     const body = await parseBody<{ code: string; message: string }>(response);
@@ -125,7 +127,7 @@ describe('app', () => {
   });
 
   it('should return registration payload from POST /auth/register', async () => {
-    const app = createApp({ corsOrigin: true });
+    const app = createApp({ corsOrigin: TEST_ORIGIN });
 
     userRepoMock.findUserByEmail.mockResolvedValue([]);
     createPendingRegistrationMock.mockResolvedValue(undefined);
@@ -153,19 +155,19 @@ describe('app', () => {
   });
 
   it('should return unauthorized response for protected user route without session cookie', async () => {
-    const app = createApp({ corsOrigin: true });
+    const app = createApp({ corsOrigin: TEST_ORIGIN });
     const response = await app.handle(createRequest('/users/'));
     const body = await parseBody<{ code: string; message: string }>(response);
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
     expect(body).toEqual({
       code: 'AUTH_SESSION_NOT_FOUND',
-      message: 'Session not found',
+      message: 'Session not found, authentication required',
     });
   });
 
   it('should return protected user payload with a valid session cookie', async () => {
-    const app = createApp({ corsOrigin: true });
+    const app = createApp({ corsOrigin: TEST_ORIGIN });
     const user = createUserRow();
     hashSessionTokenMock.mockReturnValue({
       hash: 'hashed-session-token',
@@ -192,7 +194,7 @@ describe('app', () => {
   });
 
   it('should return protected application list when session cookie is valid', async () => {
-    const app = createApp({ corsOrigin: true });
+    const app = createApp({ corsOrigin: TEST_ORIGIN });
     const user = createUserRow();
     const application = createApplicationRow({
       userId: user.id,
@@ -242,7 +244,7 @@ describe('app', () => {
   });
 
   it('should return login payload from POST /auth/', async () => {
-    const app = createApp({ corsOrigin: true });
+    const app = createApp({ corsOrigin: TEST_ORIGIN });
     const user = createUserRow();
     const credentials = createCredentialRow({
       userId: user.id,

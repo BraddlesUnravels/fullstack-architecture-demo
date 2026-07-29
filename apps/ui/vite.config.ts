@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
   const apiUrl = env.API_URL || 'http://api:4000';
   return {
     envDir: ROOT_ENV_DIR,
-    plugins: [qwikCity(), qwikVite(), tailwindcss()],
+    plugins: [qwikCity({ trailingSlash: false }), qwikVite(), tailwindcss()],
     server: {
       port: 3000,
       strictPort: true,

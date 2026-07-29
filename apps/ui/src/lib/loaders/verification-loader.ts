@@ -1,4 +1,4 @@
-import { api } from '../api';
+import { api } from '../api/api';
 import type { RequestEventLoader } from '@builder.io/qwik-city';
 
 export const verifyRegistrationToken = async (

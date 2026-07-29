@@ -1,7 +1,7 @@
-import { ApiError } from '../../errors';
+import { ApiError } from '@app/types';
 
 // Auth errors
-export class InvalidCredentialsError extends ApiError {
+export class LogginFailure extends ApiError {
   constructor(message = 'Invalid email or password') {
     super({
       status: 401,
@@ -23,47 +23,14 @@ export class RegistrationLinkExpiredError extends ApiError {
   }
 }
 
-export class NoCredentialsSetError extends ApiError {
-  constructor(message = 'No credentials set for this user') {
+export class SessionNotFoundError extends ApiError {
+  constructor(message = 'Session not found, authentication required') {
     super({
       status: 401,
-      code: 'AUTH_NO_CREDENTIALS',
-      message,
-    });
-    this.name = 'NoCredentialsSetError';
-  }
-}
-
-export class SessionNotFoundError extends ApiError {
-  constructor(message = 'Session not found') {
-    super({
-      status: 404,
       code: 'AUTH_SESSION_NOT_FOUND',
       message,
     });
     this.name = 'SessionNotFoundError';
-  }
-}
-
-export class MissingSessionTokenError extends ApiError {
-  constructor(message = 'Authorization header is required') {
-    super({
-      status: 401,
-      code: 'AUTH_MISSING_SESSION_TOKEN',
-      message,
-    });
-    this.name = 'MissingSessionTokenError';
-  }
-}
-
-export class InvalidSessionTokenError extends ApiError {
-  constructor(message = 'Session token is invalid') {
-    super({
-      status: 401,
-      code: 'AUTH_INVALID_SESSION_TOKEN',
-      message,
-    });
-    this.name = 'InvalidSessionTokenError';
   }
 }
 
@@ -121,17 +88,6 @@ export class EmailConflictError extends ApiError {
       message,
     });
     this.name = 'EmailConflictError';
-  }
-}
-
-export class EmailConfirmationMismatchError extends ApiError {
-  constructor(message = 'Email and confirm email do not match') {
-    super({
-      status: 400,
-      code: 'AUTH_EMAIL_CONFIRMATION_MISMATCH',
-      message,
-    });
-    this.name = 'EmailConfirmationMismatchError';
   }
 }
 

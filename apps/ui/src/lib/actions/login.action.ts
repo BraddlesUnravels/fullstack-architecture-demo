@@ -1,4 +1,4 @@
-import { api } from '../api';
+import { api } from '../api/api';
 import type { LoginInput } from '@app/types/auth';
 import type { JSONObject, RequestEventAction } from '@builder.io/qwik-city';
 

@@ -85,7 +85,7 @@ describe('modules/auth/service.auth', () => {
           email: 'missing@example.com',
           password: 'password-1234',
         }),
-      ).rejects.toThrow('No user exists with the provided email');
+      ).rejects.toThrow('Invalid email or password');
     });
 
     it('should throw an error when user credentials are missing', async () => {
@@ -99,9 +99,7 @@ describe('modules/auth/service.auth', () => {
           email: user.email,
           password: 'password-1234',
         }),
-      ).rejects.toThrow(
-        'No credentials set for the user with the provided email',
-      );
+      ).rejects.toThrow('Invalid email or password');
     });
 
     it('should throw an error when password does not match', async () => {

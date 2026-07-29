@@ -4,8 +4,7 @@
     "baseUrl": ".",
     "paths": {
       "@app/redis/*": ["./src/*"],
-      "@app/types/*": ["../../packages/types/src/*"],
-      "@app/constants": ["../../packages/constants/src/index.ts"]
+      "@app/types/*": ["../../packages/types/src/*"]
     }
   },
   "include": ["src"]

@@ -28,7 +28,7 @@ export default component$<HeaderProps>(
         </p>
       </div>
 
-      <div class="flex flex-col gap-3 sm:flex-row">
+      <div class="flex flex-row gap-3 lg:flex-col">
         <FormField class="w-full sm:w-72">
           <TextInput
             id="header-search"

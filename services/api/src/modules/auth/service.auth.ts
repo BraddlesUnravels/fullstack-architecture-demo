@@ -6,8 +6,7 @@ import {
   hashSessionToken,
   isPasswordMatch,
 } from '../../services';
-import { UserNotFoundError } from '../user/errors.user';
-import { InvalidCredentialsError, NoCredentialsSetError } from './errors.auth';
+import { LogginFailure } from './errors.auth';
 import type { CookieJar } from '../../types';
 import { API_CONSTANTS } from '../../config';
 import type { LoggedIn } from '@app/types';
@@ -16,17 +15,13 @@ const { TTL_SECONDS, COOKIE_NAME } = API_CONSTANTS.cookie;
 
 const login = async ({ email, password }: LoginInput): Promise<LoggedIn> => {
   const [user] = await userRepo.findUserByEmail(email);
-  if (!user)
-    throw new UserNotFoundError('No user exists with the provided email');
+  if (!user) throw new LogginFailure();
 
   const [credentials] = await credentialRepo.findCredentialByUserId(user.id);
-  if (!credentials)
-    throw new NoCredentialsSetError(
-      'No credentials set for the user with the provided email',
-    );
+  if (!credentials) throw new LogginFailure();
 
   const isMatch = await isPasswordMatch(password, credentials.hash);
-  if (!isMatch) throw new InvalidCredentialsError();
+  if (!isMatch) throw new LogginFailure();
 
   const { token, hash } = hashSessionToken(createSessionToken());
 
