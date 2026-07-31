@@ -2,31 +2,18 @@ import { and, eq, desc } from 'drizzle-orm';
 import { appDb } from '../../src';
 import { application, company } from '../schema';
 import type {
+  ApplicationResultRow,
   ApplicationRow,
+  ApplicationSummaryRow,
   InsertApplicationRow,
   UpdateApplicationRow,
 } from '../types';
-import type { DeleteResponse, NullToUndefined } from '@app/types';
+import type { DeleteResponse } from '@app/types';
 import { stripNulls } from '../helpers';
-
-export type ApplicationSummaryDbRow = NullToUndefined<{
-  id: ApplicationRow['id'];
-  role: ApplicationRow['role'];
-  status: ApplicationRow['status'];
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  company: {
-    name: string;
-    website?: string;
-    jobDescription?: string;
-    abn?: string;
-  };
-}>;
 
 export const findApplicationById = async (
   id: ApplicationRow['id'],
-): Promise<NullToUndefined<ApplicationRow>[]> => {
+): Promise<ApplicationResultRow[]> => {
   const row = await appDb
     .select()
     .from(application)
@@ -36,7 +23,7 @@ export const findApplicationById = async (
 };
 export const findApplicationByUserId = async (
   userId: ApplicationRow['userId'],
-): Promise<NullToUndefined<ApplicationRow>[]> => {
+): Promise<ApplicationResultRow[]> => {
   const row = await appDb
     .select()
     .from(application)
@@ -46,7 +33,7 @@ export const findApplicationByUserId = async (
 
 export const createApplication = async (
   data: InsertApplicationRow,
-): Promise<NullToUndefined<ApplicationRow>[]> => {
+): Promise<ApplicationResultRow[]> => {
   const row = await appDb.insert(application).values(data).returning();
   return stripNulls(row) ?? [];
 };
@@ -54,7 +41,7 @@ export const createApplication = async (
 export const updateApplication = async (
   id: ApplicationRow['id'],
   data: UpdateApplicationRow,
-): Promise<NullToUndefined<ApplicationRow>[]> => {
+): Promise<ApplicationResultRow[]> => {
   const row = await appDb
     .update(application)
     .set(data)
@@ -76,7 +63,7 @@ export const deleteApplication = async (
 
 export const listAllApplicationSummaryByUserId = async (
   userId: ApplicationRow['userId'],
-): Promise<ApplicationSummaryDbRow[]> => {
+): Promise<ApplicationSummaryRow[]> => {
   const row = await appDb
     .select({
       id: application.id,

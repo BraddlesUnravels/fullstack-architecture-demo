@@ -1,28 +1,27 @@
 import * as v from 'valibot';
 
+const uuidSchema = v.pipe(v.string(), v.uuid());
+const timestampSchema = v.pipe(v.string(), v.isoTimestamp());
+
+const optionalUuidSchema = v.exactOptional(
+  v.union([uuidSchema, v.undefined()]),
+);
+
+const optionalTimestampSchema = v.exactOptional(
+  v.union([timestampSchema, v.undefined()]),
+);
+
 export const auditColumns = v.strictObject({
-  createdAt: v.pipe(v.string(), v.isoTimestamp()),
-  createdBy: v.exactOptional(
-    v.union([v.pipe(v.string(), v.uuid()), v.undefined()]),
-  ),
+  createdAt: timestampSchema,
+  createdBy: optionalUuidSchema,
 
-  updatedAt: v.exactOptional(v.pipe(v.string(), v.isoTimestamp())),
-  updatedBy: v.exactOptional(
-    v.union([v.pipe(v.string(), v.uuid()), v.undefined()]),
-  ),
+  updatedAt: timestampSchema,
+  updatedBy: optionalUuidSchema,
 
-  deletedAt: v.exactOptional(
-    v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()]),
-  ),
-  deletedBy: v.exactOptional(
-    v.union([v.pipe(v.string(), v.uuid()), v.undefined()]),
-  ),
+  isDeleted: v.boolean(),
 
-  isDeleted: v.exactOptional(v.boolean()),
-
-  verifiedAt: v.exactOptional(
-    v.union([v.pipe(v.string(), v.isoTimestamp()), v.undefined()]),
-  ),
+  deletedAt: optionalTimestampSchema,
+  deletedBy: optionalUuidSchema,
 
   version: v.pipe(v.number(), v.integer()),
 });

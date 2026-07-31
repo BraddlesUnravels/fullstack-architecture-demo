@@ -92,6 +92,29 @@ describe('modules/application/service.application', () => {
   });
 
   describe('createUserApplication', () => {
+    it('should derive ownership from the authenticated user ID', async () => {
+      const userId = '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51';
+      // @ts-expect-error
+      const application = createApplicationRow(userId, {});
+
+      applicationRepoMock.createApplication.mockResolvedValue([application]);
+
+      const input = {
+        companyId: 'f8c46e63-faee-4031-bd5f-4f91da4f3a5f',
+        notes: 'Initial note',
+        role: 'Software Engineer',
+        status: JobStatus.ENTERED,
+        url: 'https://example.com/jobs/1',
+      };
+
+      await applicationService.createUserApplication(userId, input);
+
+      expect(applicationRepoMock.createApplication).toHaveBeenCalledWith({
+        ...input,
+        userId,
+      });
+    });
+
     it('should throw an error when application creation fails', async () => {
       applicationRepoMock.createApplication.mockResolvedValue([]);
 
@@ -104,7 +127,6 @@ describe('modules/application/service.application', () => {
             role: 'Software Engineer',
             status: JobStatus.ENTERED,
             url: 'https://example.com/jobs/1',
-            userId: '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51',
           },
         ),
       ).rejects.toThrow('Failed to create application');
@@ -112,22 +134,36 @@ describe('modules/application/service.application', () => {
   });
 
   describe('updateUserApplication', () => {
-    it('should throw an error when application does not belong to the user', async () => {
-      const application = createApplicationRow({
-        userId: 'other-user-id',
+    it('should return updated application when record belongs to the user', async () => {
+      const userId = '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51';
+      // @ts-expect-error
+      const existing = createApplicationRow(userId, {});
+
+      const updated = createApplicationRow({
+        notes: 'Updated note',
+        updatedAt: new Date('2026-01-01T12:00:00.000Z'),
       });
 
-      applicationRepoMock.findApplicationById.mockResolvedValue([application]);
+      applicationRepoMock.findApplicationById.mockResolvedValue([existing]);
+      applicationRepoMock.updateApplication.mockResolvedValue([updated]);
 
-      await expect(
-        applicationService.updateUserApplication(
-          '6f4eff7c-6e9f-4223-a52f-4d45ecf95e51',
-          application.id,
-          { notes: 'Updated note' },
-        ),
-      ).rejects.toThrow(
-        'Application is already deleted or does not belong to the user',
+      const result = await applicationService.updateUserApplication(
+        existing.userId,
+        existing.id,
+        {
+          notes: 'Updated note',
+        },
       );
+
+      expect(applicationRepoMock.updateApplication).toHaveBeenCalledWith(
+        existing.id,
+        {
+          notes: 'Updated note',
+        },
+      );
+
+      expect(result.notes).toBe('Updated note');
+      expect(result.updatedAt).toBe(updated.updatedAt.toISOString());
     });
 
     it('should return updated application when record belongs to the user', async () => {

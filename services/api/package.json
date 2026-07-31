@@ -10,7 +10,7 @@
     "test": "bun --env-file=../../.env vitest run",
     "test-watch": "bun --env-file=../../.env vitest",
     "lint": "eslint src --ext .ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
     "@app/db": "workspace:*",
