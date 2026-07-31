@@ -6,7 +6,7 @@ import {
   validateInput,
   validationProblem,
 } from '../errors';
-import { logError } from '../logger';
+import { logError } from '../logger/runtime';
 import { register } from '@app/schemas';
 import type { Register } from '@app/types';
 import type { JSONObject, RequestEventAction } from '@builder.io/qwik-city';
@@ -34,7 +34,6 @@ export const registerAction = async (
 
   if (!validation.success) {
     const problem = validationProblem();
-
     return event.fail(
       problem.status,
       createActionFailure(

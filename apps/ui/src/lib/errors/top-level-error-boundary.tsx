@@ -7,7 +7,7 @@ import {
   useTask$,
 } from '@builder.io/qwik';
 import { BordedCard } from '../../components/ui';
-import { logError } from '../logger';
+import { logError } from '../logger/runtime';
 import type { RuntimeError } from '../types';
 import { pushUiError, useErrorStore } from './error-store';
 import { mapRuntimeErrorToUi } from './map-runtime-error';

@@ -1,4 +1,4 @@
-import { component$, useSignal, $ } from '@builder.io/qwik';
+import { component$, useSignal, $, useTask$ } from '@builder.io/qwik';
 import { routeAction$ } from '@builder.io/qwik-city';
 import { registerAction, loginAction } from '../../lib/actions';
 import {
@@ -23,6 +23,11 @@ export default component$(() => {
   const loginAction = useLoginAction();
   const registerAction = useRegisterAction();
   const authMode = useSignal<'register' | 'login'>('register');
+
+  useTask$(({ track }) => {
+    track(() => registerAction.value);
+    console.log('\n\n\tActionvalue:', registerAction); // Debugging log
+  });
 
   const showLogin = $(() => {
     authMode.value = 'login';

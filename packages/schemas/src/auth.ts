@@ -3,7 +3,7 @@ import * as v from 'valibot';
 export const login = v.strictObject({
   email: v.message(
     v.pipe(v.string(), v.email()),
-    'The email address of the user',
+    'Please enter a valid emaio address',
   ),
   password: v.message(
     v.pipe(v.string(), v.minLength(8), v.maxLength(500)),
@@ -14,7 +14,7 @@ export const login = v.strictObject({
 export const register = v.strictObject({
   email: v.message(
     v.pipe(v.string(), v.email()),
-    'The email address of the user',
+    'Please enter a valid email address',
   ),
 });
 

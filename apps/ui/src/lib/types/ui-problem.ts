@@ -44,4 +44,8 @@ export type ActionFailure<T> = {
   formErrors: string[];
 };
 
+export type ActionFailureResult<T> = ActionFailure<T> & {
+  failed: true;
+};
+
 export type { FailureStatus } from '@app/types';
