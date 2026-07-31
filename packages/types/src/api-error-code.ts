@@ -2,7 +2,7 @@ import {
   ErrorDefaults,
   type DefaultErrorCode,
   type FailureStatus,
-} from './constants';
+} from './api-error-default';
 
 /**
  * ApiError is a custom error class that extends the built-in Error class.

@@ -1,4 +1,4 @@
-import type { UserTier } from '@app/types';
+import type { UserTier } from '@app/schemas/domain-constants';
 
 export type PendingRegistrationRecord = {
   registrationId: string;
