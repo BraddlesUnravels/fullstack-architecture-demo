@@ -8,7 +8,6 @@ import type {
   JSXOutput,
 } from '@builder.io/qwik';
 import { HiEyeSlashSolid, HiEyeOutline } from '@qwikest/icons/heroicons';
-import type { RegistrationStore } from '../../routes/login';
 
 interface FormFieldProps extends HTMLAttributes<HTMLDivElement> {
   class?: ClassList;
@@ -69,7 +68,7 @@ export const FormField = component$<FormFieldProps>(
 
 interface TextInputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
-  'class' | 'onInput$'
+  'class' | 'onInput$' | 'children'
 > {
   containerClass?: string;
   inputClass?: string;
@@ -138,6 +137,7 @@ export const TextInput = component$<TextInputProps>(
           {icon}
         </span>
       )}
+      <Slot name="end" />
     </div>
   ),
 );
@@ -203,51 +203,49 @@ export const PasswordInput = component$<PasswordInputProps>(({ id, name }) => {
 });
 
 interface RegisterEmailInputProps {
-  registerAction: RegistrationStore;
+  name: string;
+  isRunning: boolean;
+  emailError?: string;
+  onInput$?: QRL<(event: InputEvent) => void>;
   onShowLogin$: QRL<() => void>;
 }
 
 export const RegisterEmailInput = component$<RegisterEmailInputProps>(
-  ({ onShowLogin$, registerAction }) => {
+  ({ name, isRunning, emailError, onInput$ }) => {
     return (
       <FormField
-        id="email"
-        name="email"
+        id="register-email"
+        name={name}
+        errorMessage={emailError}
         aria-required
         aria-label="Please enter your email in this field"
       >
         <TextInput
-          id="email"
+          id="register-email"
           name="email"
-          icon={
-            <button
-              type="submit"
-              disabled={registerAction.isRunning}
-              class="flex h-10.5 w-20 shrink-0 cursor-pointer items-center justify-center border-0 border-l border-white/10 bg-linear-to-r from-teal-400 to-cyan-400 text-sm font-semibold leading-none text-slate-950 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              Join
-            </button>
-          }
-          iconPosition="end"
-          iconClass="h-full"
           inputClass="h-10.5 min-w-0 flex-1 border-0 bg-transparent px-4 text-sm leading-none text-slate-100 placeholder:text-slate-500 outline-none"
           containerClass="flex h-10.5 min-w-0 flex-1 border-0 bg-transparent p-0"
           type="email"
           placeholder="Please enter your email"
           autocomplete="email"
-          disabled={registerAction.isRunning}
-        />
-
-        <div class="mt-5 text-center text-sm text-slate-400">
-          Already registered?{' '}
+          required
+          aria-label="Email address"
+          aria-invalid={emailError ? 'true' : undefined}
+          aria-describedby={emailError ? 'register-email-message' : undefined}
+          error={emailError !== undefined}
+          disabled={isRunning}
+          returnInput$={onInput$}
+        >
           <button
-            type="button"
-            onClick$={onShowLogin$}
-            class="cursor-pointer font-semibold text-cyan-300 transition hover:text-cyan-200"
+            q:slot="end"
+            id="register-email-submit"
+            type="submit"
+            disabled={isRunning}
+            class="flex h-10.5 w-20 shrink-0 cursor-pointer items-center justify-center border-0 border-l border-white/10 bg-linear-to-r from-teal-400 to-cyan-400 text-sm font-semibold leading-none text-slate-950 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Login
+            Join
           </button>
-        </div>
+        </TextInput>
       </FormField>
     );
   },

@@ -3,13 +3,13 @@ import type { JSONObject, RequestEventAction } from '@builder.io/qwik-city';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { registerAction } from '../../../src/lib/actions/register.action';
 import { api } from '../../../src/lib/api/api';
-import { logError } from '../../../src/lib/logger';
+import { logError } from '../../../src/lib/logger/runtime';
 
 vi.mock('../../../src/lib/api/api', () => ({
   api: vi.fn(),
 }));
 
-vi.mock('../../../src/lib/logger', () => ({
+vi.mock('../../../src/lib/logger/runtime', () => ({
   logError: vi.fn(),
 }));
 

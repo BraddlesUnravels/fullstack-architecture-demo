@@ -17,6 +17,7 @@ export const validateInput = <TSchema extends v.GenericSchema>(
 ): ValidationResult<v.InferOutput<TSchema>> => {
   // return early if the input is valid
   const result = v.safeParse(schema, input);
+  console.log('validateInput result:', result); // Debugging log
   if (result.success)
     return {
       success: true,

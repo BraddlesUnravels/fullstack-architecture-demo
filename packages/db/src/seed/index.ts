@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { faker } from '@faker-js/faker';
 import { Pool } from 'pg';
-import { securityUtils } from '@app/utils';
+
 import * as schema from '../schema';
 import { getMigratorDbConnectionString } from '../helpers';
 import {
@@ -182,7 +182,7 @@ const seed = async () => {
 
   if (options.mode === 'deterministic') faker.seed(options.seed);
 
-  const passwordHash = await securityUtils.hashNewPassword(SEED_PASSWORD);
+  const passwordHash = await Bun.password.hash(SEED_PASSWORD);
   const users = createUsers(options.userCount, SEED_CREATED_BY_USER_ID);
   const companies = createCompanies(
     options.companyCount,

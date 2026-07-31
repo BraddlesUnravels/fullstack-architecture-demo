@@ -6,7 +6,7 @@ import {
   ServerError,
 } from '@builder.io/qwik-city/middleware/request-handler';
 import { ErrorDefaults } from '@app/types';
-import { serverLogger } from '../lib/logger';
+import { serverLogger } from '../lib/logger/server';
 
 export const onRequest: RequestHandler = async (event) => {
   const requestId = randomUUID();
