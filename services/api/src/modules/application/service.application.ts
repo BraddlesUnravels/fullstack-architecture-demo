@@ -1,73 +1,64 @@
 import { applicationRepo } from '@app/db';
-import type { ApplicationRow, UpdateApplicationRow } from '@app/db/types';
+import type { ApplicationRow } from '@app/db/types';
 import type {
-  ApplicationSelect,
-  ApplicationInsert,
+  ApplicationResponse,
+  ApplicationSummaryList,
+  CreateApplicationInput,
   DeleteResponse,
-  ApplicationSummary,
+  UpdateApplicationInput,
 } from '@app/types';
-import { serializeAuditDates } from '../../utils';
+import {
+  toApplicationResponse,
+  toApplicationSummary,
+  toInsertApplicationRow,
+  toUpdateApplicationRow,
+} from './mappers.application';
 import {
   ApplicationCreateFailedError,
+  ApplicationDeleteFailedError,
   ApplicationNotFoundError,
   ApplicationUpdateFailedError,
-  ApplicationDeleteFailedError,
 } from './errors.application';
 
 const findUserApplicationById = async (
   userId: ApplicationRow['userId'],
   id: ApplicationRow['id'],
-): Promise<ApplicationSelect> => {
+): Promise<ApplicationResponse> => {
   const [application] = await applicationRepo.findApplicationById(id);
 
   if (!application || application.isDeleted || application.userId !== userId)
     throw new ApplicationNotFoundError();
 
-  return serializeAuditDates(application);
-};
-
-const findUserApplicationByUserId = async (
-  userId: ApplicationRow['userId'],
-  id: ApplicationRow['id'],
-): Promise<ApplicationSelect> => {
-  const [application] = await applicationRepo.findApplicationById(id);
-
-  if (!application || application.isDeleted || application.userId !== userId)
-    throw new ApplicationNotFoundError(
-      'Application is already deleted or does not belong to the user',
-    );
-
-  return serializeAuditDates(application);
+  return toApplicationResponse(application);
 };
 
 const findAllUserApplications = async (
   userId: ApplicationRow['userId'],
-): Promise<ApplicationSummary[]> => {
+): Promise<ApplicationSummaryList> => {
   const applications =
     await applicationRepo.listAllApplicationSummaryByUserId(userId);
 
-  return applications.map((application) => serializeAuditDates(application));
+  return applications.map(toApplicationSummary);
 };
 
 const createUserApplication = async (
   userId: ApplicationRow['userId'],
-  data: ApplicationInsert,
-): Promise<ApplicationSelect> => {
-  const [application] = await applicationRepo.createApplication({
-    ...data,
-    userId,
-  });
+  input: CreateApplicationInput,
+): Promise<ApplicationResponse> => {
+  const insertRow = toInsertApplicationRow(userId, input);
+
+  const [application] = await applicationRepo.createApplication(insertRow);
 
   if (!application) throw new ApplicationCreateFailedError();
 
-  return serializeAuditDates(application);
+  return toApplicationResponse(application);
 };
 
 const updateUserApplication = async (
   userId: ApplicationRow['userId'],
   id: ApplicationRow['id'],
-  data: UpdateApplicationRow,
-): Promise<ApplicationSelect> => {
+  input: UpdateApplicationInput,
+): Promise<ApplicationResponse> => {
   const [existingApplication] = await applicationRepo.findApplicationById(id);
 
   if (
@@ -79,12 +70,13 @@ const updateUserApplication = async (
       'Application is already deleted or does not belong to the user',
     );
 
-  const [application] = await applicationRepo.updateApplication(id, data);
+  const update = toUpdateApplicationRow(input);
+  const [application] = await applicationRepo.updateApplication(id, update);
 
   if (!application || application.isDeleted)
     throw new ApplicationUpdateFailedError();
 
-  return serializeAuditDates(application);
+  return toApplicationResponse(application);
 };
 
 const deleteApplicationForUser = async (
@@ -103,7 +95,6 @@ const deleteApplicationForUser = async (
 
 export const applicationService = {
   findUserApplicationById,
-  findUserApplicationByUserId,
   findAllUserApplications,
   createUserApplication,
   updateUserApplication,

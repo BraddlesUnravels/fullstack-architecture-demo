@@ -1,4 +1,5 @@
 import type { user, credential, company, application } from './schema';
+import type { NullToUndefined } from '@app/types';
 
 export type UserRow = typeof user.$inferSelect;
 export type InsertUserRow = typeof user.$inferInsert;
@@ -14,4 +15,37 @@ export type UpdateCompanyRow = Partial<InsertCompanyRow>;
 
 export type ApplicationRow = typeof application.$inferSelect;
 export type InsertApplicationRow = typeof application.$inferInsert;
-export type UpdateApplicationRow = Partial<InsertApplicationRow>;
+
+/**
+ * Fields that application repository callers are allowed to update.
+ *
+ * Deliberately excludes:
+ * - id
+ * - userId
+ * - createdAt/createdBy
+ * - updatedAt/updatedBy
+ * - deletedAt/deletedBy
+ * - isDeleted
+ * - version
+ */
+
+export type UpdateApplicationRow = Partial<
+  Pick<InsertApplicationRow, 'companyId' | 'role' | 'status' | 'url' | 'notes'>
+>;
+
+export type ApplicationResultRow = NullToUndefined<ApplicationRow>;
+
+export type ApplicationSummaryRow = {
+  id: ApplicationRow['id'];
+  role: ApplicationRow['role'];
+  status: ApplicationRow['status'];
+  notes: string | undefined;
+  createdAt: Date;
+  updatedAt: Date;
+  company: {
+    name: string;
+    website: string | undefined;
+    jobDescription: string | undefined;
+    abn: string | undefined;
+  };
+};
