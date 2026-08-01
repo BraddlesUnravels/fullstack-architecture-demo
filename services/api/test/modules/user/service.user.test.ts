@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createUserRow } from '../../helpers/factories';
 import { userService } from '../../../src/modules/user/service.user';
+import { UserTier } from '@app/schemas/domain-constants';
 
 const { userRepoMock } = vi.hoisted(() => ({
   userRepoMock: {
@@ -78,7 +79,7 @@ describe('modules/user/service.user', () => {
         isLocked: false,
         lastLoginAt: '2026-01-01T11:00:00.000Z',
         lastName: 'User',
-        tier: 'free',
+        tier: UserTier.FREE,
       });
 
       expect(userRepoMock.createUser).toHaveBeenCalledWith(
@@ -100,7 +101,7 @@ describe('modules/user/service.user', () => {
           firstName: 'Existing',
           isLocked: false,
           lastName: 'User',
-          tier: 'free',
+          tier: UserTier.FREE,
         }),
       ).rejects.toThrow('The email provided belongs to an existing account');
     });

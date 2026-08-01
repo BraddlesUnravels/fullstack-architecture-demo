@@ -1,21 +1,26 @@
 import type * as v from 'valibot';
 import type {
-  selectApplicationSchema,
-  insertApplicationSchema,
-  updateApplicationSchema,
+  applicationResponseSchema,
   applicationSummarySchema,
+  createApplicationInputSchema,
   listApplicationsSchema,
+  updateApplicationInputSchema,
 } from '@app/schemas';
-import type { NullToUndefined } from '@app/types';
 
-export type ApplicationSelect = NullToUndefined<
-  v.InferInput<typeof selectApplicationSchema>
+export type CreateApplicationInput = v.InferOutput<
+  typeof createApplicationInputSchema
 >;
-export type ApplicationInsert = v.InferInput<typeof insertApplicationSchema>;
-export type ApplicationUpdate = v.InferInput<typeof updateApplicationSchema>;
-export type ApplicationSummary = NullToUndefined<
-  v.InferInput<typeof applicationSummarySchema>
+
+export type UpdateApplicationInput = v.InferOutput<
+  typeof updateApplicationInputSchema
 >;
-export type ApplicationSummaryList = NullToUndefined<
-  v.InferInput<typeof listApplicationsSchema>
+
+export type ApplicationResponse = v.InferOutput<
+  typeof applicationResponseSchema
+>;
+
+export type ApplicationSummary = v.InferOutput<typeof applicationSummarySchema>;
+
+export type ApplicationSummaryList = v.InferOutput<
+  typeof listApplicationsSchema
 >;

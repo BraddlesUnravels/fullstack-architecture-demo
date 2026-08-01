@@ -12,7 +12,6 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "@app/types": "workspace:*",
     "elysia": "^1.4.28",
     "valibot": "^1.4.2"
   }

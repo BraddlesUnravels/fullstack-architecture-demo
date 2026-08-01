@@ -1,4 +1,4 @@
-import { JobStatus, UserTier } from '@app/types';
+import { JobStatus, UserTier } from '@app/schemas/domain-constants';
 
 type UserRowLike = {
   id: string;

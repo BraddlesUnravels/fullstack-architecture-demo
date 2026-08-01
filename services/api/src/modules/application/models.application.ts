@@ -1,17 +1,17 @@
 import {
-  getById,
-  insertApplicationSchema,
-  updateApplicationSchema,
-  selectApplicationSchema,
-  listApplicationsSchema,
+  applicationResponseSchema,
+  createApplicationInputSchema,
   deleteSchema,
+  getById,
+  listApplicationsSchema,
+  updateApplicationInputSchema,
 } from '@app/schemas';
 
 export const ApplicationModel = {
   getById,
-  create: insertApplicationSchema,
-  update: updateApplicationSchema,
-  select: selectApplicationSchema,
+  create: createApplicationInputSchema,
+  update: updateApplicationInputSchema,
+  select: applicationResponseSchema,
   list: listApplicationsSchema,
   delete: deleteSchema,
 } as const;

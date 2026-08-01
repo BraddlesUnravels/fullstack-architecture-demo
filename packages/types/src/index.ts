@@ -7,7 +7,7 @@ export * from './auth';
 export * from './credential';
 export * from './redis';
 export * from './api-error-code';
-export * from './constants';
+export * from './api-error-default';
 
 export type GetById = {
   id: string;
